@@ -246,6 +246,58 @@ public enum MensajesEnum {
             "Se presentó una excepción inesperada en la capa de controlador. Revise el log para más detalles."),
 
     // ============================================================
+    // Reglas y validadores genéricos — Mensajes parametrizados
+    // (usan %s para el nombre del dato y otros valores)
+    // ============================================================
+    ERROR_USUARIO_DATO_TEXTO_REQUERIDO(
+            "El dato [%s] es obligatorio. Por favor, ingréselo."),
+    ERROR_TECNICO_DATO_TEXTO_REQUERIDO(
+            "El dato [%s] llegó nulo o vacío al ejecutar la regla TextoEsObligatorioRegla."),
+
+    ERROR_USUARIO_DATO_TEXTO_LONGITUD_INVALIDA(
+            "El dato [%s] debe tener entre %s y %s caracteres."),
+    ERROR_TECNICO_DATO_TEXTO_LONGITUD_INVALIDA(
+            "La longitud del dato [%s] no se encuentra en el rango permitido [%s, %s]."),
+
+    ERROR_USUARIO_DATO_ID_VALOR_DEFECTO(
+            "El identificador del [%s] no puede ser el valor por defecto. Por favor verifique la información."),
+    ERROR_TECNICO_DATO_ID_VALOR_DEFECTO(
+            "El UUID recibido para [%s] es el valor por defecto. Verifique el origen del id enviado."),
+
+    ERROR_USUARIO_DATO_NUMERO_NEGATIVO(
+            "El dato [%s] debe ser un número positivo o cero."),
+    ERROR_TECNICO_DATO_NUMERO_NEGATIVO(
+            "El dato numérico [%s] llegó con valor negativo a la regla NumeroEsPositivoRegla."),
+
+    ERROR_USUARIO_DATO_NUMERO_FUERA_DE_RANGO(
+            "El dato [%s] debe estar entre %s y %s."),
+    ERROR_TECNICO_DATO_NUMERO_FUERA_DE_RANGO(
+            "El dato numérico [%s] está fuera del rango permitido [%s, %s] en la regla NumeroEnRangoRegla."),
+
+    ERROR_USUARIO_DATO_FECHA_REQUERIDA(
+            "La fecha [%s] es obligatoria."),
+    ERROR_TECNICO_DATO_FECHA_REQUERIDA(
+            "La fecha [%s] llegó como valor por defecto a la regla FechaNoEsValorPorDefectoRegla."),
+
+    ERROR_USUARIO_REGLA_DATOS_NULOS(
+            "Se ha presentado un problema validando los datos de entrada para una regla de negocio."),
+    ERROR_TECNICO_REGLA_DATOS_NULOS(
+            "El arreglo de parámetros pasado a una regla es nulo. Verifique la invocación de la regla."),
+
+    ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES(
+            "Se ha presentado un problema validando los parámetros requeridos para una regla de negocio."),
+    ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES(
+            "Una regla recibió un número de parámetros insuficiente. Verifique la invocación de la regla."),
+
+    // ============================================================
+    // Casos de uso pendientes de integración con capa de datos
+    // ============================================================
+    ERROR_USUARIO_CASO_USO_DAO_PENDIENTE(
+            "La operación solicitada no se encuentra disponible en este momento. Por favor intente más tarde."),
+    ERROR_TECNICO_CASO_USO_DAO_PENDIENTE(
+            "La operación [%s] del caso de uso [%s] está pendiente de integración con la capa de datos (DAO). TODO: cablear DAOFactory."),
+
+    // ============================================================
     // Genéricos
     // ============================================================
     ERROR_USUARIO_INESPERADO(
