@@ -1,5 +1,8 @@
 package co.edu.uco.imexcol.negocio.assembler.dto.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import co.edu.uco.imexcol.dto.AdministradorDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.DTOAssembler;
 import co.edu.uco.imexcol.negocio.dominio.AdministradorDominio;
@@ -13,31 +16,49 @@ public final class AdministradorDTOAssembler implements DTOAssembler<Administrad
         super();
     }
 
-    public static final AdministradorDTOAssembler obtenerInstancia() {
+    public static AdministradorDTOAssembler obtenerInstancia() {
         return INSTANCIA;
     }
 
     @Override
     public AdministradorDominio ensamblarDominio(final AdministradorDTO dto) {
-        var administradorAEnsamblar = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO.Builder().build());
-        return new AdministradorDominio.Builder()
-                .id(administradorAEnsamblar.getId())
-                .nombreUsuario(administradorAEnsamblar.getNombreUsuario())
-                .correoElectronico(administradorAEnsamblar.getCorreoElectronico())
-                .contrasena(administradorAEnsamblar.getContrasena())
-                .estado(administradorAEnsamblar.isEstado())
-                .build();
+        var dtoAEnsamblar = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
+        return new AdministradorDominio(
+                dtoAEnsamblar.getId(),
+                dtoAEnsamblar.getNombreUsuario(),
+                dtoAEnsamblar.getCorreoElectronico(),
+                dtoAEnsamblar.getContrasena(),
+                dtoAEnsamblar.isEstado());
     }
 
     @Override
     public AdministradorDTO ensamblarDTO(final AdministradorDominio dominio) {
-        var administradorAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new AdministradorDominio.Builder().build());
-        return new AdministradorDTO.Builder()
-                .id(administradorAEnsamblar.getId())
-                .nombreUsuario(administradorAEnsamblar.getNombreUsuario())
-                .correoElectronico(administradorAEnsamblar.getCorreoElectronico())
-                .contrasena(administradorAEnsamblar.getContrasena())
-                .estado(administradorAEnsamblar.isEstado())
-                .build();
+        var dominioAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new AdministradorDominio());
+        return new AdministradorDTO(
+                dominioAEnsamblar.getId(),
+                dominioAEnsamblar.getNombreUsuario(),
+                dominioAEnsamblar.getCorreoElectronico(),
+                dominioAEnsamblar.getContrasena(),
+                dominioAEnsamblar.isEstado());
+    }
+
+    @Override
+    public List<AdministradorDTO> ensamblarDTO(final List<AdministradorDominio> listaDominios) {
+        var listaSegura = UtilObjeto.obtenerValorDefecto(listaDominios, new ArrayList<AdministradorDominio>());
+        var listaDTO = new ArrayList<AdministradorDTO>();
+        for (var dominio : listaSegura) {
+            listaDTO.add(ensamblarDTO(dominio));
+        }
+        return listaDTO;
+    }
+
+    @Override
+    public List<AdministradorDominio> ensamblarDominio(final List<AdministradorDTO> listaDTO) {
+        var listaSegura = UtilObjeto.obtenerValorDefecto(listaDTO, new ArrayList<AdministradorDTO>());
+        var listaDominios = new ArrayList<AdministradorDominio>();
+        for (var dto : listaSegura) {
+            listaDominios.add(ensamblarDominio(dto));
+        }
+        return listaDominios;
     }
 }
