@@ -289,6 +289,16 @@ public enum MensajesEnum {
     ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES(
             "Una regla recibió un número de parámetros insuficiente. Verifique la invocación de la regla."),
 
+    ERROR_USUARIO_DATO_ESTADO_INVALIDO(
+            "El valor [%s] no es válido para [%s]. Los valores permitidos son: %s."),
+    ERROR_TECNICO_DATO_ESTADO_INVALIDO(
+            "El estado [%s] del dato [%s] no se encuentra en el conjunto permitido [%s]."),
+
+    ERROR_USUARIO_DATO_NUMERO_NO_MAYOR_A_CERO(
+            "El dato [%s] debe ser un número mayor a cero."),
+    ERROR_TECNICO_DATO_NUMERO_NO_MAYOR_A_CERO(
+            "El dato numérico [%s] llegó con un valor menor o igual a cero a la regla NumeroEsMayorACeroRegla."),
+
     // ============================================================
     // Casos de uso pendientes de integración con capa de datos
     // ============================================================
