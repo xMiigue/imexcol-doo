@@ -14,13 +14,29 @@ public final class AdministradorDTO {
     private String contrasena;
     private boolean estado;
 
-    private AdministradorDTO(final Builder builder) {
-        super();
-        setId(builder.id);
-        setNombreUsuario(builder.nombreUsuario);
-        setCorreoElectronico(builder.correoElectronico);
-        setContrasena(builder.contrasena);
-        setEstado(builder.estado);
+    public AdministradorDTO() {
+        setId(UtilUUID.obtenerValorPorDefecto());
+        setNombreUsuario(UtilTexto.VACIO);
+        setCorreoElectronico(UtilTexto.VACIO);
+        setContrasena(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public AdministradorDTO(final UUID id) {
+        setId(id);
+        setNombreUsuario(UtilTexto.VACIO);
+        setCorreoElectronico(UtilTexto.VACIO);
+        setContrasena(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public AdministradorDTO(final UUID id, final String nombreUsuario, final String correoElectronico,
+                            final String contrasena, final boolean estado) {
+        setId(id);
+        setNombreUsuario(nombreUsuario);
+        setCorreoElectronico(correoElectronico);
+        setContrasena(contrasena);
+        setEstado(estado);
     }
 
     public UUID getId() {
@@ -35,7 +51,7 @@ public final class AdministradorDTO {
         return nombreUsuario;
     }
 
-    private void setNombreUsuario(final String nombreUsuario) {
+    public void setNombreUsuario(final String nombreUsuario) {
         this.nombreUsuario = UtilTexto.aplicarTrim(nombreUsuario);
     }
 
@@ -43,7 +59,7 @@ public final class AdministradorDTO {
         return correoElectronico;
     }
 
-    private void setCorreoElectronico(final String correoElectronico) {
+    public void setCorreoElectronico(final String correoElectronico) {
         this.correoElectronico = UtilTexto.aplicarTrim(correoElectronico);
     }
 
@@ -51,7 +67,7 @@ public final class AdministradorDTO {
         return contrasena;
     }
 
-    private void setContrasena(final String contrasena) {
+    public void setContrasena(final String contrasena) {
         this.contrasena = UtilTexto.aplicarTrim(contrasena);
     }
 
@@ -59,45 +75,7 @@ public final class AdministradorDTO {
         return estado;
     }
 
-    private void setEstado(final Boolean estado) {
-        this.estado = UtilBooleano.obtenerValorDefecto(estado);
-    }
-
-    public static final class Builder {
-
-        private UUID id;
-        private String nombreUsuario;
-        private String correoElectronico;
-        private String contrasena;
-        private Boolean estado;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder nombreUsuario(final String nombreUsuario) {
-            this.nombreUsuario = UtilTexto.aplicarTrim(nombreUsuario);
-            return this;
-        }
-
-        public Builder correoElectronico(final String correoElectronico) {
-            this.correoElectronico = UtilTexto.aplicarTrim(correoElectronico);
-            return this;
-        }
-
-        public Builder contrasena(final String contrasena) {
-            this.contrasena = UtilTexto.aplicarTrim(contrasena);
-            return this;
-        }
-
-        public Builder estado(final Boolean estado) {
-            this.estado = estado;
-            return this;
-        }
-
-        public AdministradorDTO build() {
-            return new AdministradorDTO(this);
-        }
+    public void setEstado(final boolean estado) {
+        this.estado = estado;
     }
 }

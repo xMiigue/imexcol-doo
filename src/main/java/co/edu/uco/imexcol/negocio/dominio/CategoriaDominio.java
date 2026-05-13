@@ -6,34 +6,38 @@ import co.edu.uco.imexcol.transversal.UtilBooleano;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
-public final class CategoriaDominio {
+public final class CategoriaDominio extends Dominio {
 
-    private UUID id;
     private String nombre;
     private String descripcion;
     private boolean estado;
 
-    private CategoriaDominio(final Builder builder) {
-        super();
-        setId(builder.id);
-        setNombre(builder.nombre);
-        setDescripcion(builder.descripcion);
-        setEstado(builder.estado);
+    public CategoriaDominio() {
+        super(UtilUUID.obtenerValorPorDefecto());
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
-    public UUID getId() {
-        return id;
+    public CategoriaDominio(final UUID id) {
+        super(id);
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
-    private void setId(final UUID id) {
-        this.id = UtilUUID.obtenerValorDefecto(id);
+    public CategoriaDominio(final UUID id, final String nombre, final String descripcion, final boolean estado) {
+        super(id);
+        setNombre(nombre);
+        setDescripcion(descripcion);
+        setEstado(estado);
     }
 
     public String getNombre() {
         return nombre;
     }
 
-    private void setNombre(final String nombre) {
+    public void setNombre(final String nombre) {
         this.nombre = UtilTexto.aplicarTrim(nombre);
     }
 
@@ -41,7 +45,7 @@ public final class CategoriaDominio {
         return descripcion;
     }
 
-    private void setDescripcion(final String descripcion) {
+    public void setDescripcion(final String descripcion) {
         this.descripcion = UtilTexto.aplicarTrim(descripcion);
     }
 
@@ -49,39 +53,7 @@ public final class CategoriaDominio {
         return estado;
     }
 
-    private void setEstado(final Boolean estado) {
-        this.estado = UtilBooleano.obtenerValorDefecto(estado);
-    }
-
-    public static final class Builder {
-
-        private UUID id;
-        private String nombre;
-        private String descripcion;
-        private Boolean estado;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder nombre(final String nombre) {
-            this.nombre = nombre;
-            return this;
-        }
-
-        public Builder descripcion(final String descripcion) {
-            this.descripcion = descripcion;
-            return this;
-        }
-
-        public Builder estado(final Boolean estado) {
-            this.estado = estado;
-            return this;
-        }
-
-        public CategoriaDominio build() {
-            return new CategoriaDominio(this);
-        }
+    public void setEstado(final boolean estado) {
+        this.estado = estado;
     }
 }

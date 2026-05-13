@@ -13,12 +13,25 @@ public final class MetodoPagoDTO {
     private String descripcion;
     private boolean estado;
 
-    private MetodoPagoDTO(final Builder builder) {
-        super();
-        setId(builder.id);
-        setNombre(builder.nombre);
-        setDescripcion(builder.descripcion);
-        setEstado(builder.estado);
+    public MetodoPagoDTO() {
+        setId(UtilUUID.obtenerValorPorDefecto());
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public MetodoPagoDTO(final UUID id) {
+        setId(id);
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public MetodoPagoDTO(final UUID id, final String nombre, final String descripcion, final boolean estado) {
+        setId(id);
+        setNombre(nombre);
+        setDescripcion(descripcion);
+        setEstado(estado);
     }
 
     public UUID getId() {
@@ -33,7 +46,7 @@ public final class MetodoPagoDTO {
         return nombre;
     }
 
-    private void setNombre(final String nombre) {
+    public void setNombre(final String nombre) {
         this.nombre = UtilTexto.aplicarTrim(nombre);
     }
 
@@ -41,7 +54,7 @@ public final class MetodoPagoDTO {
         return descripcion;
     }
 
-    private void setDescripcion(final String descripcion) {
+    public void setDescripcion(final String descripcion) {
         this.descripcion = UtilTexto.aplicarTrim(descripcion);
     }
 
@@ -49,39 +62,7 @@ public final class MetodoPagoDTO {
         return estado;
     }
 
-    private void setEstado(final Boolean estado) {
-        this.estado = UtilBooleano.obtenerValorDefecto(estado);
-    }
-
-    public static final class Builder {
-
-        private UUID id;
-        private String nombre;
-        private String descripcion;
-        private Boolean estado;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder nombre(final String nombre) {
-            this.nombre = UtilTexto.aplicarTrim(nombre);
-            return this;
-        }
-
-        public Builder descripcion(final String descripcion) {
-            this.descripcion = UtilTexto.aplicarTrim(descripcion);
-            return this;
-        }
-
-        public Builder estado(final Boolean estado) {
-            this.estado = estado;
-            return this;
-        }
-
-        public MetodoPagoDTO build() {
-            return new MetodoPagoDTO(this);
-        }
+    public void setEstado(final boolean estado) {
+        this.estado = estado;
     }
 }

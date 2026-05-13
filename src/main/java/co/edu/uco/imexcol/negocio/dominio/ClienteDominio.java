@@ -6,44 +6,60 @@ import co.edu.uco.imexcol.transversal.UtilBooleano;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
-public final class AdministradorDominio extends Dominio {
+public final class ClienteDominio extends Dominio {
 
-    private String nombreUsuario;
+    private String nombre;
+    private String apellido;
     private String correoElectronico;
     private String contrasena;
+    private String telefono;
     private boolean estado;
 
-    public AdministradorDominio() {
+    public ClienteDominio() {
         super(UtilUUID.obtenerValorPorDefecto());
-        setNombreUsuario(UtilTexto.VACIO);
+        setNombre(UtilTexto.VACIO);
+        setApellido(UtilTexto.VACIO);
         setCorreoElectronico(UtilTexto.VACIO);
         setContrasena(UtilTexto.VACIO);
+        setTelefono(UtilTexto.VACIO);
         setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
-    public AdministradorDominio(final UUID id) {
+    public ClienteDominio(final UUID id) {
         super(id);
-        setNombreUsuario(UtilTexto.VACIO);
+        setNombre(UtilTexto.VACIO);
+        setApellido(UtilTexto.VACIO);
         setCorreoElectronico(UtilTexto.VACIO);
         setContrasena(UtilTexto.VACIO);
+        setTelefono(UtilTexto.VACIO);
         setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
-    public AdministradorDominio(final UUID id, final String nombreUsuario, final String correoElectronico,
-                                final String contrasena, final boolean estado) {
+    public ClienteDominio(final UUID id, final String nombre, final String apellido, final String correoElectronico,
+                          final String contrasena, final String telefono, final boolean estado) {
         super(id);
-        setNombreUsuario(nombreUsuario);
+        setNombre(nombre);
+        setApellido(apellido);
         setCorreoElectronico(correoElectronico);
         setContrasena(contrasena);
+        setTelefono(telefono);
         setEstado(estado);
     }
 
-    public String getNombreUsuario() {
-        return nombreUsuario;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreUsuario(final String nombreUsuario) {
-        this.nombreUsuario = UtilTexto.aplicarTrim(nombreUsuario);
+    public void setNombre(final String nombre) {
+        this.nombre = UtilTexto.aplicarTrim(nombre);
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(final String apellido) {
+        this.apellido = UtilTexto.aplicarTrim(apellido);
     }
 
     public String getCorreoElectronico() {
@@ -60,6 +76,14 @@ public final class AdministradorDominio extends Dominio {
 
     public void setContrasena(final String contrasena) {
         this.contrasena = UtilTexto.aplicarTrim(contrasena);
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(final String telefono) {
+        this.telefono = UtilTexto.aplicarTrim(telefono);
     }
 
     public boolean isEstado() {

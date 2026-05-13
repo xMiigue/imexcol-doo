@@ -13,19 +13,32 @@ public final class MetodoPagoEntidad {
     private String descripcion;
     private boolean estado;
 
-    private MetodoPagoEntidad(final Builder builder) {
-        super();
-        setId(builder.id);
-        setNombre(builder.nombre);
-        setDescripcion(builder.descripcion);
-        setEstado(builder.estado);
+    public MetodoPagoEntidad() {
+        setId(UtilUUID.obtenerValorPorDefecto());
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public MetodoPagoEntidad(final UUID id) {
+        setId(id);
+        setNombre(UtilTexto.VACIO);
+        setDescripcion(UtilTexto.VACIO);
+        setEstado(UtilBooleano.obtenerValorPorDefecto());
+    }
+
+    public MetodoPagoEntidad(final UUID id, final String nombre, final String descripcion, final boolean estado) {
+        setId(id);
+        setNombre(nombre);
+        setDescripcion(descripcion);
+        setEstado(estado);
     }
 
     public UUID getId() {
         return id;
     }
 
-    private void setId(final UUID id) {
+    public void setId(final UUID id) {
         this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
@@ -33,7 +46,7 @@ public final class MetodoPagoEntidad {
         return nombre;
     }
 
-    private void setNombre(final String nombre) {
+    public void setNombre(final String nombre) {
         this.nombre = UtilTexto.aplicarTrim(nombre);
     }
 
@@ -41,7 +54,7 @@ public final class MetodoPagoEntidad {
         return descripcion;
     }
 
-    private void setDescripcion(final String descripcion) {
+    public void setDescripcion(final String descripcion) {
         this.descripcion = UtilTexto.aplicarTrim(descripcion);
     }
 
@@ -49,39 +62,7 @@ public final class MetodoPagoEntidad {
         return estado;
     }
 
-    private void setEstado(final Boolean estado) {
-        this.estado = UtilBooleano.obtenerValorDefecto(estado);
-    }
-
-    public static final class Builder {
-
-        private UUID id;
-        private String nombre;
-        private String descripcion;
-        private Boolean estado;
-
-        public Builder id(final UUID id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder nombre(final String nombre) {
-            this.nombre = nombre;
-            return this;
-        }
-
-        public Builder descripcion(final String descripcion) {
-            this.descripcion = descripcion;
-            return this;
-        }
-
-        public Builder estado(final Boolean estado) {
-            this.estado = estado;
-            return this;
-        }
-
-        public MetodoPagoEntidad build() {
-            return new MetodoPagoEntidad(this);
-        }
+    public void setEstado(final boolean estado) {
+        this.estado = estado;
     }
 }
