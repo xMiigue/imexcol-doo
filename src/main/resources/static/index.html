@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imexcol — Administración</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <h1 class="encabezado-titulo">Imexcol</h1>
+            <p class="encabezado-subtitulo">Panel de administración</p>
+        </div>
+    </header>
+
+    <nav class="navegacion">
+        <div class="contenedor">
+            <button class="tab activo" data-vista="categorias">Categorías</button>
+            <button class="tab" data-vista="productos">Productos</button>
+        </div>
+    </nav>
+
+    <main class="contenedor principal">
+        <!-- Notificación global -->
+        <div id="notificacion" class="notificacion oculto"></div>
+
+        <!-- ============ VISTA CATEGORÍAS ============ -->
+        <section id="vista-categorias" class="vista">
+            <div class="cuadricula">
+                <article class="tarjeta">
+                    <header class="tarjeta-cabecera">
+                        <h2>Nueva categoría</h2>
+                    </header>
+                    <form id="form-categoria" class="formulario">
+                        <div class="campo">
+                            <label for="cat-nombre">Nombre</label>
+                            <input type="text" id="cat-nombre" name="nombre" required minlength="3" maxlength="100"
+                                placeholder="Ej. Electrónica">
+                        </div>
+                        <div class="campo">
+                            <label for="cat-descripcion">Descripción</label>
+                            <textarea id="cat-descripcion" name="descripcion" rows="3" maxlength="255"
+                                placeholder="Descripción opcional"></textarea>
+                        </div>
+                        <div class="campo campo-inline">
+                            <input type="checkbox" id="cat-estado" name="estado" checked>
+                            <label for="cat-estado">Activa</label>
+                        </div>
+                        <div class="acciones">
+                            <button type="submit" class="boton boton-primario">Registrar categoría</button>
+                            <button type="reset" class="boton boton-secundario">Limpiar</button>
+                        </div>
+                    </form>
+                </article>
+
+                <article class="tarjeta">
+                    <header class="tarjeta-cabecera">
+                        <h2>Categorías registradas</h2>
+                        <button id="btn-recargar-categorias" class="boton boton-secundario boton-pequeno" type="button">
+                            Recargar
+                        </button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Descripción</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-categorias-body">
+                                <tr><td colspan="3" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA PRODUCTOS ============ -->
+        <section id="vista-productos" class="vista oculto">
+            <div class="cuadricula">
+                <article class="tarjeta">
+                    <header class="tarjeta-cabecera">
+                        <h2>Nuevo producto</h2>
+                    </header>
+                    <form id="form-producto" class="formulario">
+                        <div class="campo">
+                            <label for="pro-categoria">Categoría</label>
+                            <select id="pro-categoria" name="categoriaId" required>
+                                <option value="">Seleccione una categoría…</option>
+                            </select>
+                        </div>
+                        <div class="campo">
+                            <label for="pro-nombre">Nombre</label>
+                            <input type="text" id="pro-nombre" name="nombre" required minlength="3" maxlength="100"
+                                placeholder="Ej. Laptop Pro 14">
+                        </div>
+                        <div class="campo">
+                            <label for="pro-descripcion">Descripción</label>
+                            <textarea id="pro-descripcion" name="descripcion" rows="3" maxlength="1000"
+                                placeholder="Descripción opcional"></textarea>
+                        </div>
+                        <div class="campo-fila">
+                            <div class="campo">
+                                <label for="pro-precio">Precio</label>
+                                <input type="number" id="pro-precio" name="precio" required min="0" step="0.01"
+                                    placeholder="0.00">
+                            </div>
+                            <div class="campo">
+                                <label for="pro-stock">Stock</label>
+                                <input type="number" id="pro-stock" name="stock" required min="0" step="1"
+                                    placeholder="0">
+                            </div>
+                        </div>
+                        <div class="campo campo-inline">
+                            <input type="checkbox" id="pro-estado" name="estado" checked>
+                            <label for="pro-estado">Activo</label>
+                        </div>
+                        <div class="acciones">
+                            <button type="submit" class="boton boton-primario">Registrar producto</button>
+                            <button type="reset" class="boton boton-secundario">Limpiar</button>
+                        </div>
+                    </form>
+                </article>
+
+                <article class="tarjeta">
+                    <header class="tarjeta-cabecera">
+                        <h2>Productos registrados</h2>
+                        <button id="btn-recargar-productos" class="boton boton-secundario boton-pequeno" type="button">
+                            Recargar
+                        </button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Categoría</th>
+                                    <th class="celda-num">Precio</th>
+                                    <th class="celda-num">Stock</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-productos-body">
+                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <p>&copy; 2026 Imexcol — Panel de administración</p>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
