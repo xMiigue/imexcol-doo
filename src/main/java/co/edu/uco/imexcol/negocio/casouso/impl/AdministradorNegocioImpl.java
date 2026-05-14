@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.entidad.AdministradorDAO;
+import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.AdministradorEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.AdministradorNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;

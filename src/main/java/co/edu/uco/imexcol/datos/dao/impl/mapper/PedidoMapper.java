@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad.mapper;
+package co.edu.uco.imexcol.datos.dao.impl.mapper;
 
 import java.sql.Date;
 import java.sql.ResultSet;

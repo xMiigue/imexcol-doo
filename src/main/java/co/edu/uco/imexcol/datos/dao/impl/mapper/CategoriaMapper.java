@@ -1,28 +1,27 @@
-package co.edu.uco.imexcol.datos.dao.entidad.mapper;
+package co.edu.uco.imexcol.datos.dao.impl.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import co.edu.uco.imexcol.entidad.AdministradorEntidad;
+import co.edu.uco.imexcol.entidad.CategoriaEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-public final class AdministradorMapper {
+public final class CategoriaMapper {
 
-    private AdministradorMapper() {
+    private CategoriaMapper() {
         super();
     }
 
-    public static AdministradorEntidad mapear(final ResultSet resultSet) {
-        final var entidad = new AdministradorEntidad();
+    public static CategoriaEntidad mapear(final ResultSet resultSet) {
+        final var entidad = new CategoriaEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("administrador_id")));
-            entidad.setNombreUsuario(resultSet.getString("administrador_nombre_usuario"));
-            entidad.setCorreoElectronico(resultSet.getString("administrador_correo_electronico"));
-            entidad.setContrasena(resultSet.getString("administrador_contrasena"));
-            entidad.setEstado(resultSet.getBoolean("administrador_estado"));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("categoria_id")));
+            entidad.setNombre(resultSet.getString("categoria_nombre"));
+            entidad.setDescripcion(resultSet.getString("categoria_descripcion"));
+            entidad.setEstado(resultSet.getBoolean("categoria_estado"));
         } catch (final SQLException excepcion) {
             throw ImexcolException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

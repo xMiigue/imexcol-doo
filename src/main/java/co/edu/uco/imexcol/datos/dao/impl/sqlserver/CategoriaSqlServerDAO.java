@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad.sqlserver;
+package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.entidad.AdministradorDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.ConexionSql;
-import co.edu.uco.imexcol.datos.dao.entidad.mapper.AdministradorMapper;
-import co.edu.uco.imexcol.datos.dao.entidad.sql.AdministradorSql;
-import co.edu.uco.imexcol.entidad.AdministradorEntidad;
+import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
+import co.edu.uco.imexcol.datos.dao.ConexionSql;
+import co.edu.uco.imexcol.datos.dao.impl.mapper.CategoriaMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.CategoriaSql;
+import co.edu.uco.imexcol.entidad.CategoriaEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
@@ -20,23 +20,22 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-public final class AdministradorSqlServerDAO extends ConexionSql implements AdministradorDAO {
+public final class CategoriaSqlServerDAO extends ConexionSql implements CategoriaDAO {
 
-    public AdministradorSqlServerDAO(final Connection conexion) {
+    public CategoriaSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
 
     @Override
-    public void acceder(final AdministradorEntidad entidad) {
+    public void acceder(final CategoriaEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
-        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new AdministradorEntidad());
+        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CategoriaEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(CategoriaSql.ACCEDER)) {
             sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setString(2, entidadSegura.getNombreUsuario());
-            sentencia.setString(3, entidadSegura.getCorreoElectronico());
-            sentencia.setString(4, entidadSegura.getContrasena());
-            sentencia.setBoolean(5, entidadSegura.isEstado());
+            sentencia.setString(2, entidadSegura.getNombre());
+            sentencia.setString(3, entidadSegura.getDescripcion());
+            sentencia.setBoolean(4, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -47,16 +46,15 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
     }
 
     @Override
-    public void actualizar(final AdministradorEntidad entidad) {
+    public void actualizar(final CategoriaEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
-        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new AdministradorEntidad());
+        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CategoriaEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ACTUALIZAR)) {
-            sentencia.setString(1, entidadSegura.getNombreUsuario());
-            sentencia.setString(2, entidadSegura.getCorreoElectronico());
-            sentencia.setString(3, entidadSegura.getContrasena());
-            sentencia.setBoolean(4, entidadSegura.isEstado());
-            sentencia.setObject(5, entidadSegura.getId());
+        try (var sentencia = obtenerConexion().prepareStatement(CategoriaSql.ACTUALIZAR)) {
+            sentencia.setString(1, entidadSegura.getNombre());
+            sentencia.setString(2, entidadSegura.getDescripcion());
+            sentencia.setBoolean(3, entidadSegura.isEstado());
+            sentencia.setObject(4, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -70,7 +68,7 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
     public void eliminar(final UUID id) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
-        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ELIMINAR)) {
+        try (var sentencia = obtenerConexion().prepareStatement(CategoriaSql.ELIMINAR)) {
             sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
@@ -82,19 +80,19 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
     }
 
     @Override
-    public AdministradorEntidad consultarPorId(final UUID id) {
-        final var filtro = new AdministradorEntidad(UtilUUID.obtenerValorDefecto(id));
-        return consultarPorFiltro(filtro).stream().findFirst().orElse(new AdministradorEntidad());
+    public CategoriaEntidad consultarPorId(final UUID id) {
+        final var filtro = new CategoriaEntidad(UtilUUID.obtenerValorDefecto(id));
+        return consultarPorFiltro(filtro).stream().findFirst().orElse(new CategoriaEntidad());
     }
 
     @Override
-    public List<AdministradorEntidad> consultarTodos() {
-        return consultarPorFiltro(new AdministradorEntidad());
+    public List<CategoriaEntidad> consultarTodos() {
+        return consultarPorFiltro(new CategoriaEntidad());
     }
 
     @Override
-    public List<AdministradorEntidad> consultarPorFiltro(final AdministradorEntidad filtro) {
-        final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new AdministradorEntidad());
+    public List<CategoriaEntidad> consultarPorFiltro(final CategoriaEntidad filtro) {
+        final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new CategoriaEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
 
@@ -111,21 +109,17 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         }
     }
 
-    private String construirConsultaPorFiltro(final AdministradorEntidad filtro, final List<Object> parametros) {
-        final var consulta = new StringBuilder(AdministradorSql.CONSULTAR_POR_FILTRO);
+    private String construirConsultaPorFiltro(final CategoriaEntidad filtro, final List<Object> parametros) {
+        final var consulta = new StringBuilder(CategoriaSql.CONSULTAR_POR_FILTRO);
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("a.id = ?");
+            condiciones.add("c.id = ?");
             parametros.add(filtro.getId());
         }
-        if (!UtilTexto.estaVacia(filtro.getNombreUsuario())) {
-            condiciones.add("a.nombre_usuario = ?");
-            parametros.add(filtro.getNombreUsuario());
-        }
-        if (!UtilTexto.estaVacia(filtro.getCorreoElectronico())) {
-            condiciones.add("a.correo_electronico = ?");
-            parametros.add(filtro.getCorreoElectronico());
+        if (!UtilTexto.estaVacia(filtro.getNombre())) {
+            condiciones.add("c.nombre = ?");
+            parametros.add(filtro.getNombre());
         }
 
         if (!condiciones.isEmpty()) {
@@ -134,11 +128,11 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         return consulta.toString();
     }
 
-    private List<AdministradorEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<AdministradorEntidad>();
+    private List<CategoriaEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
+        final var resultados = new ArrayList<CategoriaEntidad>();
         try (var resultSet = sentencia.executeQuery()) {
             while (resultSet.next()) {
-                resultados.add(AdministradorMapper.mapear(resultSet));
+                resultados.add(CategoriaMapper.mapear(resultSet));
             }
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,

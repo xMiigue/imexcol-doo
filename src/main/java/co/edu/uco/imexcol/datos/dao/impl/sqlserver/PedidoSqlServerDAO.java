@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad.sqlserver;
+package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.entidad.ConexionSql;
-import co.edu.uco.imexcol.datos.dao.entidad.PedidoDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.mapper.PedidoMapper;
-import co.edu.uco.imexcol.datos.dao.entidad.sql.PedidoSql;
+import co.edu.uco.imexcol.datos.dao.ConexionSql;
+import co.edu.uco.imexcol.datos.dao.PedidoDAO;
+import co.edu.uco.imexcol.datos.dao.impl.mapper.PedidoMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.PedidoSql;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;

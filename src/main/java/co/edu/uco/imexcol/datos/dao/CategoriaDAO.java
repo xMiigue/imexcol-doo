@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad;
+package co.edu.uco.imexcol.datos.dao;
 
 import java.util.UUID;
 

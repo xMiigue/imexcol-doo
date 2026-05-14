@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad.sqlserver;
+package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.entidad.ConexionSql;
-import co.edu.uco.imexcol.datos.dao.entidad.ProductoDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.mapper.ProductoMapper;
-import co.edu.uco.imexcol.datos.dao.entidad.sql.ProductoSql;
-import co.edu.uco.imexcol.entidad.ProductoEntidad;
+import co.edu.uco.imexcol.datos.dao.ClienteDAO;
+import co.edu.uco.imexcol.datos.dao.ConexionSql;
+import co.edu.uco.imexcol.datos.dao.impl.mapper.ClienteMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClienteSql;
+import co.edu.uco.imexcol.entidad.ClienteEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
@@ -20,24 +20,24 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-public final class ProductoSqlServerDAO extends ConexionSql implements ProductoDAO {
+public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO {
 
-    public ProductoSqlServerDAO(final Connection conexion) {
+    public ClienteSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
 
     @Override
-    public void acceder(final ProductoEntidad entidad) {
+    public void acceder(final ClienteEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
-        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ProductoEntidad());
+        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ClienteEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ACCEDER)) {
             sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCategoria().getId());
-            sentencia.setString(3, entidadSegura.getNombre());
-            sentencia.setString(4, entidadSegura.getDescripcion());
-            sentencia.setDouble(5, entidadSegura.getPrecio());
-            sentencia.setInt(6, entidadSegura.getStock());
+            sentencia.setString(2, entidadSegura.getNombre());
+            sentencia.setString(3, entidadSegura.getApellido());
+            sentencia.setString(4, entidadSegura.getCorreoElectronico());
+            sentencia.setString(5, entidadSegura.getContrasena());
+            sentencia.setString(6, entidadSegura.getTelefono());
             sentencia.setBoolean(7, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
@@ -49,16 +49,16 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
     }
 
     @Override
-    public void actualizar(final ProductoEntidad entidad) {
+    public void actualizar(final ClienteEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
-        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ProductoEntidad());
+        final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ClienteEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCategoria().getId());
-            sentencia.setString(2, entidadSegura.getNombre());
-            sentencia.setString(3, entidadSegura.getDescripcion());
-            sentencia.setDouble(4, entidadSegura.getPrecio());
-            sentencia.setInt(5, entidadSegura.getStock());
+        try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ACTUALIZAR)) {
+            sentencia.setString(1, entidadSegura.getNombre());
+            sentencia.setString(2, entidadSegura.getApellido());
+            sentencia.setString(3, entidadSegura.getCorreoElectronico());
+            sentencia.setString(4, entidadSegura.getContrasena());
+            sentencia.setString(5, entidadSegura.getTelefono());
             sentencia.setBoolean(6, entidadSegura.isEstado());
             sentencia.setObject(7, entidadSegura.getId());
             sentencia.executeUpdate();
@@ -74,7 +74,7 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
     public void eliminar(final UUID id) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ELIMINAR)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ELIMINAR)) {
             sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
@@ -86,19 +86,19 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
     }
 
     @Override
-    public ProductoEntidad consultarPorId(final UUID id) {
-        final var filtro = new ProductoEntidad(UtilUUID.obtenerValorDefecto(id));
-        return consultarPorFiltro(filtro).stream().findFirst().orElse(new ProductoEntidad());
+    public ClienteEntidad consultarPorId(final UUID id) {
+        final var filtro = new ClienteEntidad(UtilUUID.obtenerValorDefecto(id));
+        return consultarPorFiltro(filtro).stream().findFirst().orElse(new ClienteEntidad());
     }
 
     @Override
-    public List<ProductoEntidad> consultarTodos() {
-        return consultarPorFiltro(new ProductoEntidad());
+    public List<ClienteEntidad> consultarTodos() {
+        return consultarPorFiltro(new ClienteEntidad());
     }
 
     @Override
-    public List<ProductoEntidad> consultarPorFiltro(final ProductoEntidad filtro) {
-        final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new ProductoEntidad());
+    public List<ClienteEntidad> consultarPorFiltro(final ClienteEntidad filtro) {
+        final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new ClienteEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
 
@@ -115,21 +115,25 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
         }
     }
 
-    private String construirConsultaPorFiltro(final ProductoEntidad filtro, final List<Object> parametros) {
-        final var consulta = new StringBuilder(ProductoSql.CONSULTAR_POR_FILTRO);
+    private String construirConsultaPorFiltro(final ClienteEntidad filtro, final List<Object> parametros) {
+        final var consulta = new StringBuilder(ClienteSql.CONSULTAR_POR_FILTRO);
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("p.id = ?");
+            condiciones.add("c.id = ?");
             parametros.add(filtro.getId());
         }
-        if (!UtilUUID.esUUIDPorDefecto(filtro.getCategoria().getId())) {
-            condiciones.add("p.categoria_id = ?");
-            parametros.add(filtro.getCategoria().getId());
-        }
         if (!UtilTexto.estaVacia(filtro.getNombre())) {
-            condiciones.add("p.nombre = ?");
+            condiciones.add("c.nombre = ?");
             parametros.add(filtro.getNombre());
+        }
+        if (!UtilTexto.estaVacia(filtro.getApellido())) {
+            condiciones.add("c.apellido = ?");
+            parametros.add(filtro.getApellido());
+        }
+        if (!UtilTexto.estaVacia(filtro.getCorreoElectronico())) {
+            condiciones.add("c.correo_electronico = ?");
+            parametros.add(filtro.getCorreoElectronico());
         }
 
         if (!condiciones.isEmpty()) {
@@ -138,11 +142,11 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
         return consulta.toString();
     }
 
-    private List<ProductoEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<ProductoEntidad>();
+    private List<ClienteEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
+        final var resultados = new ArrayList<ClienteEntidad>();
         try (var resultSet = sentencia.executeQuery()) {
             while (resultSet.next()) {
-                resultados.add(ProductoMapper.mapear(resultSet));
+                resultados.add(ClienteMapper.mapear(resultSet));
             }
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,

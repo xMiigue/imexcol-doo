@@ -1,4 +1,4 @@
-package co.edu.uco.imexcol.datos.dao.entidad.sql;
+package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class CategoriaSql {
 

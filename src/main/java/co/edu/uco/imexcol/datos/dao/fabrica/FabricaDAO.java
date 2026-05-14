@@ -2,11 +2,11 @@ package co.edu.uco.imexcol.datos.dao.fabrica;
 
 import java.sql.Connection;
 
-import co.edu.uco.imexcol.datos.dao.entidad.AdministradorDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.CategoriaDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.ClienteDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.PedidoDAO;
-import co.edu.uco.imexcol.datos.dao.entidad.ProductoDAO;
+import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
+import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
+import co.edu.uco.imexcol.datos.dao.ClienteDAO;
+import co.edu.uco.imexcol.datos.dao.PedidoDAO;
+import co.edu.uco.imexcol.datos.dao.ProductoDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.sqlserver.SqlServerFabricaDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
