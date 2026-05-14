@@ -19,7 +19,11 @@ public abstract class FabricaDAO {
     protected static FabricaEnum fabrica = FabricaEnum.SQLSERVER;
 
     public static FabricaDAO obtenerFabrica() {
-        if (FabricaEnum.SQLSERVER.equals(fabrica)) {
+        return obtenerFabrica(fabrica);
+    }
+
+    public static FabricaDAO obtenerFabrica(final FabricaEnum tipo) {
+        if (FabricaEnum.SQLSERVER.equals(tipo)) {
             return new SqlServerFabricaDAO();
         }
         throw ImexcolException.crear(

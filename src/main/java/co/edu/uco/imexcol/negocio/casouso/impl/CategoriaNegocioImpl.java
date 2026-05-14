@@ -1,9 +1,10 @@
 package co.edu.uco.imexcol.negocio.casouso.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.entidad.CategoriaDAO;
+import co.edu.uco.imexcol.negocio.assembler.entidad.impl.CategoriaEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.CategoriaNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
@@ -17,19 +18,26 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
 
-    private static final String CASO_USO = "CategoriaNegocio";
+    private final CategoriaDAO dao;
+    private final CategoriaEntidadAssembler ensamblador;
 
-    public CategoriaNegocioImpl() {
+    public CategoriaNegocioImpl(final CategoriaDAO dao) {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
+        if (UtilObjeto.esNulo(dao)) {
+            throw ImexcolException.crear(
+                    MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    Lugar.NEGOCIO);
+        }
+        this.dao = dao;
+        this.ensamblador = CategoriaEntidadAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final CategoriaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerCategoriaDAO().crear(ensamblarEntidad(dominioSeguro));
-        throw operacionPendiente("registrar");
+        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -37,22 +45,21 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "categoría");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerCategoriaDAO().modificar(...)
-        throw operacionPendiente("actualizar");
+        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "categoría");
-        // TODO: integrar con DAO — daoFactory.obtenerCategoriaDAO().eliminar(id);
-        throw operacionPendiente("eliminar");
+        dao.eliminar(id);
     }
 
     @Override
     public List<CategoriaDominio> consultar(final CategoriaDominio filtros) {
-        UtilObjeto.obtenerValorDefecto(filtros, new CategoriaDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerCategoriaDAO().consultarPorFiltro(ensamblarEntidad(filtros));
-        return new ArrayList<>();
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new CategoriaDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void validarDatosComunes(final CategoriaDominio dominio) {
@@ -62,12 +69,5 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
             ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(),
                     "descripción de la categoría", 0, 255);
         }
-    }
-
-    private static ImexcolException operacionPendiente(final String operacion) {
-        return ImexcolException.crear(
-                MensajesEnum.ERROR_USUARIO_CASO_USO_DAO_PENDIENTE.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO),
-                Lugar.NEGOCIO);
     }
 }
