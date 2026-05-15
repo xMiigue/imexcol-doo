@@ -39,6 +39,7 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PedidoDominio());
         validarDatosComunes(dominioSeguro);
         // TODO: validar coherencia 'total == suma(subtotales de LineaPedido)' cuando exista LineaPedidoDAO.
+        dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 

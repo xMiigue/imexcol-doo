@@ -37,6 +37,7 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
     public void registrar(final CategoriaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         validarDatosComunes(dominioSeguro);
+        dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 

@@ -36,6 +36,7 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
     public void registrar(final AdministradorDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new AdministradorDominio());
         validarDatosComunes(dominioSeguro);
+        dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 

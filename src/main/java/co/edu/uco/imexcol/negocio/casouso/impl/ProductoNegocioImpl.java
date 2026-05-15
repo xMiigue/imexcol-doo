@@ -38,6 +38,7 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
     public void registrar(final ProductoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ProductoDominio());
         validarDatosComunes(dominioSeguro);
+        dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 

@@ -64,12 +64,10 @@ public final class PedidoControlador {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
             estadoHttp = HttpStatus.BAD_REQUEST;
-            excepcion.printStackTrace();
         } catch (final Exception excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
             estadoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
-            excepcion.printStackTrace();
         }
         return new ResponseEntity<>(respuesta, estadoHttp);
     }
@@ -95,12 +93,10 @@ public final class PedidoControlador {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
             estadoHttp = HttpStatus.BAD_REQUEST;
-            excepcion.printStackTrace();
         } catch (final Exception excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
             estadoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
-            excepcion.printStackTrace();
         }
         return new ResponseEntity<>(respuesta, estadoHttp);
     }
@@ -116,12 +112,10 @@ public final class PedidoControlador {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
             estadoHttp = HttpStatus.BAD_REQUEST;
-            excepcion.printStackTrace();
         } catch (final Exception excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
             estadoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
-            excepcion.printStackTrace();
         }
         return new ResponseEntity<>(respuesta, estadoHttp);
     }
@@ -140,12 +134,10 @@ public final class PedidoControlador {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
             estadoHttp = HttpStatus.BAD_REQUEST;
-            excepcion.printStackTrace();
         } catch (final Exception excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
             estadoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
-            excepcion.printStackTrace();
         }
         return new ResponseEntity<>(respuesta, estadoHttp);
     }
@@ -161,12 +153,10 @@ public final class PedidoControlador {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
             estadoHttp = HttpStatus.BAD_REQUEST;
-            excepcion.printStackTrace();
         } catch (final Exception excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
             estadoHttp = HttpStatus.INTERNAL_SERVER_ERROR;
-            excepcion.printStackTrace();
         }
         return new ResponseEntity<>(respuesta, estadoHttp);
     }

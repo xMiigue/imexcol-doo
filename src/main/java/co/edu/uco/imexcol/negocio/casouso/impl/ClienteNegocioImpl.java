@@ -37,6 +37,7 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
     public void registrar(final ClienteDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ClienteDominio());
         validarDatosComunes(dominioSeguro);
+        dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
