@@ -3,9 +3,9 @@ package co.edu.uco.imexcol.entidad;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.transversal.UtilBooleano;
 import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
 public final class CarritoComprasEntidad {
@@ -13,24 +13,24 @@ public final class CarritoComprasEntidad {
     private UUID id;
     private ClienteEntidad cliente;
     private LocalDate fechaCreacion;
-    private boolean estado;
+    private String estado;
 
     public CarritoComprasEntidad() {
         setId(UtilUUID.obtenerValorPorDefecto());
         setCliente(new ClienteEntidad());
         setFechaCreacion(UtilFecha.obtenerFechaPorDefecto());
-        setEstado(UtilBooleano.obtenerValorPorDefecto());
+        setEstado(UtilTexto.VACIO);
     }
 
     public CarritoComprasEntidad(final UUID id) {
         setId(id);
         setCliente(new ClienteEntidad());
         setFechaCreacion(UtilFecha.obtenerFechaPorDefecto());
-        setEstado(UtilBooleano.obtenerValorPorDefecto());
+        setEstado(UtilTexto.VACIO);
     }
 
     public CarritoComprasEntidad(final UUID id, final ClienteEntidad cliente, final LocalDate fechaCreacion,
-                                 final boolean estado) {
+                                 final String estado) {
         setId(id);
         setCliente(cliente);
         setFechaCreacion(fechaCreacion);
@@ -61,11 +61,11 @@ public final class CarritoComprasEntidad {
         this.fechaCreacion = UtilFecha.obtenerValorDefecto(fechaCreacion);
     }
 
-    public boolean isEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(final boolean estado) {
-        this.estado = estado;
+    public void setEstado(final String estado) {
+        this.estado = UtilTexto.aplicarTrim(estado);
     }
 }

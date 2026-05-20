@@ -27,7 +27,7 @@ public final class CarritoComprasEntidadAssembler implements EntidadAssembler<Ca
                 dominioAEnsamblar.getId(),
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getCliente()),
                 dominioAEnsamblar.getFechaCreacion(),
-                dominioAEnsamblar.isEstado());
+                dominioAEnsamblar.getEstado());
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class CarritoComprasEntidadAssembler implements EntidadAssembler<Ca
                 entidadAEnsamblar.getId(),
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getCliente()),
                 entidadAEnsamblar.getFechaCreacion(),
-                entidadAEnsamblar.isEstado());
+                entidadAEnsamblar.getEstado());
     }
 
     @Override

@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.negocio.casouso.CarritoComprasNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarEstadoCarritoComprasEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
+import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.CarritoComprasDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
@@ -58,6 +60,10 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
                 "cliente asociado al carrito de compras");
         ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaCreacion(),
                 "fecha de creación del carrito de compras");
+
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(),
+                "estado del carrito de compras");
+        ValidarEstadoCarritoComprasEsValido.ejecutarValidacion(dominio.getEstado());
     }
 
     private static ImexcolException operacionPendiente(final String operacion) {

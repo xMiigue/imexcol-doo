@@ -5,13 +5,27 @@ import java.sql.DriverManager;
 import java.util.Properties;
 
 import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
+import co.edu.uco.imexcol.datos.dao.CarritoComprasDAO;
 import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
+import co.edu.uco.imexcol.datos.dao.DireccionDAO;
+import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
+import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
+import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
+import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.AdministradorSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CarritoComprasSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CategoriaSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ClienteSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.DireccionSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.EnvioSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ItemCarritoSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.LineaPedidoSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.MetodoPagoSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PagoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PedidoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ProductoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
@@ -97,5 +111,40 @@ public final class SqlServerFabricaDAO extends FabricaDAO {
     @Override
     public AdministradorDAO obtenerAdministradorDAO() {
         return new AdministradorSqlServerDAO(conexion);
+    }
+
+    @Override
+    public MetodoPagoDAO obtenerMetodoPagoDAO() {
+        return new MetodoPagoSqlServerDAO(conexion);
+    }
+
+    @Override
+    public DireccionDAO obtenerDireccionDAO() {
+        return new DireccionSqlServerDAO(conexion);
+    }
+
+    @Override
+    public CarritoComprasDAO obtenerCarritoComprasDAO() {
+        return new CarritoComprasSqlServerDAO(conexion);
+    }
+
+    @Override
+    public ItemCarritoDAO obtenerItemCarritoDAO() {
+        return new ItemCarritoSqlServerDAO(conexion);
+    }
+
+    @Override
+    public LineaPedidoDAO obtenerLineaPedidoDAO() {
+        return new LineaPedidoSqlServerDAO(conexion);
+    }
+
+    @Override
+    public PagoDAO obtenerPagoDAO() {
+        return new PagoSqlServerDAO(conexion);
+    }
+
+    @Override
+    public EnvioDAO obtenerEnvioDAO() {
+        return new EnvioSqlServerDAO(conexion);
     }
 }

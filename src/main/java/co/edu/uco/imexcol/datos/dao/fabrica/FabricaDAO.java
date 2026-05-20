@@ -3,8 +3,15 @@ package co.edu.uco.imexcol.datos.dao.fabrica;
 import java.sql.Connection;
 
 import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
+import co.edu.uco.imexcol.datos.dao.CarritoComprasDAO;
 import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
+import co.edu.uco.imexcol.datos.dao.DireccionDAO;
+import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
+import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
+import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
+import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.sqlserver.SqlServerFabricaDAO;
@@ -41,6 +48,20 @@ public abstract class FabricaDAO {
     public abstract PedidoDAO obtenerPedidoDAO();
 
     public abstract AdministradorDAO obtenerAdministradorDAO();
+
+    public abstract MetodoPagoDAO obtenerMetodoPagoDAO();
+
+    public abstract DireccionDAO obtenerDireccionDAO();
+
+    public abstract CarritoComprasDAO obtenerCarritoComprasDAO();
+
+    public abstract ItemCarritoDAO obtenerItemCarritoDAO();
+
+    public abstract LineaPedidoDAO obtenerLineaPedidoDAO();
+
+    public abstract PagoDAO obtenerPagoDAO();
+
+    public abstract EnvioDAO obtenerEnvioDAO();
 
     protected abstract void abrirConexion();
 

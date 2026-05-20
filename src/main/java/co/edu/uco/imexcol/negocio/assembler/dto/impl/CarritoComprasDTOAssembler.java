@@ -27,7 +27,7 @@ public final class CarritoComprasDTOAssembler implements DTOAssembler<CarritoCom
                 dtoAEnsamblar.getId(),
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getCliente()),
                 dtoAEnsamblar.getFechaCreacion(),
-                dtoAEnsamblar.isEstado());
+                dtoAEnsamblar.getEstado());
     }
 
     @Override
@@ -37,7 +37,7 @@ public final class CarritoComprasDTOAssembler implements DTOAssembler<CarritoCom
                 dominioAEnsamblar.getId(),
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getCliente()),
                 dominioAEnsamblar.getFechaCreacion(),
-                dominioAEnsamblar.isEstado());
+                dominioAEnsamblar.getEstado());
     }
 
     @Override
