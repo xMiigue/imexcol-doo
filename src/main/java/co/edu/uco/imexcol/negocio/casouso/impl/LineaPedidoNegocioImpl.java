@@ -1,9 +1,10 @@
 package co.edu.uco.imexcol.negocio.casouso.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
+import co.edu.uco.imexcol.negocio.assembler.entidad.impl.LineaPedidoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.LineaPedidoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsMayorACero;
@@ -16,11 +17,19 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
 
-    private static final String CASO_USO = "LineaPedidoNegocio";
+    private final LineaPedidoDAO dao;
+    private final LineaPedidoEntidadAssembler ensamblador;
 
-    public LineaPedidoNegocioImpl() {
+    public LineaPedidoNegocioImpl(final LineaPedidoDAO dao) {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
+        if (UtilObjeto.esNulo(dao)) {
+            throw ImexcolException.crear(
+                    MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    Lugar.NEGOCIO);
+        }
+        this.dao = dao;
+        this.ensamblador = LineaPedidoEntidadAssembler.obtenerInstancia();
     }
 
     @Override
@@ -28,9 +37,9 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new LineaPedidoDominio());
         validarDatosComunes(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerLineaPedidoDAO().crear(...)
-        // TODO: validar stock disponible del producto contra la capa de datos.
-        throw operacionPendiente("registrar");
+        // TODO: validar stock disponible del producto contra el DAO de Producto.
+        dominioSeguro.setId(UUID.randomUUID());
+        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -39,22 +48,21 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "línea de pedido");
         validarDatosComunes(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerLineaPedidoDAO().modificar(...)
-        throw operacionPendiente("actualizar");
+        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "línea de pedido");
-        // TODO: integrar con DAO — daoFactory.obtenerLineaPedidoDAO().eliminar(id);
-        throw operacionPendiente("eliminar");
+        dao.eliminar(id);
     }
 
     @Override
     public List<LineaPedidoDominio> consultar(final LineaPedidoDominio filtros) {
-        UtilObjeto.obtenerValorDefecto(filtros, new LineaPedidoDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerLineaPedidoDAO().consultarPorFiltro(...)
-        return new ArrayList<>();
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new LineaPedidoDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void validarDatosComunes(final LineaPedidoDominio dominio) {
@@ -63,7 +71,6 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getProducto().getId(),
                 "producto asociado a la línea");
 
-        // La cantidad debe ser al menos 1 (no tiene sentido una línea con 0 unidades).
         ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getCantidad(),
                 "cantidad de la línea del pedido");
         ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecioUnitario(),
@@ -73,7 +80,6 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
     }
 
     private void validarCoherenciaSubtotal(final LineaPedidoDominio dominio) {
-        // Regla de negocio: subtotal == cantidad * precioUnitario (con tolerancia para redondeo).
         final var esperado = dominio.getCantidad() * dominio.getPrecioUnitario();
         final var diferencia = Math.abs(esperado - dominio.getSubtotal());
         if (diferencia > 0.01) {
@@ -83,12 +89,5 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
                             .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(), dominio.getPrecioUnitario()),
                     Lugar.NEGOCIO);
         }
-    }
-
-    private static ImexcolException operacionPendiente(final String operacion) {
-        return ImexcolException.crear(
-                MensajesEnum.ERROR_USUARIO_CASO_USO_DAO_PENDIENTE.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO),
-                Lugar.NEGOCIO);
     }
 }

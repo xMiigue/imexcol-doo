@@ -1,9 +1,10 @@
 package co.edu.uco.imexcol.negocio.casouso.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.negocio.assembler.entidad.impl.EnvioEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.EnvioNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEstadoEnvioEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
@@ -19,11 +20,19 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class EnvioNegocioImpl implements EnvioNegocio {
 
-    private static final String CASO_USO = "EnvioNegocio";
+    private final EnvioDAO dao;
+    private final EnvioEntidadAssembler ensamblador;
 
-    public EnvioNegocioImpl() {
+    public EnvioNegocioImpl(final EnvioDAO dao) {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
+        if (UtilObjeto.esNulo(dao)) {
+            throw ImexcolException.crear(
+                    MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    Lugar.NEGOCIO);
+        }
+        this.dao = dao;
+        this.ensamblador = EnvioEntidadAssembler.obtenerInstancia();
     }
 
     @Override
@@ -31,8 +40,8 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new EnvioDominio());
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerEnvioDAO().crear(...)
-        throw operacionPendiente("registrar");
+        dominioSeguro.setId(UUID.randomUUID());
+        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -41,22 +50,21 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "envío");
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerEnvioDAO().modificar(...)
-        throw operacionPendiente("actualizar");
+        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "envío");
-        // TODO: integrar con DAO — daoFactory.obtenerEnvioDAO().eliminar(id);
-        throw operacionPendiente("eliminar");
+        dao.eliminar(id);
     }
 
     @Override
     public List<EnvioDominio> consultar(final EnvioDominio filtros) {
-        UtilObjeto.obtenerValorDefecto(filtros, new EnvioDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerEnvioDAO().consultarPorFiltro(...)
-        return new ArrayList<>();
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new EnvioDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void validarDatosComunes(final EnvioDominio dominio) {
@@ -81,7 +89,6 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     }
 
     private void validarCoherenciaFechas(final EnvioDominio dominio) {
-        // Regla de negocio: si la fecha de entrega no es la fecha por defecto, debe ser >= fechaEnvio.
         if (!UtilFecha.esFechaPorDefecto(dominio.getFechaEntrega())
                 && dominio.getFechaEntrega().isBefore(dominio.getFechaEnvio())) {
             throw ImexcolException.crear(
@@ -90,12 +97,5 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
                             .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()),
                     Lugar.NEGOCIO);
         }
-    }
-
-    private static ImexcolException operacionPendiente(final String operacion) {
-        return ImexcolException.crear(
-                MensajesEnum.ERROR_USUARIO_CASO_USO_DAO_PENDIENTE.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO),
-                Lugar.NEGOCIO);
     }
 }

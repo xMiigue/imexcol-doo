@@ -3,9 +3,10 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaEnum;
 import co.edu.uco.imexcol.dto.LineaPedidoDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.LineaPedidoDTOAssembler;
-import co.edu.uco.imexcol.negocio.casouso.LineaPedidoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.impl.LineaPedidoNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.LineaPedidoFachada;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -15,85 +16,95 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class LineaPedidoFachadaImpl implements LineaPedidoFachada {
 
-    private final LineaPedidoNegocio negocio;
     private final LineaPedidoDTOAssembler ensamblador;
 
     public LineaPedidoFachadaImpl() {
         super();
-        // TODO: integrar con DAOFactory — instanciar LineaPedidoNegocioImpl(daoFactory) cuando exista la capa de datos.
-        this.negocio = new LineaPedidoNegocioImpl();
         this.ensamblador = LineaPedidoDTOAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final LineaPedidoDTO dto) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
+        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new LineaPedidoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new LineaPedidoNegocioImpl(fabrica.obtenerLineaPedidoDAO());
             negocio.registrar(dominio);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public void actualizar(final LineaPedidoDTO dto) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
+        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new LineaPedidoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new LineaPedidoNegocioImpl(fabrica.obtenerLineaPedidoDAO());
             negocio.actualizar(dominio);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public void eliminar(final UUID id) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
+        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
         try {
+            fabrica.iniciarTransaccion();
+            final var negocio = new LineaPedidoNegocioImpl(fabrica.obtenerLineaPedidoDAO());
             negocio.eliminar(id);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public List<LineaPedidoDTO> consultar(final LineaPedidoDTO filtros) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
+        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
         try {
+            fabrica.iniciarTransaccion();
             final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new LineaPedidoDTO());
             final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
+            final var negocio = new LineaPedidoNegocioImpl(fabrica.obtenerLineaPedidoDAO());
             final var dominios = negocio.consultar(dominioFiltro);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
-            return ensamblador.ensamblarDTO(dominios);
+            final var resultado = ensamblador.ensamblarDTO(dominios);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     private static ImexcolException envolverErrorInesperado(final Exception excepcion) {

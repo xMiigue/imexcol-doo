@@ -1,9 +1,10 @@
 package co.edu.uco.imexcol.negocio.casouso.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.CarritoComprasDAO;
+import co.edu.uco.imexcol.negocio.assembler.entidad.impl.CarritoComprasEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.CarritoComprasNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarEstadoCarritoComprasEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
@@ -17,19 +18,27 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
 
-    private static final String CASO_USO = "CarritoComprasNegocio";
+    private final CarritoComprasDAO dao;
+    private final CarritoComprasEntidadAssembler ensamblador;
 
-    public CarritoComprasNegocioImpl() {
+    public CarritoComprasNegocioImpl(final CarritoComprasDAO dao) {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
+        if (UtilObjeto.esNulo(dao)) {
+            throw ImexcolException.crear(
+                    MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
+                    Lugar.NEGOCIO);
+        }
+        this.dao = dao;
+        this.ensamblador = CarritoComprasEntidadAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final CarritoComprasDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CarritoComprasDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerCarritoComprasDAO().crear(...)
-        throw operacionPendiente("registrar");
+        dominioSeguro.setId(UUID.randomUUID());
+        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -37,22 +46,21 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CarritoComprasDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "carrito de compras");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerCarritoComprasDAO().modificar(...)
-        throw operacionPendiente("actualizar");
+        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "carrito de compras");
-        // TODO: integrar con DAO — daoFactory.obtenerCarritoComprasDAO().eliminar(id);
-        throw operacionPendiente("eliminar");
+        dao.eliminar(id);
     }
 
     @Override
     public List<CarritoComprasDominio> consultar(final CarritoComprasDominio filtros) {
-        UtilObjeto.obtenerValorDefecto(filtros, new CarritoComprasDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerCarritoComprasDAO().consultarPorFiltro(...)
-        return new ArrayList<>();
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new CarritoComprasDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void validarDatosComunes(final CarritoComprasDominio dominio) {
@@ -64,12 +72,5 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(),
                 "estado del carrito de compras");
         ValidarEstadoCarritoComprasEsValido.ejecutarValidacion(dominio.getEstado());
-    }
-
-    private static ImexcolException operacionPendiente(final String operacion) {
-        return ImexcolException.crear(
-                MensajesEnum.ERROR_USUARIO_CASO_USO_DAO_PENDIENTE.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO),
-                Lugar.NEGOCIO);
     }
 }
