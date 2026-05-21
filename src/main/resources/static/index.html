@@ -20,11 +20,16 @@
                 <button class="nav-enlace" data-vista="carrito">
                     Mi carrito (<span id="badge-carrito">0</span>)
                 </button>
+                <button class="nav-enlace" data-vista="mis-pedidos">Mis pedidos</button>
             </nav>
 
             <nav id="nav-administrador" class="header-nav oculto">
                 <button class="nav-enlace activo" data-vista="categorias">Categorías</button>
                 <button class="nav-enlace" data-vista="productos">Productos</button>
+                <button class="nav-enlace" data-vista="admin-pedidos">Pedidos</button>
+                <button class="nav-enlace" data-vista="admin-pagos">Pagos</button>
+                <button class="nav-enlace" data-vista="admin-envios">Envíos</button>
+                <button class="nav-enlace" data-vista="admin-clientes">Clientes</button>
             </nav>
 
             <div class="header-usuario">
@@ -288,10 +293,324 @@
                             <button id="btn-vaciar-carrito" type="button" class="boton boton-secundario">
                                 Vaciar carrito
                             </button>
-                            <button id="btn-finalizar-compra" type="button" class="boton boton-primario">
+                            <button id="btn-ir-checkout" type="button" class="boton boton-primario">
                                 Finalizar compra
                             </button>
                         </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: CHECKOUT (CLIENTE) ============ -->
+        <section id="vista-checkout" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Finalizar compra</span>
+                    <h2 class="seccion-titulo">Checkout</h2>
+                    <p class="seccion-subtitulo">Confirma tus datos para procesar el pedido.</p>
+                </header>
+
+                <div class="checkout-grilla">
+
+                    <article class="panel checkout-resumen-panel">
+                        <header class="panel-cabecera">
+                            <h3>Resumen del pedido</h3>
+                        </header>
+                        <div id="checkout-resumen" class="checkout-resumen">
+                            <p class="celda-vacia">Sin productos.</p>
+                        </div>
+                        <div class="checkout-total">
+                            <span>Total a pagar</span>
+                            <strong id="checkout-total-valor">$ 0</strong>
+                        </div>
+                    </article>
+
+                    <article class="panel">
+                        <header class="panel-cabecera">
+                            <h3>Datos de envío y pago</h3>
+                        </header>
+                        <div class="formulario">
+                            <div class="campo">
+                                <label>Dirección de envío</label>
+                                <div id="checkout-direcciones-existentes" class="checkout-opciones">
+                                    <p class="celda-vacia">Cargando…</p>
+                                </div>
+                                <button id="btn-nueva-direccion" type="button" class="boton-link">
+                                    + Usar otra dirección
+                                </button>
+                            </div>
+
+                            <div id="form-nueva-direccion" class="checkout-subform oculto">
+                                <div class="campo">
+                                    <label for="dir-calle">Calle</label>
+                                    <input type="text" id="dir-calle" maxlength="150"
+                                           placeholder="Ej. Calle 10 #5-20">
+                                </div>
+                                <div class="campo-fila">
+                                    <div class="campo">
+                                        <label for="dir-ciudad">Ciudad</label>
+                                        <input type="text" id="dir-ciudad" maxlength="100">
+                                    </div>
+                                    <div class="campo">
+                                        <label for="dir-departamento">Departamento</label>
+                                        <input type="text" id="dir-departamento" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="campo-fila">
+                                    <div class="campo">
+                                        <label for="dir-pais">País</label>
+                                        <input type="text" id="dir-pais" maxlength="100" value="Colombia">
+                                    </div>
+                                    <div class="campo">
+                                        <label for="dir-codigo-postal">Código postal</label>
+                                        <input type="text" id="dir-codigo-postal" maxlength="20">
+                                    </div>
+                                </div>
+                                <div class="campo campo-inline">
+                                    <input type="checkbox" id="dir-es-principal">
+                                    <label for="dir-es-principal">Marcar como dirección principal</label>
+                                </div>
+                            </div>
+
+                            <div class="campo">
+                                <label for="checkout-metodo-pago">Método de pago</label>
+                                <select id="checkout-metodo-pago">
+                                    <option value="">Cargando métodos de pago…</option>
+                                </select>
+                            </div>
+
+                            <div class="acciones">
+                                <button id="btn-cancelar-checkout" type="button" class="boton boton-secundario">
+                                    Volver al carrito
+                                </button>
+                                <button id="btn-confirmar-compra" type="button" class="boton boton-primario">
+                                    Confirmar compra
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: MIS PEDIDOS (CLIENTE) ============ -->
+        <section id="vista-mis-pedidos" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Historial</span>
+                    <h2 class="seccion-titulo">Mis pedidos</h2>
+                </header>
+
+                <article class="panel">
+                    <header class="panel-cabecera">
+                        <h3>Pedidos realizados</h3>
+                        <button id="btn-recargar-mis-pedidos" class="boton-texto" type="button">Recargar</button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th class="celda-num">Total</th>
+                                    <th>Estado</th>
+                                    <th class="celda-acciones">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-mis-pedidos-body">
+                                <tr><td colspan="4" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+
+                <article id="panel-detalle-pedido" class="panel oculto" style="margin-top: 32px;">
+                    <header class="panel-cabecera">
+                        <h3 id="detalle-pedido-titulo">Detalle del pedido</h3>
+                        <button id="btn-cerrar-detalle" class="boton-texto" type="button">Cerrar</button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="celda-num">Cantidad</th>
+                                    <th class="celda-num">Precio unitario</th>
+                                    <th class="celda-num">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-detalle-pedido-body">
+                                <tr><td colspan="4" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: PEDIDOS (ADMIN) ============ -->
+        <section id="vista-admin-pedidos" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Administración</span>
+                    <h2 class="seccion-titulo">Gestión de pedidos</h2>
+                </header>
+                <article class="panel">
+                    <header class="panel-cabecera">
+                        <h3>Pedidos registrados</h3>
+                        <button id="btn-recargar-admin-pedidos" class="boton-texto" type="button">Recargar</button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th class="celda-num">Total</th>
+                                    <th>Estado</th>
+                                    <th class="celda-acciones">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-admin-pedidos-body">
+                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: PAGOS (ADMIN) ============ -->
+        <section id="vista-admin-pagos" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Administración</span>
+                    <h2 class="seccion-titulo">Gestión de pagos</h2>
+                </header>
+                <article class="panel">
+                    <header class="panel-cabecera">
+                        <h3>Pagos registrados</h3>
+                        <button id="btn-recargar-admin-pagos" class="boton-texto" type="button">Recargar</button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th class="celda-num">Monto</th>
+                                    <th>Método de pago</th>
+                                    <th>Pedido</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-admin-pagos-body">
+                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: ENVÍOS (ADMIN) ============ -->
+        <section id="vista-admin-envios" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Administración</span>
+                    <h2 class="seccion-titulo">Gestión de envíos</h2>
+                </header>
+
+                <article id="panel-form-envio" class="panel oculto" style="margin-bottom: 24px;">
+                    <header class="panel-cabecera">
+                        <h3>Nuevo envío</h3>
+                        <button id="btn-cancelar-envio" class="boton-texto" type="button">Cancelar</button>
+                    </header>
+                    <form id="form-envio" class="formulario">
+                        <div class="campo">
+                            <label for="env-pedido">Pedido</label>
+                            <select id="env-pedido" name="pedidoId" required>
+                                <option value="">Seleccione un pedido…</option>
+                            </select>
+                        </div>
+                        <div class="campo-fila">
+                            <div class="campo">
+                                <label for="env-transportadora">Transportadora</label>
+                                <input type="text" id="env-transportadora" name="transportadora"
+                                       required minlength="2" maxlength="100" placeholder="Ej. Servientrega">
+                            </div>
+                            <div class="campo">
+                                <label for="env-numero-guia">Número de guía</label>
+                                <input type="text" id="env-numero-guia" name="numeroGuia"
+                                       required minlength="5" maxlength="100" placeholder="Ej. GUI-123456">
+                            </div>
+                        </div>
+                        <div class="campo">
+                            <label for="env-fecha-envio">Fecha de envío</label>
+                            <input type="date" id="env-fecha-envio" name="fechaEnvio" required>
+                        </div>
+                        <div class="acciones">
+                            <button type="submit" class="boton boton-primario">Registrar envío</button>
+                        </div>
+                    </form>
+                </article>
+
+                <article class="panel">
+                    <header class="panel-cabecera">
+                        <h3>Envíos registrados</h3>
+                        <div class="panel-cabecera-acciones">
+                            <button id="btn-nuevo-envio" class="boton-texto" type="button">+ Crear envío</button>
+                            <button id="btn-recargar-admin-envios" class="boton-texto" type="button">Recargar</button>
+                        </div>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Transportadora</th>
+                                    <th>N° guía</th>
+                                    <th>Fecha envío</th>
+                                    <th>Fecha entrega</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-admin-envios-body">
+                                <tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: CLIENTES (ADMIN) ============ -->
+        <section id="vista-admin-clientes" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Administración</span>
+                    <h2 class="seccion-titulo">Clientes registrados</h2>
+                </header>
+                <article class="panel">
+                    <header class="panel-cabecera">
+                        <h3>Listado de clientes</h3>
+                        <button id="btn-recargar-admin-clientes" class="boton-texto" type="button">Recargar</button>
+                    </header>
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Correo</th>
+                                    <th>Teléfono</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-admin-clientes-body">
+                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </article>
             </div>
