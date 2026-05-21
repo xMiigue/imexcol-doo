@@ -135,6 +135,10 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
             condiciones.add("c.correo_electronico = ?");
             parametros.add(filtro.getCorreoElectronico());
         }
+        if (!UtilTexto.estaVacia(filtro.getContrasena())) {
+            condiciones.add("c.contrasena = ?");
+            parametros.add(filtro.getContrasena());
+        }
 
         if (!condiciones.isEmpty()) {
             consulta.append(" WHERE ").append(String.join(" AND ", condiciones));

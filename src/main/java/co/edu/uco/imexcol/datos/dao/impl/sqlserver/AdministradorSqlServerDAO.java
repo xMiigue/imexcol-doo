@@ -127,6 +127,10 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
             condiciones.add("a.correo_electronico = ?");
             parametros.add(filtro.getCorreoElectronico());
         }
+        if (!UtilTexto.estaVacia(filtro.getContrasena())) {
+            condiciones.add("a.contrasena = ?");
+            parametros.add(filtro.getContrasena());
+        }
 
         if (!condiciones.isEmpty()) {
             consulta.append(" WHERE ").append(String.join(" AND ", condiciones));

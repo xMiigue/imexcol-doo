@@ -8,17 +8,29 @@
 </head>
 <body>
 
-    <!-- ============ HEADER FIJO ============ -->
-    <header class="header">
+    <!-- ============ HEADER DINÁMICO (oculto hasta autenticarse) ============ -->
+    <header id="header" class="header oculto">
         <div class="contenedor header-contenido">
-            <a href="#" class="header-logo" data-vista="tienda">
+            <div class="header-logo">
                 <img src="img/Imexcol_logo.png" alt="Imexcol Comercializadora">
-            </a>
-            <nav class="header-nav">
+            </div>
+
+            <nav id="nav-cliente" class="header-nav oculto">
                 <button class="nav-enlace activo" data-vista="tienda">Tienda</button>
-                <button class="nav-enlace" data-vista="categorias">Categorías</button>
+                <button class="nav-enlace" data-vista="carrito">
+                    Mi carrito (<span id="badge-carrito">0</span>)
+                </button>
+            </nav>
+
+            <nav id="nav-administrador" class="header-nav oculto">
+                <button class="nav-enlace activo" data-vista="categorias">Categorías</button>
                 <button class="nav-enlace" data-vista="productos">Productos</button>
             </nav>
+
+            <div class="header-usuario">
+                <span id="header-saludo" class="header-saludo"></span>
+                <button id="btn-cerrar-sesion" class="boton-texto" type="button">Cerrar sesión</button>
+            </div>
         </div>
     </header>
 
@@ -27,10 +39,145 @@
 
     <main>
 
-        <!-- ============ VISTA: TIENDA ============ -->
-        <section id="vista-tienda" class="vista">
+        <!-- ============ VISTA: BIENVENIDA ============ -->
+        <section id="vista-bienvenida" class="vista auth-pagina">
+            <div class="auth-tarjeta">
+                <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
+                <span class="auth-etiqueta">Imexcol Comercializadora</span>
+                <h1 class="auth-titulo">Bienvenido</h1>
+                <p class="auth-subtitulo">Selecciona cómo deseas ingresar</p>
 
-            <!-- Hero -->
+                <div class="auth-opciones">
+                    <button class="auth-opcion" data-rol="cliente" type="button">
+                        <span class="auth-opcion-titulo">Soy Cliente</span>
+                        <span class="auth-opcion-descripcion">Explora el catálogo y realiza compras</span>
+                    </button>
+                    <button class="auth-opcion" data-rol="administrador" type="button">
+                        <span class="auth-opcion-titulo">Soy Administrador</span>
+                        <span class="auth-opcion-descripcion">Gestiona categorías y productos</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: LOGIN CLIENTE ============ -->
+        <section id="vista-login-cliente" class="vista auth-pagina oculto">
+            <div class="auth-tarjeta">
+                <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
+                <span class="auth-etiqueta">Cliente</span>
+                <h1 class="auth-titulo">Iniciar sesión</h1>
+                <p class="auth-subtitulo">Accede a tu cuenta para comprar</p>
+
+                <form id="form-login-cliente" class="auth-formulario">
+                    <div class="campo">
+                        <label for="login-cliente-correo">Correo electrónico</label>
+                        <input type="email" id="login-cliente-correo" name="correoElectronico"
+                               required placeholder="tu@correo.com">
+                    </div>
+                    <div class="campo">
+                        <label for="login-cliente-contrasena">Contraseña</label>
+                        <input type="password" id="login-cliente-contrasena" name="contrasena"
+                               required placeholder="••••••••">
+                    </div>
+                    <div class="acciones">
+                        <button type="submit" class="boton boton-primario boton-bloque">Iniciar sesión</button>
+                    </div>
+                </form>
+
+                <div class="auth-pie">
+                    <p>¿No tienes cuenta?
+                        <button type="button" class="boton-link" data-ir="registro-cliente">Regístrate aquí</button>
+                    </p>
+                    <button type="button" class="boton-link auth-volver" data-ir="bienvenida">← Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: REGISTRO CLIENTE ============ -->
+        <section id="vista-registro-cliente" class="vista auth-pagina oculto">
+            <div class="auth-tarjeta auth-tarjeta-ancha">
+                <span class="auth-etiqueta">Cliente</span>
+                <h1 class="auth-titulo">Crear cuenta</h1>
+                <p class="auth-subtitulo">Completa tus datos para registrarte</p>
+
+                <form id="form-registro-cliente" class="auth-formulario">
+                    <div class="campo-fila">
+                        <div class="campo">
+                            <label for="reg-nombre">Nombre</label>
+                            <input type="text" id="reg-nombre" name="nombre"
+                                   required minlength="2" maxlength="100" placeholder="Tu nombre">
+                        </div>
+                        <div class="campo">
+                            <label for="reg-apellido">Apellido</label>
+                            <input type="text" id="reg-apellido" name="apellido"
+                                   required minlength="2" maxlength="100" placeholder="Tu apellido">
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label for="reg-correo">Correo electrónico</label>
+                        <input type="email" id="reg-correo" name="correoElectronico"
+                               required minlength="6" maxlength="150" placeholder="tu@correo.com">
+                    </div>
+
+                    <div class="campo">
+                        <label for="reg-contrasena">Contraseña</label>
+                        <input type="password" id="reg-contrasena" name="contrasena"
+                               required minlength="8" maxlength="255" placeholder="Mínimo 8 caracteres">
+                    </div>
+
+                    <div class="campo">
+                        <label for="reg-telefono">Teléfono (opcional)</label>
+                        <input type="tel" id="reg-telefono" name="telefono"
+                               minlength="7" maxlength="20" placeholder="Ej. 3001234567">
+                    </div>
+
+                    <div class="acciones">
+                        <button type="submit" class="boton boton-primario boton-bloque">Crear cuenta</button>
+                    </div>
+                </form>
+
+                <div class="auth-pie">
+                    <p>¿Ya tienes cuenta?
+                        <button type="button" class="boton-link" data-ir="login-cliente">Inicia sesión</button>
+                    </p>
+                    <button type="button" class="boton-link auth-volver" data-ir="bienvenida">← Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: LOGIN ADMINISTRADOR ============ -->
+        <section id="vista-login-administrador" class="vista auth-pagina oculto">
+            <div class="auth-tarjeta">
+                <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
+                <span class="auth-etiqueta">Administrador</span>
+                <h1 class="auth-titulo">Iniciar sesión</h1>
+                <p class="auth-subtitulo">Acceso al panel administrativo</p>
+
+                <form id="form-login-administrador" class="auth-formulario">
+                    <div class="campo">
+                        <label for="login-admin-usuario">Nombre de usuario</label>
+                        <input type="text" id="login-admin-usuario" name="nombreUsuario"
+                               required placeholder="usuario">
+                    </div>
+                    <div class="campo">
+                        <label for="login-admin-contrasena">Contraseña</label>
+                        <input type="password" id="login-admin-contrasena" name="contrasena"
+                               required placeholder="••••••••">
+                    </div>
+                    <div class="acciones">
+                        <button type="submit" class="boton boton-primario boton-bloque">Iniciar sesión</button>
+                    </div>
+                </form>
+
+                <div class="auth-pie">
+                    <button type="button" class="boton-link auth-volver" data-ir="bienvenida">← Volver</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: TIENDA (CLIENTE AUTENTICADO) ============ -->
+        <section id="vista-tienda" class="vista oculto">
             <div class="hero">
                 <div class="contenedor hero-contenido">
                     <div class="hero-texto">
@@ -40,7 +187,7 @@
                             Productos seleccionados con calidad garantizada.
                             Llevamos lo mejor del mundo directo a tu hogar.
                         </p>
-                        <button class="boton boton-primario" data-ir="catalogo">Explorar catálogo</button>
+                        <button class="boton boton-primario" data-ir-ancla="catalogo">Explorar catálogo</button>
                     </div>
                     <div class="hero-imagen">
                         <img src="img/Lampara_NP5115.png" alt="Producto destacado">
@@ -48,7 +195,6 @@
                 </div>
             </div>
 
-            <!-- Productos destacados -->
             <section class="seccion seccion-clara">
                 <div class="contenedor">
                     <header class="seccion-cabecera">
@@ -56,7 +202,6 @@
                         <h2 class="seccion-titulo">Productos destacados</h2>
                         <p class="seccion-subtitulo">Una muestra curada de nuestros artículos más buscados.</p>
                     </header>
-
                     <div class="grilla-destacados">
                         <article class="tarjeta-destacado">
                             <div class="tarjeta-destacado-imagen">
@@ -68,7 +213,6 @@
                                 <p class="tarjeta-precio">$ 89.900</p>
                             </div>
                         </article>
-
                         <article class="tarjeta-destacado">
                             <div class="tarjeta-destacado-imagen">
                                 <img src="img/Sombrilla_antiviento_NP4292.png" alt="Sombrilla antiviento">
@@ -79,7 +223,6 @@
                                 <p class="tarjeta-precio">$ 145.000</p>
                             </div>
                         </article>
-
                         <article class="tarjeta-destacado">
                             <div class="tarjeta-destacado-imagen">
                                 <img src="img/Gorra_hombre_NP5275.png" alt="Gorra para hombre">
@@ -94,7 +237,6 @@
                 </div>
             </section>
 
-            <!-- Catálogo -->
             <section id="catalogo" class="seccion">
                 <div class="contenedor">
                     <header class="seccion-cabecera">
@@ -109,15 +251,59 @@
             </section>
         </section>
 
-        <!-- ============ VISTA: CATEGORÍAS ============ -->
+        <!-- ============ VISTA: CARRITO (CLIENTE) ============ -->
+        <section id="vista-carrito" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Compra</span>
+                    <h2 class="seccion-titulo">Mi carrito</h2>
+                    <p class="seccion-subtitulo">Revisa tus productos antes de finalizar la compra.</p>
+                </header>
+
+                <article class="panel">
+                    <div class="tabla-contenedor">
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Categoría</th>
+                                    <th class="celda-num">Precio</th>
+                                    <th>Cantidad</th>
+                                    <th class="celda-num">Subtotal</th>
+                                    <th class="celda-acciones">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-carrito-body">
+                                <tr><td colspan="6" class="celda-vacia">Tu carrito está vacío.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="carrito-pie" class="carrito-pie oculto">
+                        <div class="carrito-total">
+                            <span>Total</span>
+                            <strong id="carrito-total-valor">$ 0</strong>
+                        </div>
+                        <div class="acciones">
+                            <button id="btn-vaciar-carrito" type="button" class="boton boton-secundario">
+                                Vaciar carrito
+                            </button>
+                            <button id="btn-finalizar-compra" type="button" class="boton boton-primario">
+                                Finalizar compra
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: CATEGORÍAS (ADMIN) ============ -->
         <section id="vista-categorias" class="vista oculto">
             <div class="contenedor seccion-admin">
-
                 <header class="admin-cabecera">
                     <span class="seccion-etiqueta">Administración</span>
                     <h2 class="seccion-titulo">Gestión de categorías</h2>
                 </header>
-
                 <div class="admin-grilla">
                     <article class="panel">
                         <header class="panel-cabecera">
@@ -127,13 +313,11 @@
                             <input type="hidden" id="cat-id" name="id">
                             <div class="campo">
                                 <label for="cat-nombre">Nombre</label>
-                                <input type="text" id="cat-nombre" name="nombre" required minlength="3" maxlength="100"
-                                    placeholder="Ej. Electrónica">
+                                <input type="text" id="cat-nombre" name="nombre" required minlength="3" maxlength="100">
                             </div>
                             <div class="campo">
                                 <label for="cat-descripcion">Descripción</label>
-                                <textarea id="cat-descripcion" name="descripcion" rows="3" maxlength="255"
-                                    placeholder="Descripción opcional"></textarea>
+                                <textarea id="cat-descripcion" name="descripcion" rows="3" maxlength="255"></textarea>
                             </div>
                             <div class="campo campo-inline">
                                 <input type="checkbox" id="cat-estado" name="estado" checked>
@@ -149,13 +333,10 @@
                             </div>
                         </form>
                     </article>
-
                     <article class="panel">
                         <header class="panel-cabecera">
                             <h3>Categorías registradas</h3>
-                            <button id="btn-recargar-categorias" class="boton boton-texto" type="button">
-                                Recargar
-                            </button>
+                            <button id="btn-recargar-categorias" class="boton-texto" type="button">Recargar</button>
                         </header>
                         <div class="tabla-contenedor">
                             <table class="tabla">
@@ -177,15 +358,13 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: PRODUCTOS ============ -->
+        <!-- ============ VISTA: PRODUCTOS (ADMIN) ============ -->
         <section id="vista-productos" class="vista oculto">
             <div class="contenedor seccion-admin">
-
                 <header class="admin-cabecera">
                     <span class="seccion-etiqueta">Administración</span>
                     <h2 class="seccion-titulo">Gestión de productos</h2>
                 </header>
-
                 <div class="admin-grilla">
                     <article class="panel">
                         <header class="panel-cabecera">
@@ -201,24 +380,20 @@
                             </div>
                             <div class="campo">
                                 <label for="pro-nombre">Nombre</label>
-                                <input type="text" id="pro-nombre" name="nombre" required minlength="3" maxlength="100"
-                                    placeholder="Ej. Laptop Pro 14">
+                                <input type="text" id="pro-nombre" name="nombre" required minlength="3" maxlength="100">
                             </div>
                             <div class="campo">
                                 <label for="pro-descripcion">Descripción</label>
-                                <textarea id="pro-descripcion" name="descripcion" rows="3" maxlength="1000"
-                                    placeholder="Descripción opcional"></textarea>
+                                <textarea id="pro-descripcion" name="descripcion" rows="3" maxlength="1000"></textarea>
                             </div>
                             <div class="campo-fila">
                                 <div class="campo">
                                     <label for="pro-precio">Precio</label>
-                                    <input type="number" id="pro-precio" name="precio" required min="0" step="0.01"
-                                        placeholder="0.00">
+                                    <input type="number" id="pro-precio" name="precio" required min="0" step="0.01">
                                 </div>
                                 <div class="campo">
                                     <label for="pro-stock">Stock</label>
-                                    <input type="number" id="pro-stock" name="stock" required min="0" step="1"
-                                        placeholder="0">
+                                    <input type="number" id="pro-stock" name="stock" required min="0" step="1">
                                 </div>
                             </div>
                             <div class="campo campo-inline">
@@ -235,13 +410,10 @@
                             </div>
                         </form>
                     </article>
-
                     <article class="panel">
                         <header class="panel-cabecera">
                             <h3>Productos registrados</h3>
-                            <button id="btn-recargar-productos" class="boton boton-texto" type="button">
-                                Recargar
-                            </button>
+                            <button id="btn-recargar-productos" class="boton-texto" type="button">Recargar</button>
                         </header>
                         <div class="tabla-contenedor">
                             <table class="tabla">
