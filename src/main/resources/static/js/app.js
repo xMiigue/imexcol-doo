@@ -1020,9 +1020,93 @@ async function cargarCatalogo() {
         ]);
         estado.catalogo = productosResp.datos || [];
         estado.mapaCategorias = mapaCategorias;
+        renderizarFiltroCategoria(mapaCategorias);
+        renderizarCarruselDestacados(estado.catalogo, mapaCategorias);
         renderizarCatalogo(estado.catalogo, mapaCategorias);
     } catch (error) {
         contenedor.innerHTML = `<div class="catalogo-vacio">${escapar(error.message)}</div>`;
+    }
+}
+
+function renderizarFiltroCategoria(mapa) {
+    const select = document.getElementById('catalogo-filtro-categoria');
+    if (!select) return;
+    const valorActual = select.value;
+    const opciones = Array.from((mapa || new Map()).entries())
+        .map(([id, nombre]) => `<option value="${escapar(id)}">${escapar(nombre)}</option>`)
+        .join('');
+    select.innerHTML = '<option value="">Todas las categorías</option>' + opciones;
+    if (valorActual) select.value = valorActual;
+}
+
+function aplicarFiltrosCatalogo() {
+    const inputBuscar = document.getElementById('catalogo-buscar');
+    const selectCat = document.getElementById('catalogo-filtro-categoria');
+    const buscar = (inputBuscar ? inputBuscar.value : '').trim().toLowerCase();
+    const catId = selectCat ? selectCat.value : '';
+
+    let lista = estado.catalogo || [];
+    if (catId) {
+        lista = lista.filter(p => p.categoria && String(p.categoria.id) === String(catId));
+    }
+    if (buscar) {
+        lista = lista.filter(p => (p.nombre || '').toLowerCase().includes(buscar));
+    }
+    renderizarCatalogo(lista, estado.mapaCategorias);
+}
+
+// ============ Carrusel "slot machine" de productos destacados ============
+
+function renderizarCarruselDestacados(productos, mapaCategorias) {
+    const pista = document.getElementById('carrusel-pista');
+    if (!pista) return;
+    const activos = (productos || []).filter(p => p.estado);
+    if (activos.length === 0) {
+        pista.innerHTML = '';
+        return;
+    }
+
+    const tarjeta = (p) => {
+        const categoria = resolverNombreCategoria(p, mapaCategorias) || 'Sin categoría';
+        const imagenUrl = p.imagenUrl && String(p.imagenUrl).trim();
+        const contenidoImagen = imagenUrl
+            ? `<img src="${escapar(imagenUrl)}" alt="${escapar(p.nombre)}"
+                    onerror="this.outerHTML='&lt;span class=&quot;iniciales&quot;&gt;${escapar(iniciales(p.nombre))}&lt;/span&gt;'">`
+            : `<span class="iniciales">${escapar(iniciales(p.nombre))}</span>`;
+        return `
+            <article class="carrusel-tarjeta" data-id="${escapar(p.id)}">
+                <div class="carrusel-tarjeta-imagen">${contenidoImagen}</div>
+                <div class="carrusel-tarjeta-info">
+                    <span class="carrusel-tarjeta-categoria">${escapar(categoria)}</span>
+                    <h3 class="carrusel-tarjeta-nombre">${escapar(p.nombre)}</h3>
+                    <p class="carrusel-tarjeta-precio">${formatoMoneda(p.precio)}</p>
+                </div>
+            </article>
+        `;
+    };
+
+    // Duplicamos 4× para que la animación de 0% → -50% sea continua e indistinguible.
+    const segmento = activos.map(tarjeta).join('');
+    pista.innerHTML = segmento + segmento + segmento + segmento;
+
+    // Re-disparar la animación
+    pista.classList.remove('animando');
+    void pista.offsetWidth; // force reflow
+    pista.classList.add('animando');
+}
+
+function manejarClickCarrusel(evento) {
+    const tarjeta = evento.target.closest('.carrusel-tarjeta');
+    if (!tarjeta) return;
+    const id = tarjeta.dataset.id;
+    if (!id) return;
+    const objetivo = document.querySelector(`#grilla-catalogo .tarjeta-producto[data-id="${id}"]`);
+    if (objetivo) {
+        objetivo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        objetivo.classList.remove('resaltado');
+        void objetivo.offsetWidth;
+        objetivo.classList.add('resaltado');
+        setTimeout(() => objetivo.classList.remove('resaltado'), 1600);
     }
 }
 
@@ -1043,7 +1127,7 @@ function renderizarCatalogo(productos, mapaCategorias) {
             : `<span class="iniciales">${escapar(iniciales(p.nombre))}</span>`;
         const claseFoto = imagenUrl ? ' con-foto' : '';
         return `
-        <article class="tarjeta-producto">
+        <article class="tarjeta-producto" data-id="${escapar(p.id)}">
             <div class="tarjeta-producto-imagen${claseFoto}">
                 ${contenidoImagen}
             </div>
@@ -1689,6 +1773,16 @@ document.addEventListener('DOMContentLoaded', () => {
         cargarOpcionesCategoria();
     });
     document.getElementById('tabla-productos-body').addEventListener('click', manejarAccionFila);
+
+    // Filtros del catálogo
+    const inputBuscar = document.getElementById('catalogo-buscar');
+    if (inputBuscar) inputBuscar.addEventListener('input', aplicarFiltrosCatalogo);
+    const selectFiltroCat = document.getElementById('catalogo-filtro-categoria');
+    if (selectFiltroCat) selectFiltroCat.addEventListener('change', aplicarFiltrosCatalogo);
+
+    // Carrusel destacados → scroll a producto del catálogo
+    const carrusel = document.getElementById('carrusel-destacados');
+    if (carrusel) carrusel.addEventListener('click', manejarClickCarrusel);
 
     // Catálogo y carrito
     document.getElementById('grilla-catalogo').addEventListener('click', manejarAccionCatalogo);
