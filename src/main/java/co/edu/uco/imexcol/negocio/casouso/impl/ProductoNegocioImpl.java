@@ -17,6 +17,15 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Producto.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>PRO-POL-01: Validación de datos requeridos (nombre, precio, stock).</li>
+ *   <li>PRO-POL-02: El producto debe pertenecer a una categoría válida y activa.</li>
+ * </ul>
+ */
 public final class ProductoNegocioImpl implements ProductoNegocio {
 
     private final ProductoDAO dao;

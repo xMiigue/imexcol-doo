@@ -17,6 +17,16 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Pago.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>PAG-POL-01: Validación de datos requeridos.</li>
+ *   <li>PAG-POL-02: El pedido asociado debe existir.</li>
+ *   <li>PAG-POL-03: El método de pago debe estar activo.</li>
+ * </ul>
+ */
 public final class PagoNegocioImpl implements PagoNegocio {
 
     private final PagoDAO dao;

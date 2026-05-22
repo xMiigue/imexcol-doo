@@ -18,6 +18,16 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Envío.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>ENV-POL-01: Validación de datos requeridos.</li>
+ *   <li>ENV-POL-02: El pedido asociado debe existir.</li>
+ *   <li>ENV-POL-03: Estado válido (PREPARANDO, EN_TRANSITO, ENTREGADO, DEVUELTO, EXTRAVIADO).</li>
+ * </ul>
+ */
 public final class EnvioNegocioImpl implements EnvioNegocio {
 
     private final EnvioDAO dao;

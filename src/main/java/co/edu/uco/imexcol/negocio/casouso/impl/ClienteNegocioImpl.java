@@ -16,6 +16,15 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Cliente.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>CLI-POL-01: Validación de datos requeridos (tipo, formato, rango, longitud, obligatoriedad).</li>
+ *   <li>CLI-POL-02: El correo electrónico no debe existir previamente en el sistema.</li>
+ * </ul>
+ */
 public final class ClienteNegocioImpl implements ClienteNegocio {
 
     private final ClienteDAO dao;

@@ -17,6 +17,15 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Pedido.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>PED-POL-01: Validación de datos requeridos.</li>
+ *   <li>PED-POL-02: El cliente debe existir en el sistema.</li>
+ * </ul>
+ */
 public final class PedidoNegocioImpl implements PedidoNegocio {
 
     private final PedidoDAO dao;

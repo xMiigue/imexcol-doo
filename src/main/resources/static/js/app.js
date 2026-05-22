@@ -339,7 +339,15 @@ async function registrarCliente(evento) {
         if (correoLogin) correoLogin.value = cuerpo.correoElectronico;
         cambiarVista('login-cliente');
     } catch (error) {
-        mostrarNotificacion(error.message, 'error');
+        const mensajeBackend = (error.message || '').toLowerCase();
+        if (mensajeBackend.includes('correo') || mensajeBackend.includes('existe')) {
+            mostrarNotificacion(
+                'El correo electrónico ya está registrado. Por favor use otro.',
+                'error'
+            );
+        } else {
+            mostrarNotificacion(error.message, 'error');
+        }
     }
 }
 

@@ -16,6 +16,15 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Dirección.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>DIR-POL-01: Validación de datos requeridos (calle, ciudad, departamento, país).</li>
+ *   <li>DIR-POL-02: El cliente asociado debe existir.</li>
+ * </ul>
+ */
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
     private final DireccionDAO dao;

@@ -15,6 +15,15 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
+/**
+ * Casos de uso del objeto de dominio Administrador.
+ *
+ * Políticas de negocio aplicadas (referencia documentación de políticas):
+ * <ul>
+ *   <li>ADM-POL-01: Validación de datos requeridos.</li>
+ *   <li>ADM-POL-02: El nombre de usuario no debe existir previamente.</li>
+ * </ul>
+ */
 public final class AdministradorNegocioImpl implements AdministradorNegocio {
 
     private final AdministradorDAO dao;
