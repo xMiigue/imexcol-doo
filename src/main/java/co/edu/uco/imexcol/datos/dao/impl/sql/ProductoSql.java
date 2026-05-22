@@ -10,9 +10,10 @@ public final class ProductoSql {
                 descripcion,
                 precio,
                 stock,
+                imagen_url,
                 estado
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
     public static final String CONSULTAR_POR_FILTRO = """
@@ -23,6 +24,7 @@ public final class ProductoSql {
                 p.descripcion   AS producto_descripcion,
                 p.precio        AS producto_precio,
                 p.stock         AS producto_stock,
+                p.imagen_url    AS producto_imagen_url,
                 p.estado        AS producto_estado
             FROM imex_producto AS p
             """;
@@ -35,6 +37,7 @@ public final class ProductoSql {
                 descripcion  = ?,
                 precio       = ?,
                 stock        = ?,
+                imagen_url   = ?,
                 estado       = ?
             WHERE id = ?
             """;

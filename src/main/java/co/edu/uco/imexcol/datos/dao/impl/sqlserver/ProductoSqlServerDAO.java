@@ -38,7 +38,8 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
             sentencia.setString(4, entidadSegura.getDescripcion());
             sentencia.setDouble(5, entidadSegura.getPrecio());
             sentencia.setInt(6, entidadSegura.getStock());
-            sentencia.setBoolean(7, entidadSegura.isEstado());
+            sentencia.setString(7, entidadSegura.getImagenUrl());
+            sentencia.setBoolean(8, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -59,8 +60,9 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
             sentencia.setString(3, entidadSegura.getDescripcion());
             sentencia.setDouble(4, entidadSegura.getPrecio());
             sentencia.setInt(5, entidadSegura.getStock());
-            sentencia.setBoolean(6, entidadSegura.isEstado());
-            sentencia.setObject(7, entidadSegura.getId());
+            sentencia.setString(6, entidadSegura.getImagenUrl());
+            sentencia.setBoolean(7, entidadSegura.isEstado());
+            sentencia.setObject(8, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,

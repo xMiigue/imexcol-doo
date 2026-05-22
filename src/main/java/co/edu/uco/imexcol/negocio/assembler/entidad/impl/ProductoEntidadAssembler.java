@@ -30,6 +30,7 @@ public final class ProductoEntidadAssembler implements EntidadAssembler<Producto
                 dominioAEnsamblar.getDescripcion(),
                 dominioAEnsamblar.getPrecio(),
                 dominioAEnsamblar.getStock(),
+                dominioAEnsamblar.getImagenUrl(),
                 dominioAEnsamblar.isEstado());
     }
 
@@ -43,6 +44,7 @@ public final class ProductoEntidadAssembler implements EntidadAssembler<Producto
                 entidadAEnsamblar.getDescripcion(),
                 entidadAEnsamblar.getPrecio(),
                 entidadAEnsamblar.getStock(),
+                entidadAEnsamblar.getImagenUrl(),
                 entidadAEnsamblar.isEstado());
     }
 

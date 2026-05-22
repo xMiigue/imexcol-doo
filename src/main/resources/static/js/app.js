@@ -116,6 +116,20 @@ async function peticionApi(url, opciones) {
     return datos;
 }
 
+// ============ Carrusel hero ============
+
+function iniciarCarruselHero() {
+    const slides = document.querySelectorAll('.hero-slide');
+    if (slides.length < 2) return;
+    if (iniciarCarruselHero._timer) return; // ya está corriendo
+    let indice = 0;
+    iniciarCarruselHero._timer = setInterval(() => {
+        slides[indice].classList.remove('activa');
+        indice = (indice + 1) % slides.length;
+        slides[indice].classList.add('activa');
+    }, 8000);
+}
+
 // ============ Navegación entre vistas ============
 
 function cambiarVista(vista) {
@@ -642,13 +656,13 @@ async function crearDireccionNueva() {
 async function cargarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (!tbody || !estado.usuario) return;
-    tbody.innerHTML = '<tr><td colspan="4" class="celda-vacia">Cargando…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
     try {
         const datos = await peticionApi(`${API.pedidos}?idCliente=${estado.usuario.datos.id}`);
         estado.pedidosCliente = datos.datos || [];
         renderizarMisPedidos();
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="4" class="celda-vacia">${escapar(error.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
     // ocultar detalle previo
     document.getElementById('panel-detalle-pedido').classList.add('oculto');
@@ -657,7 +671,7 @@ async function cargarMisPedidos() {
 function renderizarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (estado.pedidosCliente.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
         return;
     }
     const ordenados = estado.pedidosCliente.slice().sort((a, b) =>
@@ -665,6 +679,7 @@ function renderizarMisPedidos() {
     );
     tbody.innerHTML = ordenados.map(p => `
         <tr>
+            <td>${escapar(idCortoPedido(p.id))}</td>
             <td>${escapar(formatoFecha(p.fechaPedido))}</td>
             <td class="celda-num">${formatoMoneda(p.total)}</td>
             <td>${etiquetaPedidoEstado(p.estado)}</td>
@@ -679,11 +694,21 @@ function renderizarMisPedidos() {
 
 function etiquetaPedidoEstado(estadoTexto) {
     const t = String(estadoTexto || '').toUpperCase();
-    let clase = 'etiqueta-inactiva';
-    if (t === 'ENTREGADO') clase = 'etiqueta-activa';
-    else if (t === 'CANCELADO') clase = 'etiqueta-inactiva';
-    else clase = 'etiqueta-activa';
+    const clasesPorEstado = {
+        'PENDIENTE': 'etiqueta-pendiente',
+        'CONFIRMADO': 'etiqueta-confirmado',
+        'PREPARANDO': 'etiqueta-preparando',
+        'ENVIADO': 'etiqueta-enviado',
+        'ENTREGADO': 'etiqueta-entregado',
+        'CANCELADO': 'etiqueta-cancelado'
+    };
+    const clase = clasesPorEstado[t] || 'etiqueta-inactiva';
     return `<span class="etiqueta ${clase}">${escapar(t || '—')}</span>`;
+}
+
+function idCortoPedido(id) {
+    if (!id) return '—';
+    return '#' + String(id).substring(0, 8).toUpperCase();
 }
 
 async function cargarMapaProductos() {
@@ -761,7 +786,7 @@ async function cargarMapaClientes() {
 async function cargarPedidosAdmin() {
     const tbody = document.getElementById('tabla-admin-pedidos-body');
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>';
     try {
         const [pedidosResp, mapaClientes] = await Promise.all([
             peticionApi(API.pedidos),
@@ -769,14 +794,14 @@ async function cargarPedidosAdmin() {
         ]);
         renderizarPedidosAdmin(pedidosResp.datos || [], mapaClientes);
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
 }
 
 function renderizarPedidosAdmin(pedidos, mapaClientes) {
     const tbody = document.getElementById('tabla-admin-pedidos-body');
     if (pedidos.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">No hay pedidos registrados.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">No hay pedidos registrados.</td></tr>';
         return;
     }
     const ordenados = pedidos.slice().sort((a, b) =>
@@ -794,6 +819,7 @@ function renderizarPedidosAdmin(pedidos, mapaClientes) {
         ).join('');
         return `
             <tr>
+                <td>${escapar(idCortoPedido(p.id))}</td>
                 <td>${escapar(formatoFecha(p.fechaPedido))}</td>
                 <td>${escapar(nombre)}</td>
                 <td class="celda-num">${formatoMoneda(p.total)}</td>
@@ -964,20 +990,43 @@ function manejarAccionCarrito(evento) {
 
 // ============ Catálogo (vista tienda) ============
 
+async function cargarMapaCategorias() {
+    const datos = await peticionApi(API.categorias);
+    const mapa = new Map();
+    for (const c of (datos.datos || [])) {
+        if (c && c.id) mapa.set(String(c.id), c.nombre || '—');
+    }
+    return mapa;
+}
+
+function resolverNombreCategoria(producto, mapaCategorias) {
+    const directo = producto.categoria && producto.categoria.nombre;
+    if (directo) return directo;
+    const id = producto.categoria && producto.categoria.id;
+    if (id && mapaCategorias && mapaCategorias.has(String(id))) {
+        return mapaCategorias.get(String(id));
+    }
+    return '';
+}
+
 async function cargarCatalogo() {
     const contenedor = document.getElementById('grilla-catalogo');
     if (!contenedor) return;
     contenedor.innerHTML = '<div class="catalogo-vacio">Cargando catálogo…</div>';
     try {
-        const datos = await peticionApi(API.productos);
-        estado.catalogo = datos.datos || [];
-        renderizarCatalogo(estado.catalogo);
+        const [productosResp, mapaCategorias] = await Promise.all([
+            peticionApi(API.productos),
+            cargarMapaCategorias().catch(() => new Map())
+        ]);
+        estado.catalogo = productosResp.datos || [];
+        estado.mapaCategorias = mapaCategorias;
+        renderizarCatalogo(estado.catalogo, mapaCategorias);
     } catch (error) {
         contenedor.innerHTML = `<div class="catalogo-vacio">${escapar(error.message)}</div>`;
     }
 }
 
-function renderizarCatalogo(productos) {
+function renderizarCatalogo(productos, mapaCategorias) {
     const contenedor = document.getElementById('grilla-catalogo');
     if (!contenedor) return;
     const activos = productos.filter(p => p.estado);
@@ -985,13 +1034,21 @@ function renderizarCatalogo(productos) {
         contenedor.innerHTML = '<div class="catalogo-vacio">Aún no hay productos disponibles.</div>';
         return;
     }
-    contenedor.innerHTML = activos.map(p => `
+    contenedor.innerHTML = activos.map(p => {
+        const categoria = resolverNombreCategoria(p, mapaCategorias) || 'Sin categoría';
+        const imagenUrl = p.imagenUrl && String(p.imagenUrl).trim();
+        const contenidoImagen = imagenUrl
+            ? `<img src="${escapar(imagenUrl)}" alt="${escapar(p.nombre)}" class="producto-foto"
+                    onerror="this.outerHTML='&lt;span class=&quot;iniciales&quot;&gt;${escapar(iniciales(p.nombre))}&lt;/span&gt;'">`
+            : `<span class="iniciales">${escapar(iniciales(p.nombre))}</span>`;
+        const claseFoto = imagenUrl ? ' con-foto' : '';
+        return `
         <article class="tarjeta-producto">
-            <div class="tarjeta-producto-imagen">
-                <span class="iniciales">${escapar(iniciales(p.nombre))}</span>
+            <div class="tarjeta-producto-imagen${claseFoto}">
+                ${contenidoImagen}
             </div>
             <div class="tarjeta-producto-info">
-                <span class="tarjeta-producto-categoria">${escapar((p.categoria && p.categoria.nombre) || 'Sin categoría')}</span>
+                <span class="tarjeta-producto-categoria">${escapar(categoria)}</span>
                 <h3 class="tarjeta-producto-nombre">${escapar(p.nombre)}</h3>
                 <div class="tarjeta-producto-pie">
                     <p class="tarjeta-producto-precio">${formatoMoneda(p.precio)}</p>
@@ -1004,7 +1061,8 @@ function renderizarCatalogo(productos) {
                 </button>
             </div>
         </article>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function manejarAccionCatalogo(evento) {
@@ -1150,14 +1208,17 @@ async function cargarProductos() {
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const datos = await peticionApi(API.productos);
-        renderizarProductos(datos.datos || []);
+        const [productosResp, mapaCategorias] = await Promise.all([
+            peticionApi(API.productos),
+            cargarMapaCategorias().catch(() => new Map())
+        ]);
+        renderizarProductos(productosResp.datos || [], mapaCategorias);
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="6" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
 }
 
-function renderizarProductos(productos) {
+function renderizarProductos(productos, mapaCategorias) {
     const tbody = document.getElementById('tabla-productos-body');
     if (productos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">No hay productos registrados.</td></tr>';
@@ -1165,7 +1226,7 @@ function renderizarProductos(productos) {
     }
     tbody.innerHTML = productos.map(p => {
         const categoriaId = (p.categoria && p.categoria.id) || '';
-        const categoriaNombre = (p.categoria && p.categoria.nombre) || '';
+        const categoriaNombre = resolverNombreCategoria(p, mapaCategorias);
         return `
             <tr>
                 <td>${escapar(p.nombre)}</td>
@@ -1181,6 +1242,7 @@ function renderizarProductos(productos) {
                             data-descripcion="${escapar(p.descripcion || '')}"
                             data-precio="${escapar(p.precio)}"
                             data-stock="${escapar(p.stock)}"
+                            data-imagen-url="${escapar(p.imagenUrl || '')}"
                             data-estado="${p.estado}">Editar</button>
                     <button class="boton-fila boton-fila-peligro" data-accion="eliminar-producto"
                             data-id="${escapar(p.id)}"
@@ -1199,6 +1261,7 @@ function entrarModoEdicionProducto(datos) {
     document.getElementById('pro-descripcion').value = datos.descripcion;
     document.getElementById('pro-precio').value = datos.precio;
     document.getElementById('pro-stock').value = datos.stock;
+    document.getElementById('pro-imagen-url').value = datos.imagenUrl || '';
     document.getElementById('pro-estado').checked = datos.estado === 'true' || datos.estado === true;
     document.getElementById('pro-titulo-form').textContent = 'Editar producto';
     document.getElementById('pro-boton-submit').textContent = 'Guardar cambios';
@@ -1211,6 +1274,7 @@ function salirModoEdicionProducto() {
     const form = document.getElementById('form-producto');
     form.reset();
     document.getElementById('pro-id').value = '';
+    document.getElementById('pro-imagen-url').value = '';
     document.getElementById('pro-estado').checked = true;
     document.getElementById('pro-titulo-form').textContent = 'Nuevo producto';
     document.getElementById('pro-boton-submit').textContent = 'Registrar producto';
@@ -1229,6 +1293,7 @@ async function guardarProducto(evento) {
         descripcion: form.descripcion.value.trim(),
         precio: parseFloat(form.precio.value),
         stock: parseInt(form.stock.value, 10),
+        imagenUrl: form.imagenUrl.value.trim(),
         estado: form.estado.checked
     };
 
@@ -1591,6 +1656,7 @@ function manejarAccionFila(evento) {
             descripcion: boton.dataset.descripcion,
             precio: boton.dataset.precio,
             stock: boton.dataset.stock,
+            imagenUrl: boton.dataset.imagenUrl,
             estado: boton.dataset.estado
         });
     } else if (accion === 'eliminar-producto') {
@@ -1662,6 +1728,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-nuevo-envio').addEventListener('click', mostrarFormCrearEnvio);
     document.getElementById('btn-cancelar-envio').addEventListener('click', ocultarFormCrearEnvio);
     document.getElementById('form-envio').addEventListener('submit', crearEnvio);
+
+    // Carrusel del hero (cliente)
+    iniciarCarruselHero();
 
     // Estado inicial: vista bienvenida, sin sesión
     actualizarHeader();

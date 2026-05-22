@@ -30,6 +30,7 @@ public final class ProductoDTOAssembler implements DTOAssembler<ProductoDominio,
                 dtoAEnsamblar.getDescripcion(),
                 dtoAEnsamblar.getPrecio(),
                 dtoAEnsamblar.getStock(),
+                dtoAEnsamblar.getImagenUrl(),
                 dtoAEnsamblar.isEstado());
     }
 
@@ -43,6 +44,7 @@ public final class ProductoDTOAssembler implements DTOAssembler<ProductoDominio,
                 dominioAEnsamblar.getDescripcion(),
                 dominioAEnsamblar.getPrecio(),
                 dominioAEnsamblar.getStock(),
+                dominioAEnsamblar.getImagenUrl(),
                 dominioAEnsamblar.isEstado());
     }
 

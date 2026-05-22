@@ -29,6 +29,7 @@ public final class ProductoMapper {
             entidad.setDescripcion(resultSet.getString("producto_descripcion"));
             entidad.setPrecio(resultSet.getDouble("producto_precio"));
             entidad.setStock(resultSet.getInt("producto_stock"));
+            entidad.setImagenUrl(resultSet.getString("producto_imagen_url"));
             entidad.setEstado(resultSet.getBoolean("producto_estado"));
         } catch (final SQLException excepcion) {
             throw ImexcolException.crear(excepcion,

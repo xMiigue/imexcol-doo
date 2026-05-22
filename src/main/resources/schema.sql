@@ -167,6 +167,18 @@ BEGIN
 END;
 
 -- ------------------------------------------------------------
+-- Alteracion: imex_producto — agrega imagen_url (opcional)
+-- ------------------------------------------------------------
+IF NOT EXISTS (
+    SELECT 1 FROM sys.columns
+    WHERE name = 'imagen_url' AND object_id = OBJECT_ID(N'dbo.imex_producto')
+)
+BEGIN
+    ALTER TABLE dbo.imex_producto
+        ADD imagen_url NVARCHAR(255) NULL;
+END;
+
+-- ------------------------------------------------------------
 -- Alteracion: imex_pedido — agrega direccion_id (FK -> imex_direccion)
 -- ------------------------------------------------------------
 IF NOT EXISTS (

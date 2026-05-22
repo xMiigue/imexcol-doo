@@ -195,7 +195,9 @@
                         <button class="boton boton-primario" data-ir-ancla="catalogo">Explorar catálogo</button>
                     </div>
                     <div class="hero-imagen">
-                        <img src="img/Lampara_NP5115.png" alt="Producto destacado">
+                        <img src="img/Lampara_NP5115.png" alt="Lámpara decorativa" class="hero-slide activa">
+                        <img src="img/Sombrilla_antiviento_NP4292.png" alt="Sombrilla antiviento" class="hero-slide">
+                        <img src="img/Gorra_hombre_NP5275.png" alt="Gorra para hombre" class="hero-slide">
                     </div>
                 </div>
             </div>
@@ -412,6 +414,7 @@
                         <table class="tabla">
                             <thead>
                                 <tr>
+                                    <th>Pedido</th>
                                     <th>Fecha</th>
                                     <th class="celda-num">Total</th>
                                     <th>Estado</th>
@@ -419,7 +422,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabla-mis-pedidos-body">
-                                <tr><td colspan="4" class="celda-vacia">Cargando…</td></tr>
+                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -465,6 +468,7 @@
                         <table class="tabla">
                             <thead>
                                 <tr>
+                                    <th>Pedido</th>
                                     <th>Fecha</th>
                                     <th>Cliente</th>
                                     <th class="celda-num">Total</th>
@@ -473,7 +477,7 @@
                                 </tr>
                             </thead>
                             <tbody id="tabla-admin-pedidos-body">
-                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                                <tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -714,6 +718,11 @@
                                     <label for="pro-stock">Stock</label>
                                     <input type="number" id="pro-stock" name="stock" required min="0" step="1">
                                 </div>
+                            </div>
+                            <div class="campo">
+                                <label for="pro-imagen-url">URL de imagen</label>
+                                <input type="text" id="pro-imagen-url" name="imagenUrl"
+                                       maxlength="255" placeholder="Ej. img/Lampara_NP5115.png">
                             </div>
                             <div class="campo campo-inline">
                                 <input type="checkbox" id="pro-estado" name="estado" checked>

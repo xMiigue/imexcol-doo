@@ -16,6 +16,7 @@ public final class ProductoDTO {
     private String descripcion;
     private double precio;
     private int stock;
+    private String imagenUrl;
     private boolean estado;
 
     public ProductoDTO() {
@@ -25,6 +26,7 @@ public final class ProductoDTO {
         setDescripcion(UtilTexto.VACIO);
         setPrecio(UtilNumerico.obtenerValorPorDefectoDouble());
         setStock(UtilNumerico.obtenerValorPorDefectoInt());
+        setImagenUrl(UtilTexto.VACIO);
         setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
@@ -35,17 +37,19 @@ public final class ProductoDTO {
         setDescripcion(UtilTexto.VACIO);
         setPrecio(UtilNumerico.obtenerValorPorDefectoDouble());
         setStock(UtilNumerico.obtenerValorPorDefectoInt());
+        setImagenUrl(UtilTexto.VACIO);
         setEstado(UtilBooleano.obtenerValorPorDefecto());
     }
 
     public ProductoDTO(final UUID id, final CategoriaDTO categoria, final String nombre, final String descripcion,
-                       final double precio, final int stock, final boolean estado) {
+                       final double precio, final int stock, final String imagenUrl, final boolean estado) {
         setId(id);
         setCategoria(categoria);
         setNombre(nombre);
         setDescripcion(descripcion);
         setPrecio(precio);
         setStock(stock);
+        setImagenUrl(imagenUrl);
         setEstado(estado);
     }
 
@@ -95,6 +99,14 @@ public final class ProductoDTO {
 
     public void setStock(final int stock) {
         this.stock = stock;
+    }
+
+    public String getImagenUrl() {
+        return imagenUrl;
+    }
+
+    public void setImagenUrl(final String imagenUrl) {
+        this.imagenUrl = UtilTexto.aplicarTrim(imagenUrl);
     }
 
     public boolean isEstado() {

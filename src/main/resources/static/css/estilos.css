@@ -214,16 +214,29 @@ button {
 }
 
 .hero-imagen {
+    position: relative;
+    width: 100%;
+    height: 460px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.hero-imagen img {
+.hero-slide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     max-height: 460px;
     width: auto;
     filter: drop-shadow(0 20px 40px rgba(26, 26, 26, 0.15));
-    animation: flotar 6s ease-in-out infinite;
+    opacity: 0;
+    transition: opacity 900ms ease-in-out;
+    pointer-events: none;
+}
+
+.hero-slide.activa {
+    opacity: 1;
 }
 
 @keyframes flotar {
@@ -388,6 +401,21 @@ button {
     font-weight: 700;
     color: var(--color-dorado-oscuro);
     letter-spacing: 0.04em;
+}
+
+.tarjeta-producto-imagen .producto-foto {
+    position: relative;
+    z-index: 1;
+    max-height: 160px;
+    max-width: 80%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(26, 26, 26, 0.12));
+}
+
+.tarjeta-producto-imagen.con-foto::before {
+    display: none;
 }
 
 .tarjeta-producto-info {
@@ -733,6 +761,43 @@ button {
 .etiqueta-inactiva {
     background-color: var(--color-gris-claro);
     color: var(--color-gris-texto);
+}
+
+/* Estados de pedido */
+.etiqueta-pendiente {
+    background-color: #FFF3CD;
+    color: #856404;
+    border: 1px solid #FFEEBA;
+}
+
+.etiqueta-confirmado {
+    background-color: #D1ECF1;
+    color: #0C5460;
+    border: 1px solid #BEE5EB;
+}
+
+.etiqueta-preparando {
+    background-color: #CCE5FF;
+    color: #004085;
+    border: 1px solid #B8DAFF;
+}
+
+.etiqueta-enviado {
+    background-color: #D4EDDA;
+    color: #155724;
+    border: 1px solid #C3E6CB;
+}
+
+.etiqueta-entregado {
+    background-color: #C3E6CB;
+    color: #155724;
+    border: 1px solid #A3D5B5;
+}
+
+.etiqueta-cancelado {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F5C6CB;
 }
 
 /* ============ NOTIFICACIÓN ============ */
