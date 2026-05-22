@@ -124,7 +124,7 @@ button {
 }
 
 .header-logo img {
-    height: 50px;
+    height: 40px;
     width: auto;
 }
 
@@ -795,8 +795,8 @@ button {
 }
 
 .auth-logo {
-    height: 64px;
-    width: auto;
+    width: 120px;
+    height: auto;
     margin: 0 auto 24px;
 }
 
@@ -1245,18 +1245,29 @@ button {
     gap: 20px;
 }
 
-.footer-logo {
-    height: 56px;
-    width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.85;
+.footer-marca {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    color: var(--color-dorado);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.footer-contacto {
+    margin: 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+    letter-spacing: 0.04em;
+    text-align: center;
 }
 
 .footer-texto {
     margin: 0;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
-    letter-spacing: 0.02em;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.06em;
     text-align: center;
 }
 

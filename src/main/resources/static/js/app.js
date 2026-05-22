@@ -686,6 +686,25 @@ function etiquetaPedidoEstado(estadoTexto) {
     return `<span class="etiqueta ${clase}">${escapar(t || '—')}</span>`;
 }
 
+async function cargarMapaProductos() {
+    const datos = await peticionApi(API.productos);
+    const mapa = new Map();
+    for (const p of (datos.datos || [])) {
+        if (p && p.id) mapa.set(String(p.id), p.nombre || '—');
+    }
+    return mapa;
+}
+
+function resolverNombreProducto(linea, mapaProductos) {
+    const directo = linea.producto && linea.producto.nombre;
+    if (directo) return directo;
+    const id = linea.producto && linea.producto.id;
+    if (id && mapaProductos && mapaProductos.has(String(id))) {
+        return mapaProductos.get(String(id));
+    }
+    return '—';
+}
+
 async function verDetallePedido(idPedido, fecha) {
     const panel = document.getElementById('panel-detalle-pedido');
     const tbody = document.getElementById('tabla-detalle-pedido-body');
@@ -694,15 +713,18 @@ async function verDetallePedido(idPedido, fecha) {
     titulo.textContent = `Detalle del pedido — ${formatoFecha(fecha)}`;
     tbody.innerHTML = '<tr><td colspan="4" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const datos = await peticionApi(`${API.lineasPedido}?idPedido=${idPedido}`);
-        const lineas = datos.datos || [];
+        const [lineasResp, mapaProductos] = await Promise.all([
+            peticionApi(`${API.lineasPedido}?idPedido=${idPedido}`),
+            cargarMapaProductos()
+        ]);
+        const lineas = lineasResp.datos || [];
         if (lineas.length === 0) {
             tbody.innerHTML = '<tr><td colspan="4" class="celda-vacia">Sin líneas registradas.</td></tr>';
             return;
         }
         tbody.innerHTML = lineas.map(l => `
             <tr>
-                <td>${escapar((l.producto && l.producto.nombre) || '—')}</td>
+                <td>${escapar(resolverNombreProducto(l, mapaProductos))}</td>
                 <td class="celda-num">${escapar(l.cantidad)}</td>
                 <td class="celda-num">${formatoMoneda(l.precioUnitario)}</td>
                 <td class="celda-num">${formatoMoneda(l.subtotal)}</td>
@@ -724,19 +746,34 @@ function manejarAccionPedido(evento) {
 
 // ============ ADMIN: PEDIDOS ============
 
+async function cargarMapaClientes() {
+    const datos = await peticionApi(API.clientes);
+    const mapa = new Map();
+    for (const c of (datos.datos || [])) {
+        if (c && c.id) {
+            const nombre = `${c.nombre || ''} ${c.apellido || ''}`.trim();
+            mapa.set(String(c.id), nombre || '—');
+        }
+    }
+    return mapa;
+}
+
 async function cargarPedidosAdmin() {
     const tbody = document.getElementById('tabla-admin-pedidos-body');
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const datos = await peticionApi(API.pedidos);
-        renderizarPedidosAdmin(datos.datos || []);
+        const [pedidosResp, mapaClientes] = await Promise.all([
+            peticionApi(API.pedidos),
+            cargarMapaClientes().catch(() => new Map())
+        ]);
+        renderizarPedidosAdmin(pedidosResp.datos || [], mapaClientes);
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
 }
 
-function renderizarPedidosAdmin(pedidos) {
+function renderizarPedidosAdmin(pedidos, mapaClientes) {
     const tbody = document.getElementById('tabla-admin-pedidos-body');
     if (pedidos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">No hay pedidos registrados.</td></tr>';
@@ -747,7 +784,11 @@ function renderizarPedidosAdmin(pedidos) {
     );
     tbody.innerHTML = ordenados.map(p => {
         const cliente = p.cliente || {};
-        const nombre = `${cliente.nombre || ''} ${cliente.apellido || ''}`.trim() || '—';
+        let nombre = `${cliente.nombre || ''} ${cliente.apellido || ''}`.trim();
+        if (!nombre && cliente.id && mapaClientes && mapaClientes.has(String(cliente.id))) {
+            nombre = mapaClientes.get(String(cliente.id));
+        }
+        if (!nombre) nombre = '—';
         const opciones = ESTADOS_PEDIDO.map(e =>
             `<option value="${e}" ${e === (p.estado || '').toUpperCase() ? 'selected' : ''}>${e}</option>`
         ).join('');
@@ -817,14 +858,17 @@ function manejarAccionAdminPedido(evento) {
 
 async function verLineasPedidoAdmin(idPedido, fecha) {
     try {
-        const datos = await peticionApi(`${API.lineasPedido}?idPedido=${idPedido}`);
-        const lineas = datos.datos || [];
+        const [lineasResp, mapaProductos] = await Promise.all([
+            peticionApi(`${API.lineasPedido}?idPedido=${idPedido}`),
+            cargarMapaProductos()
+        ]);
+        const lineas = lineasResp.datos || [];
         if (lineas.length === 0) {
             mostrarNotificacion('Este pedido no tiene líneas registradas.', 'error');
             return;
         }
         const resumen = lineas.map(l =>
-            `• ${(l.producto && l.producto.nombre) || '—'} — ${l.cantidad} × ${formatoMoneda(l.precioUnitario)} = ${formatoMoneda(l.subtotal)}`
+            `• ${resolverNombreProducto(l, mapaProductos)} — ${l.cantidad} × ${formatoMoneda(l.precioUnitario)} = ${formatoMoneda(l.subtotal)}`
         ).join('\n');
         window.alert(`Pedido ${formatoFecha(fecha)}\n\n${resumen}`);
     } catch (error) {
@@ -1227,23 +1271,38 @@ async function eliminarProducto(id, nombre) {
 
 // ============ ADMIN: PAGOS ============
 
+function esFechaPorDefecto(valor) {
+    if (!valor) return true;
+    const v = String(valor);
+    return v === '0001-01-01' || v === 'null' || v === 'undefined';
+}
+
 async function cargarPagosAdmin() {
     const tbody = document.getElementById('tabla-admin-pagos-body');
     if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const [pagosResp, metodosResp] = await Promise.all([
+        const [pagosResp, metodosResp, pedidosResp] = await Promise.all([
             peticionApi(API.pagos),
-            peticionApi(API.metodosPago)
+            peticionApi(API.metodosPago),
+            peticionApi(API.pedidos).catch(() => ({ datos: [] }))
         ]);
         estado.metodosPago = metodosResp.datos || [];
-        renderizarPagosAdmin(pagosResp.datos || []);
+        const mapaMetodos = new Map();
+        for (const m of estado.metodosPago) {
+            if (m && m.id) mapaMetodos.set(String(m.id), m.nombre || '—');
+        }
+        const mapaPedidos = new Map();
+        for (const p of (pedidosResp.datos || [])) {
+            if (p && p.id) mapaPedidos.set(String(p.id), p.fechaPedido);
+        }
+        renderizarPagosAdmin(pagosResp.datos || [], mapaMetodos, mapaPedidos);
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
 }
 
-function renderizarPagosAdmin(pagos) {
+function renderizarPagosAdmin(pagos, mapaMetodos, mapaPedidos) {
     const tbody = document.getElementById('tabla-admin-pagos-body');
     if (pagos.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">No hay pagos registrados.</td></tr>';
@@ -1253,8 +1312,19 @@ function renderizarPagosAdmin(pagos) {
         String(b.fechaPago).localeCompare(String(a.fechaPago))
     );
     tbody.innerHTML = ordenados.map(p => {
-        const metodo = (p.metodoPago && p.metodoPago.nombre) || '—';
-        const pedidoFecha = p.pedido && p.pedido.fechaPedido ? formatoFecha(p.pedido.fechaPedido) : '—';
+        // Método de pago: SIEMPRE buscar primero en el mapa por id
+        let metodo = '';
+        const metodoId = p.metodoPago && p.metodoPago.id;
+        if (metodoId && mapaMetodos && mapaMetodos.has(String(metodoId))) {
+            metodo = mapaMetodos.get(String(metodoId));
+        }
+        if (!metodo) metodo = '—';
+
+        // Pedido: mostrar siempre el ID corto del pedido (primeros 8 chars del UUID)
+        const pedidoId = p.pedido && p.pedido.id;
+        const pedidoFecha = pedidoId
+            ? '#' + String(pedidoId).substring(0, 8).toUpperCase()
+            : '—';
         const opciones = ESTADOS_PAGO.map(e =>
             `<option value="${e}" ${e === (p.estado || '').toUpperCase() ? 'selected' : ''}>${e}</option>`
         ).join('');
@@ -1339,13 +1409,16 @@ function renderizarEnviosAdmin(envios) {
         String(b.fechaEnvio).localeCompare(String(a.fechaEnvio))
     );
     tbody.innerHTML = ordenados.map(e => {
-        const pedidoFecha = e.pedido && e.pedido.fechaPedido ? formatoFecha(e.pedido.fechaPedido) : '—';
+        const pedidoId = e.pedido && e.pedido.id;
+        const pedidoEtiqueta = pedidoId
+            ? '#' + String(pedidoId).substring(0, 8).toUpperCase()
+            : '—';
         const opciones = ESTADOS_ENVIO.map(s =>
             `<option value="${s}" ${s === (e.estado || '').toUpperCase() ? 'selected' : ''}>${s}</option>`
         ).join('');
         return `
             <tr>
-                <td>${escapar(pedidoFecha)}</td>
+                <td>${escapar(pedidoEtiqueta)}</td>
                 <td>${escapar(e.transportadora)}</td>
                 <td>${escapar(e.numeroGuia)}</td>
                 <td>${escapar(formatoFecha(e.fechaEnvio))}</td>
@@ -1418,12 +1491,15 @@ async function mostrarFormCrearEnvio() {
     document.getElementById('env-transportadora').value = '';
     document.getElementById('env-numero-guia').value = '';
 
-    // Cargar pedidos para el selector
+    // Cargar pedidos y clientes en paralelo para el selector
     const select = document.getElementById('env-pedido');
     select.innerHTML = '<option value="">Cargando pedidos…</option>';
     try {
-        const datos = await peticionApi(API.pedidos);
-        const pedidos = datos.datos || [];
+        const [pedidosResp, mapaClientes] = await Promise.all([
+            peticionApi(API.pedidos),
+            cargarMapaClientes().catch(() => new Map())
+        ]);
+        const pedidos = pedidosResp.datos || [];
         if (pedidos.length === 0) {
             select.innerHTML = '<option value="">No hay pedidos disponibles</option>';
             return;
@@ -1434,7 +1510,13 @@ async function mostrarFormCrearEnvio() {
         select.innerHTML = '<option value="">Seleccione un pedido…</option>' +
             ordenados.map(p => {
                 const c = p.cliente || {};
-                const etiqueta = `${formatoFecha(p.fechaPedido)} — ${(c.nombre || '')} ${(c.apellido || '')} — ${formatoMoneda(p.total)}`;
+                let nombreCliente = `${c.nombre || ''} ${c.apellido || ''}`.trim();
+                if (!nombreCliente && c.id && mapaClientes.has(String(c.id))) {
+                    nombreCliente = mapaClientes.get(String(c.id));
+                }
+                if (!nombreCliente) nombreCliente = '—';
+                const idCorto = '#' + String(p.id).substring(0, 6).toUpperCase();
+                const etiqueta = `${idCorto} — ${nombreCliente} — ${formatoMoneda(p.total)}`;
                 return `<option value="${escapar(p.id)}">${escapar(etiqueta)}</option>`;
             }).join('');
     } catch (error) {
