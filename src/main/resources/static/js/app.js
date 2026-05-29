@@ -29,6 +29,7 @@ const estado = {
     carrito: [],          // [ { producto, cantidad } ]
     catEditandoId: null,
     proEditandoId: null,
+    dirEditandoId: null,
     adminInicializado: false,
     clienteInicializado: false,
     direccionesCliente: [],
@@ -144,6 +145,8 @@ function cambiarVista(vista) {
     // Carga bajo demanda al entrar a ciertas vistas
     if (vista === 'mis-pedidos') {
         cargarMisPedidos();
+    } else if (vista === 'mis-direcciones') {
+        cargarMisDirecciones();
     } else if (vista === 'admin-pedidos') {
         cargarPedidosAdmin();
     } else if (vista === 'admin-clientes') {
@@ -230,8 +233,13 @@ function actualizarHeader() {
 function cerrarSesion() {
     estado.usuario = null;
     estado.carrito = [];
+    estado.direccionesCliente = [];
     estado.adminInicializado = false;
     estado.clienteInicializado = false;
+    // Salir de modos edición que pudieran quedar abiertos
+    if (estado.dirEditandoId && document.getElementById('form-mi-direccion')) {
+        salirModoEdicionDireccion();
+    }
     actualizarHeader();
     // Reset de formularios auth
     const formLoginCli = document.getElementById('form-login-cliente');
@@ -774,6 +782,136 @@ function manejarAccionPedido(evento) {
     if (!boton) return;
     if (boton.dataset.accionPedido === 'ver-detalle') {
         verDetallePedido(boton.dataset.id, boton.dataset.fecha);
+    }
+}
+
+// ============ MIS DIRECCIONES (cliente) ============
+
+async function cargarMisDirecciones() {
+    const tbody = document.getElementById('tabla-mis-direcciones-body');
+    if (!tbody || !estado.usuario || estado.usuario.tipo !== 'cliente') return;
+    tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>';
+    try {
+        const datos = await peticionApi(`${API.direcciones}?idCliente=${estado.usuario.datos.id}`);
+        estado.direccionesCliente = datos.datos || [];
+        renderizarMisDirecciones();
+    } catch (error) {
+        tbody.innerHTML = `<tr><td colspan="6" class="celda-vacia">${escapar(error.message)}</td></tr>`;
+    }
+}
+
+function renderizarMisDirecciones() {
+    const tbody = document.getElementById('tabla-mis-direcciones-body');
+    if (!tbody) return;
+    if (estado.direccionesCliente.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">No tienes direcciones registradas.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = estado.direccionesCliente.map(d => `
+        <tr>
+            <td>${escapar(d.calle)}</td>
+            <td>${escapar(d.ciudad)}</td>
+            <td>${escapar(d.departamento)}</td>
+            <td>${escapar(d.pais)}</td>
+            <td>${d.esPrincipal
+                ? '<span class="etiqueta etiqueta-activa">Principal</span>'
+                : '<span class="etiqueta etiqueta-inactiva">—</span>'}</td>
+            <td class="celda-acciones">
+                <button class="boton-fila" data-accion="editar-direccion"
+                        data-id="${escapar(d.id)}"
+                        data-calle="${escapar(d.calle)}"
+                        data-ciudad="${escapar(d.ciudad)}"
+                        data-departamento="${escapar(d.departamento)}"
+                        data-pais="${escapar(d.pais)}"
+                        data-codigo-postal="${escapar(d.codigoPostal || '')}"
+                        data-es-principal="${d.esPrincipal}">Editar</button>
+                <button class="boton-fila boton-fila-peligro" data-accion="eliminar-direccion"
+                        data-id="${escapar(d.id)}"
+                        data-etiqueta="${escapar(d.calle)}">Eliminar</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function entrarModoEdicionDireccion(datos) {
+    estado.dirEditandoId = datos.id;
+    document.getElementById('midir-id').value = datos.id;
+    document.getElementById('midir-calle').value = datos.calle;
+    document.getElementById('midir-ciudad').value = datos.ciudad;
+    document.getElementById('midir-departamento').value = datos.departamento;
+    document.getElementById('midir-pais').value = datos.pais;
+    document.getElementById('midir-codigo-postal').value = datos.codigoPostal || '';
+    document.getElementById('midir-es-principal').checked =
+        datos.esPrincipal === 'true' || datos.esPrincipal === true;
+    document.getElementById('midir-titulo-form').textContent = 'Editar dirección';
+    document.getElementById('midir-boton-submit').textContent = 'Guardar cambios';
+    document.getElementById('midir-boton-cancelar').classList.remove('oculto');
+    document.getElementById('form-mi-direccion').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function salirModoEdicionDireccion() {
+    estado.dirEditandoId = null;
+    const form = document.getElementById('form-mi-direccion');
+    form.reset();
+    document.getElementById('midir-id').value = '';
+    document.getElementById('midir-pais').value = 'Colombia';
+    document.getElementById('midir-es-principal').checked = false;
+    document.getElementById('midir-titulo-form').textContent = 'Nueva dirección';
+    document.getElementById('midir-boton-submit').textContent = 'Registrar dirección';
+    document.getElementById('midir-boton-cancelar').classList.add('oculto');
+}
+
+async function guardarDireccion(evento) {
+    evento.preventDefault();
+    if (!estado.usuario || estado.usuario.tipo !== 'cliente') return;
+    const form = evento.target;
+    const boton = document.getElementById('midir-boton-submit');
+    boton.disabled = true;
+
+    const cuerpo = {
+        cliente: { id: estado.usuario.datos.id },
+        calle: form.calle.value.trim(),
+        ciudad: form.ciudad.value.trim(),
+        departamento: form.departamento.value.trim(),
+        pais: form.pais.value.trim(),
+        codigoPostal: form.codigoPostal.value.trim(),
+        esPrincipal: form.esPrincipal.checked
+    };
+
+    const enEdicion = !!estado.dirEditandoId;
+    const url = enEdicion ? `${API.direcciones}/${estado.dirEditandoId}` : API.direcciones;
+    const metodo = enEdicion ? 'PUT' : 'POST';
+
+    try {
+        const datos = await peticionApi(url, {
+            method: metodo,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(cuerpo)
+        });
+        mostrarNotificacion(
+            extraerMensaje(datos, enEdicion
+                ? 'Dirección actualizada satisfactoriamente.'
+                : 'Dirección registrada satisfactoriamente.'),
+            'exito'
+        );
+        salirModoEdicionDireccion();
+        await cargarMisDirecciones();
+    } catch (error) {
+        mostrarNotificacion(error.message, 'error');
+    } finally {
+        boton.disabled = false;
+    }
+}
+
+async function eliminarDireccionPropia(id, etiqueta) {
+    if (!window.confirm(`¿Eliminar la dirección "${etiqueta}"? Esta acción no se puede deshacer.`)) return;
+    try {
+        const datos = await peticionApi(`${API.direcciones}/${id}`, { method: 'DELETE' });
+        mostrarNotificacion(extraerMensaje(datos, 'Dirección eliminada satisfactoriamente.'), 'exito');
+        if (estado.dirEditandoId === id) salirModoEdicionDireccion();
+        await cargarMisDirecciones();
+    } catch (error) {
+        mostrarNotificacion(error.message, 'error');
     }
 }
 
@@ -1753,6 +1891,18 @@ function manejarAccionFila(evento) {
         });
     } else if (accion === 'eliminar-producto') {
         eliminarProducto(boton.dataset.id, boton.dataset.nombre);
+    } else if (accion === 'editar-direccion') {
+        entrarModoEdicionDireccion({
+            id: boton.dataset.id,
+            calle: boton.dataset.calle,
+            ciudad: boton.dataset.ciudad,
+            departamento: boton.dataset.departamento,
+            pais: boton.dataset.pais,
+            codigoPostal: boton.dataset.codigoPostal,
+            esPrincipal: boton.dataset.esPrincipal
+        });
+    } else if (accion === 'eliminar-direccion') {
+        eliminarDireccionPropia(boton.dataset.id, boton.dataset.etiqueta);
     }
 }
 
@@ -1811,6 +1961,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-cerrar-detalle').addEventListener('click', () => {
         document.getElementById('panel-detalle-pedido').classList.add('oculto');
     });
+
+    // Mis direcciones
+    document.getElementById('form-mi-direccion').addEventListener('submit', guardarDireccion);
+    document.getElementById('midir-boton-cancelar').addEventListener('click', salirModoEdicionDireccion);
+    document.getElementById('btn-recargar-mis-direcciones').addEventListener('click', cargarMisDirecciones);
+    document.getElementById('tabla-mis-direcciones-body').addEventListener('click', manejarAccionFila);
 
     // Admin: pedidos
     document.getElementById('tabla-admin-pedidos-body').addEventListener('change', manejarAccionAdminPedido);

@@ -21,6 +21,7 @@
                     Mi carrito (<span id="badge-carrito">0</span>)
                 </button>
                 <button class="nav-enlace" data-vista="mis-pedidos">Mis pedidos</button>
+                <button class="nav-enlace" data-vista="mis-direcciones">Mis direcciones</button>
             </nav>
 
             <nav id="nav-administrador" class="header-nav oculto">
@@ -595,6 +596,91 @@
                         </table>
                     </div>
                 </article>
+            </div>
+        </section>
+
+        <!-- ============ VISTA: MIS DIRECCIONES (CLIENTE) ============ -->
+        <section id="vista-mis-direcciones" class="vista oculto">
+            <div class="contenedor seccion-admin">
+                <header class="admin-cabecera">
+                    <span class="seccion-etiqueta">Mi cuenta</span>
+                    <h2 class="seccion-titulo">Mis direcciones</h2>
+                </header>
+                <div class="admin-grilla">
+                    <article class="panel">
+                        <header class="panel-cabecera">
+                            <h3 id="midir-titulo-form">Nueva dirección</h3>
+                        </header>
+                        <form id="form-mi-direccion" class="formulario">
+                            <input type="hidden" id="midir-id" name="id">
+                            <div class="campo">
+                                <label for="midir-calle">Calle</label>
+                                <input type="text" id="midir-calle" name="calle"
+                                       required minlength="5" maxlength="200"
+                                       placeholder="Ej. Calle 10 #5-20">
+                            </div>
+                            <div class="campo-fila">
+                                <div class="campo">
+                                    <label for="midir-ciudad">Ciudad</label>
+                                    <input type="text" id="midir-ciudad" name="ciudad"
+                                           required minlength="2" maxlength="100">
+                                </div>
+                                <div class="campo">
+                                    <label for="midir-departamento">Departamento</label>
+                                    <input type="text" id="midir-departamento" name="departamento"
+                                           required minlength="2" maxlength="100">
+                                </div>
+                            </div>
+                            <div class="campo-fila">
+                                <div class="campo">
+                                    <label for="midir-pais">País</label>
+                                    <input type="text" id="midir-pais" name="pais"
+                                           required minlength="2" maxlength="100" value="Colombia">
+                                </div>
+                                <div class="campo">
+                                    <label for="midir-codigo-postal">Código postal</label>
+                                    <input type="text" id="midir-codigo-postal" name="codigoPostal"
+                                           maxlength="10">
+                                </div>
+                            </div>
+                            <div class="campo campo-inline">
+                                <input type="checkbox" id="midir-es-principal" name="esPrincipal">
+                                <label for="midir-es-principal">Marcar como dirección principal</label>
+                            </div>
+                            <div class="acciones">
+                                <button type="submit" id="midir-boton-submit" class="boton boton-primario">
+                                    Registrar dirección
+                                </button>
+                                <button type="button" id="midir-boton-cancelar" class="boton boton-secundario oculto">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </form>
+                    </article>
+                    <article class="panel">
+                        <header class="panel-cabecera">
+                            <h3>Direcciones registradas</h3>
+                            <button id="btn-recargar-mis-direcciones" class="boton-texto" type="button">Recargar</button>
+                        </header>
+                        <div class="tabla-contenedor">
+                            <table class="tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Calle</th>
+                                        <th>Ciudad</th>
+                                        <th>Departamento</th>
+                                        <th>País</th>
+                                        <th>Principal</th>
+                                        <th class="celda-acciones">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-mis-direcciones-body">
+                                    <tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                </div>
             </div>
         </section>
 
