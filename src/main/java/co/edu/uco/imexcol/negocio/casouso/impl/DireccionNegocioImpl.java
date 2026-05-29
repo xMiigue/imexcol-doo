@@ -23,6 +23,8 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
  * <ul>
  *   <li>DIR-POL-01: Validación de datos requeridos (calle, ciudad, departamento, país).</li>
  *   <li>DIR-POL-02: El cliente asociado debe existir.</li>
+ *   <li>DIR-POL-03: Un cliente no puede tener dos direcciones con la misma combinación
+ *       de calle + ciudad + departamento + país.</li>
  * </ul>
  */
 public final class DireccionNegocioImpl implements DireccionNegocio {
@@ -46,6 +48,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     public void registrar(final DireccionDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
         validarDatosComunes(dominioSeguro);
+        validarNoExisteDireccionDuplicada(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
@@ -93,6 +96,29 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         if (!UtilTexto.estaVacia(dominio.getCodigoPostal())) {
             ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCodigoPostal(),
                     "código postal de la dirección", 3, 10);
+        }
+    }
+
+    /**
+     * Verifica que no exista ya una dirección registrada con la misma combinación
+     * de cliente + calle + ciudad + departamento + país. Aplica la política DIR-POL-03.
+     */
+    private void validarNoExisteDireccionDuplicada(final DireccionDominio dominio) {
+        final var filtro = ensamblador.ensamblarEntidad(new DireccionDominio());
+        filtro.getCliente().setId(dominio.getCliente().getId());
+        filtro.setCalle(dominio.getCalle());
+        filtro.setCiudad(dominio.getCiudad());
+        filtro.setDepartamento(dominio.getDepartamento());
+        filtro.setPais(dominio.getPais());
+
+        final var existentes = dao.consultarPorFiltro(filtro);
+        if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
+            throw ImexcolException.crear(
+                    "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente.",
+                    "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."
+                            .formatted(dominio.getCliente().getId(), dominio.getCalle(),
+                                    dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()),
+                    Lugar.NEGOCIO);
         }
     }
 }

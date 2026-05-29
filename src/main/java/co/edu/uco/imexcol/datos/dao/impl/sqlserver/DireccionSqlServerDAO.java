@@ -129,9 +129,21 @@ public final class DireccionSqlServerDAO extends ConexionSql implements Direccio
             condiciones.add("d.cliente_id = ?");
             parametros.add(filtro.getCliente().getId());
         }
+        if (!UtilTexto.estaVacia(filtro.getCalle())) {
+            condiciones.add("d.calle = ?");
+            parametros.add(filtro.getCalle());
+        }
         if (!UtilTexto.estaVacia(filtro.getCiudad())) {
             condiciones.add("d.ciudad = ?");
             parametros.add(filtro.getCiudad());
+        }
+        if (!UtilTexto.estaVacia(filtro.getDepartamento())) {
+            condiciones.add("d.departamento = ?");
+            parametros.add(filtro.getDepartamento());
+        }
+        if (!UtilTexto.estaVacia(filtro.getPais())) {
+            condiciones.add("d.pais = ?");
+            parametros.add(filtro.getPais());
         }
 
         if (!condiciones.isEmpty()) {
