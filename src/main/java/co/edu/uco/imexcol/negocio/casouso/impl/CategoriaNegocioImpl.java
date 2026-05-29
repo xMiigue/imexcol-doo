@@ -22,7 +22,8 @@ import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
  * Políticas de negocio aplicadas (referencia documentación de políticas):
  * <ul>
  *   <li>CAT-POL-01: Validación de datos requeridos (nombre obligatorio).</li>
- *   <li>CAT-POL-02: El nombre de categoría no debe existir previamente.</li>
+ *   <li>CAT-POL-02: El nombre de la categoría debe ser único en el sistema;
+ *       no puede existir otra categoría previamente registrada con el mismo nombre.</li>
  * </ul>
  */
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
@@ -46,6 +47,7 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
     public void registrar(final CategoriaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         validarDatosComunes(dominioSeguro);
+        validarNombreCategoriaUnico(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
@@ -78,6 +80,23 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         if (!UtilTexto.estaVacia(dominio.getDescripcion())) {
             ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(),
                     "descripción de la categoría", 0, 255);
+        }
+    }
+
+    /**
+     * Verifica que no exista ya una categoría registrada con el mismo nombre.
+     * Aplica la política CAT-POL-02.
+     */
+    private void validarNombreCategoriaUnico(final CategoriaDominio dominio) {
+        final var filtro = ensamblador.ensamblarEntidad(new CategoriaDominio());
+        filtro.setNombre(dominio.getNombre());
+
+        final var existentes = dao.consultarPorFiltro(filtro);
+        if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
+            throw ImexcolException.crear(
+                    "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente.",
+                    "Intento de inserción de categoría duplicada: nombre=%s.".formatted(dominio.getNombre()),
+                    Lugar.NEGOCIO);
         }
     }
 }
