@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### macOS y Office ###
+.DS_Store
+~$*
+
+### Secretos ###
+.env
