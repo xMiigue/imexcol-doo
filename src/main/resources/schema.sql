@@ -6,7 +6,6 @@
 -- en datos/dao/entidad/sql/*.java
 --
 -- Ejecucion manual:
---   sqlcmd -S localhost,1433 -U sa -P 'Imexcol2026!' -d imexcol -i schema.sql
 --
 -- O activar la ejecucion automatica de Spring Boot estableciendo
 -- spring.sql.init.mode=always en application.properties.

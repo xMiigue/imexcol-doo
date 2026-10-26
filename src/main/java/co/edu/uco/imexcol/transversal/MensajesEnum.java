@@ -114,6 +114,11 @@ public enum MensajesEnum {
     ERROR_TECNICO_CONEXION_SQL_ABRIR(
             "Se presentó una SQLException al intentar establecer la conexión con la base de datos. Revise el log para más detalles."),
 
+    ERROR_USUARIO_VARIABLE_ENTORNO_NO_DEFINIDA(
+            "No fue posible establecer la conexión con la base de datos porque falta configuración del sistema. Por favor contacte al administrador del sistema."),
+    ERROR_TECNICO_VARIABLE_ENTORNO_NO_DEFINIDA(
+            "La variable de entorno requerida [%s] no está definida o está vacía y no tiene valor por defecto en application.properties."),
+
     ERROR_USUARIO_CONEXION_SQL_CERRAR(
             "No fue posible cerrar la conexión con la base de datos."),
     ERROR_TECNICO_CONEXION_SQL_CERRAR(
