@@ -22,15 +22,12 @@ public final class FacturaNegocioImpl implements FacturaNegocio {
 
     public FacturaNegocioImpl() {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
     }
 
     @Override
     public void registrar(final FacturaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new FacturaDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerFacturaDAO().crear(...)
-        // TODO: validar que el total de la factura coincida con el total del pedido asociado.
         throw operacionPendiente("registrar");
     }
 
@@ -39,21 +36,18 @@ public final class FacturaNegocioImpl implements FacturaNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new FacturaDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "factura");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerFacturaDAO().modificar(...)
         throw operacionPendiente("actualizar");
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "factura");
-        // TODO: integrar con DAO — daoFactory.obtenerFacturaDAO().eliminar(id);
         throw operacionPendiente("eliminar");
     }
 
     @Override
     public List<FacturaDominio> consultar(final FacturaDominio filtros) {
         UtilObjeto.obtenerValorDefecto(filtros, new FacturaDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerFacturaDAO().consultarPorFiltro(...)
         return new ArrayList<>();
     }
 
@@ -68,7 +62,6 @@ public final class FacturaNegocioImpl implements FacturaNegocio {
 
         ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaEmision(),
                 "fecha de emisión de la factura");
-        // El total de la factura debe ser estrictamente > 0 (no tiene sentido facturar 0).
         ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getTotal(), "total de la factura");
     }
 

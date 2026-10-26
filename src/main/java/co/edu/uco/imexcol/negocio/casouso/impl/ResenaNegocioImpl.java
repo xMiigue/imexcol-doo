@@ -22,14 +22,12 @@ public final class ResenaNegocioImpl implements ResenaNegocio {
 
     public ResenaNegocioImpl() {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
     }
 
     @Override
     public void registrar(final ResenaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ResenaDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerResenaDAO().crear(...)
         throw operacionPendiente("registrar");
     }
 
@@ -38,21 +36,18 @@ public final class ResenaNegocioImpl implements ResenaNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ResenaDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "reseña");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerResenaDAO().modificar(...)
         throw operacionPendiente("actualizar");
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "reseña");
-        // TODO: integrar con DAO — daoFactory.obtenerResenaDAO().eliminar(id);
         throw operacionPendiente("eliminar");
     }
 
     @Override
     public List<ResenaDominio> consultar(final ResenaDominio filtros) {
         UtilObjeto.obtenerValorDefecto(filtros, new ResenaDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerResenaDAO().consultarPorFiltro(...)
         return new ArrayList<>();
     }
 

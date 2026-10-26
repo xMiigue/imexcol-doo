@@ -2,9 +2,6 @@ package co.edu.uco.imexcol.transversal;
 
 public enum MensajesEnum {
 
-    // ============================================================
-    // Validaciones de dominios — Categoria
-    // ============================================================
     ERROR_USUARIO_CATEGORIA_NOMBRE_NULO(
             "El nombre de la categoría es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_CATEGORIA_NOMBRE_NULO(
@@ -25,9 +22,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_CATEGORIA_DESCRIPCION_LONGITUD_INVALIDA(
             "La longitud de la descripción de la categoría supera el máximo permitido de 255 caracteres."),
 
-    // ============================================================
-    // Validaciones de dominios — MetodoPago
-    // ============================================================
     ERROR_USUARIO_METODO_PAGO_NOMBRE_NULO(
             "El nombre del método de pago es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_METODO_PAGO_NOMBRE_NULO(
@@ -48,9 +42,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_METODO_PAGO_DESCRIPCION_LONGITUD_INVALIDA(
             "La longitud de la descripción del método de pago supera el máximo permitido de 255 caracteres."),
 
-    // ============================================================
-    // Validaciones de dominios — Administrador
-    // ============================================================
     ERROR_USUARIO_ADMINISTRADOR_NOMBRE_USUARIO_NULO(
             "El nombre de usuario del administrador es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_ADMINISTRADOR_NOMBRE_USUARIO_NULO(
@@ -96,9 +87,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_ADMINISTRADOR_CONTRASENA_LONGITUD_INVALIDA(
             "La longitud de la contrasena del administrador no se encuentra en el rango permitido [8, 255]."),
 
-    // ============================================================
-    // Capa de datos — Conexión SQL
-    // ============================================================
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(
@@ -129,9 +117,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_CONEXION_SQL_VALIDACION_INESPERADA(
             "Se presentó un error inesperado validando el estado de la conexión SQL. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de datos — Transacción
-    // ============================================================
     ERROR_USUARIO_TRANSACCION_NO_INICIADA(
             "Se ha presentado un problema al ejecutar la operación. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_TRANSACCION_NO_INICIADA(
@@ -162,9 +147,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_TRANSACCION_VALIDACION_INESPERADA(
             "Se presentó un error inesperado validando el estado de la transacción SQL. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de datos — Operaciones DAO genéricas (CRUD)
-    // ============================================================
     ERROR_USUARIO_DAO_CREAR_GENERICO(
             "Se ha presentado un problema al registrar la información. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_DAO_CREAR_GENERICO(
@@ -190,9 +172,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_DAO_OPERACION_INESPERADA(
             "Se produjo una excepción inesperada ejecutando la operación contra la base de datos. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de datos — Mapper
-    // ============================================================
     ERROR_USUARIO_MAPPER_GENERICO(
             "Ocurrió un problema al procesar la información obtenida de la base de datos."),
     ERROR_TECNICO_MAPPER_GENERICO(
@@ -203,17 +182,11 @@ public enum MensajesEnum {
     ERROR_TECNICO_MAPPER_INESPERADO(
             "Se presentó un error inesperado al mapear el ResultSet. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de datos — DAOFactory
-    // ============================================================
     ERROR_USUARIO_FACTORY_NO_INICIALIZADA(
             "Se ha presentado un problema interno con el sistema. Por favor contacte al administrador del sistema."),
     ERROR_TECNICO_FACTORY_NO_INICIALIZADA(
             "La fábrica de acceso a datos (DAOFactory) no ha sido inicializada o devolvió null."),
 
-    // ============================================================
-    // Capa de negocio
-    // ============================================================
     ERROR_USUARIO_NEGOCIO_OPERACION_FALLIDA(
             "No fue posible completar la operación solicitada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_NEGOCIO_OPERACION_FALLIDA(
@@ -224,9 +197,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_NEGOCIO_OPERACION_INESPERADA(
             "Se presentó una excepción inesperada en la capa de negocio. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de fachada
-    // ============================================================
     ERROR_USUARIO_FACHADA_OPERACION_FALLIDA(
             "No fue posible completar la operación solicitada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_FACHADA_OPERACION_FALLIDA(
@@ -237,9 +207,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_FACHADA_OPERACION_INESPERADA(
             "Se presentó una excepción inesperada en la capa de fachada. Revise el log para más detalles."),
 
-    // ============================================================
-    // Capa de controlador
-    // ============================================================
     ERROR_USUARIO_CONTROLADOR_OPERACION_FALLIDA(
             "No fue posible procesar la solicitud. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONTROLADOR_OPERACION_FALLIDA(
@@ -250,10 +217,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA(
             "Se presentó una excepción inesperada en la capa de controlador. Revise el log para más detalles."),
 
-    // ============================================================
-    // Reglas y validadores genéricos — Mensajes parametrizados
-    // (usan %s para el nombre del dato y otros valores)
-    // ============================================================
     ERROR_USUARIO_DATO_TEXTO_REQUERIDO(
             "El dato [%s] es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_DATO_TEXTO_REQUERIDO(
@@ -304,17 +267,11 @@ public enum MensajesEnum {
     ERROR_TECNICO_DATO_NUMERO_NO_MAYOR_A_CERO(
             "El dato numérico [%s] llegó con un valor menor o igual a cero a la regla NumeroEsMayorACeroRegla."),
 
-    // ============================================================
-    // Casos de uso pendientes de integración con capa de datos
-    // ============================================================
     ERROR_USUARIO_CASO_USO_DAO_PENDIENTE(
             "La operación solicitada no se encuentra disponible en este momento. Por favor intente más tarde."),
     ERROR_TECNICO_CASO_USO_DAO_PENDIENTE(
-            "La operación [%s] del caso de uso [%s] está pendiente de integración con la capa de datos (DAO). TODO: cablear DAOFactory."),
+            "La operación [%s] del caso de uso [%s] está pendiente de integración con la capa de datos (DAO)."),
 
-    // ============================================================
-    // Genéricos
-    // ============================================================
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_INESPERADO(

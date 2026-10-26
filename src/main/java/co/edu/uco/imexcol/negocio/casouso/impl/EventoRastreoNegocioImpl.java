@@ -22,14 +22,12 @@ public final class EventoRastreoNegocioImpl implements EventoRastreoNegocio {
 
     public EventoRastreoNegocioImpl() {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
     }
 
     @Override
     public void registrar(final EventoRastreoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new EventoRastreoDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerEventoRastreoDAO().crear(...)
         throw operacionPendiente("registrar");
     }
 
@@ -38,21 +36,18 @@ public final class EventoRastreoNegocioImpl implements EventoRastreoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new EventoRastreoDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "evento de rastreo");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerEventoRastreoDAO().modificar(...)
         throw operacionPendiente("actualizar");
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "evento de rastreo");
-        // TODO: integrar con DAO — daoFactory.obtenerEventoRastreoDAO().eliminar(id);
         throw operacionPendiente("eliminar");
     }
 
     @Override
     public List<EventoRastreoDominio> consultar(final EventoRastreoDominio filtros) {
         UtilObjeto.obtenerValorDefecto(filtros, new EventoRastreoDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerEventoRastreoDAO().consultarPorFiltro(...)
         return new ArrayList<>();
     }
 

@@ -15,16 +15,6 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-/**
- * Casos de uso del objeto de dominio LineaPedido.
- *
- * Políticas de negocio aplicadas (referencia documentación de políticas):
- * <ul>
- *   <li>LIN-POL-01: Validación de datos requeridos.</li>
- *   <li>LIN-POL-02: El pedido y producto asociados deben existir.</li>
- *   <li>LIN-POL-03: subtotal = cantidad × precioUnitario.</li>
- * </ul>
- */
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
 
     private final LineaPedidoDAO dao;
@@ -47,7 +37,6 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new LineaPedidoDominio());
         validarDatosComunes(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        // TODO: validar stock disponible del producto contra el DAO de Producto.
         dominioSeguro.setId(UUID.randomUUID());
         dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }

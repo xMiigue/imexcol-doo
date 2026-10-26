@@ -16,17 +16,6 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-/**
- * Casos de uso del objeto de dominio Dirección.
- *
- * Políticas de negocio aplicadas (referencia documentación de políticas):
- * <ul>
- *   <li>DIR-POL-01: Validación de datos requeridos (calle, ciudad, departamento, país).</li>
- *   <li>DIR-POL-02: El cliente asociado debe existir.</li>
- *   <li>DIR-POL-03: Un cliente no puede tener dos direcciones con la misma combinación
- *       de calle + ciudad + departamento + país.</li>
- * </ul>
- */
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
     private final DireccionDAO dao;
@@ -99,10 +88,6 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         }
     }
 
-    /**
-     * Verifica que no exista ya una dirección registrada con la misma combinación
-     * de cliente + calle + ciudad + departamento + país. Aplica la política DIR-POL-03.
-     */
     private void validarNoExisteDireccionDuplicada(final DireccionDominio dominio) {
         final var filtro = ensamblador.ensamblarEntidad(new DireccionDominio());
         filtro.getCliente().setId(dominio.getCliente().getId());

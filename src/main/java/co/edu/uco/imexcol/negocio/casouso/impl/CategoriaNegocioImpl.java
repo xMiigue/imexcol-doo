@@ -16,16 +16,6 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-/**
- * Casos de uso del objeto de dominio Categoría.
- *
- * Políticas de negocio aplicadas (referencia documentación de políticas):
- * <ul>
- *   <li>CAT-POL-01: Validación de datos requeridos (nombre obligatorio).</li>
- *   <li>CAT-POL-02: El nombre de la categoría debe ser único en el sistema;
- *       no puede existir otra categoría previamente registrada con el mismo nombre.</li>
- * </ul>
- */
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
 
     private final CategoriaDAO dao;
@@ -83,10 +73,6 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         }
     }
 
-    /**
-     * Verifica que no exista ya una categoría registrada con el mismo nombre.
-     * Aplica la política CAT-POL-02.
-     */
     private void validarNombreCategoriaUnico(final CategoriaDominio dominio) {
         final var filtro = ensamblador.ensamblarEntidad(new CategoriaDominio());
         filtro.setNombre(dominio.getNombre());

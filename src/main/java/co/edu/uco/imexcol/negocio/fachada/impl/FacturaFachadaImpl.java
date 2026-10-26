@@ -20,80 +20,59 @@ public final class FacturaFachadaImpl implements FacturaFachada {
 
     public FacturaFachadaImpl() {
         super();
-        // TODO: integrar con DAOFactory — instanciar FacturaNegocioImpl(daoFactory) cuando exista la capa de datos.
         this.negocio = new FacturaNegocioImpl();
         this.ensamblador = FacturaDTOAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final FacturaDTO dto) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
         try {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new FacturaDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
             negocio.registrar(dominio);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public void actualizar(final FacturaDTO dto) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
         try {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new FacturaDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
             negocio.actualizar(dominio);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public void eliminar(final UUID id) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
         try {
             negocio.eliminar(id);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     @Override
     public List<FacturaDTO> consultar(final FacturaDTO filtros) {
-        // TODO: integrar con DAOFactory — daoFactory.iniciarTransaccion();
         try {
             final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new FacturaDTO());
             final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
             final var dominios = negocio.consultar(dominioFiltro);
-            // TODO: integrar con DAOFactory — daoFactory.confirmarTransaccion();
             return ensamblador.ensamblarDTO(dominios);
         } catch (final ImexcolException excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
-            // TODO: integrar con DAOFactory — daoFactory.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
         }
-        // TODO: integrar con DAOFactory — daoFactory.cerrarConexion();
     }
 
     private static ImexcolException envolverErrorInesperado(final Exception excepcion) {

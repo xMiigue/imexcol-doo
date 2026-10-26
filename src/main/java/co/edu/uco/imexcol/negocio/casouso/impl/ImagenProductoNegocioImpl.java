@@ -21,14 +21,12 @@ public final class ImagenProductoNegocioImpl implements ImagenProductoNegocio {
 
     public ImagenProductoNegocioImpl() {
         super();
-        // TODO: recibir DAOFactory cuando exista la capa de datos.
     }
 
     @Override
     public void registrar(final ImagenProductoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ImagenProductoDominio());
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerImagenProductoDAO().crear(...)
         throw operacionPendiente("registrar");
     }
 
@@ -37,21 +35,18 @@ public final class ImagenProductoNegocioImpl implements ImagenProductoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ImagenProductoDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "imagen de producto");
         validarDatosComunes(dominioSeguro);
-        // TODO: integrar con DAO — daoFactory.obtenerImagenProductoDAO().modificar(...)
         throw operacionPendiente("actualizar");
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "imagen de producto");
-        // TODO: integrar con DAO — daoFactory.obtenerImagenProductoDAO().eliminar(id);
         throw operacionPendiente("eliminar");
     }
 
     @Override
     public List<ImagenProductoDominio> consultar(final ImagenProductoDominio filtros) {
         UtilObjeto.obtenerValorDefecto(filtros, new ImagenProductoDominio());
-        // TODO: integrar con DAO — daoFactory.obtenerImagenProductoDAO().consultarPorFiltro(...)
         return new ArrayList<>();
     }
 
