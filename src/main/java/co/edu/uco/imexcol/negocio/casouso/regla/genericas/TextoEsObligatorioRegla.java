@@ -15,8 +15,8 @@ public final class TextoEsObligatorioRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static TextoEsObligatorioRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

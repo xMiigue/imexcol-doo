@@ -312,6 +312,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_ADMINISTRADOR_NO_ENCONTRADO(
             "No se encontró el administrador con el identificador solicitado."),
+    ERROR_TECNICO_ADMINISTRADOR_NO_ENCONTRADO(
+            "No existe un registro de administrador con id=%s."),
 
     EXITO_ADMINISTRADOR_CONSULTA_POR_ID(
             "Administrador consultado satisfactoriamente."),
@@ -348,6 +350,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_CARRITO_COMPRAS_NO_ENCONTRADO(
             "No se encontró el carrito de compras con el identificador solicitado."),
+    ERROR_TECNICO_CARRITO_COMPRAS_NO_ENCONTRADO(
+            "No existe un registro de carrito de compras con id=%s."),
 
     EXITO_CARRITO_COMPRAS_CONSULTA_POR_ID(
             "Carrito de compras consultado satisfactoriamente."),
@@ -366,6 +370,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_CATEGORIA_NO_ENCONTRADO(
             "No se encontró la categoría con el identificador solicitado."),
+    ERROR_TECNICO_CATEGORIA_NO_ENCONTRADO(
+            "No existe un registro de categoría con id=%s."),
 
     EXITO_CATEGORIA_CONSULTA_POR_ID(
             "Categoría consultada satisfactoriamente."),
@@ -384,6 +390,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_CLIENTE_NO_ENCONTRADO(
             "No se encontró el cliente con el identificador solicitado."),
+    ERROR_TECNICO_CLIENTE_NO_ENCONTRADO(
+            "No existe un registro de cliente con id=%s."),
 
     EXITO_CLIENTE_CONSULTA_POR_ID(
             "Cliente consultado satisfactoriamente."),
@@ -402,6 +410,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_DIRECCION_NO_ENCONTRADO(
             "No se encontró la dirección con el identificador solicitado."),
+    ERROR_TECNICO_DIRECCION_NO_ENCONTRADO(
+            "No existe un registro de dirección con id=%s."),
 
     EXITO_DIRECCION_CONSULTA_POR_ID(
             "Dirección consultada satisfactoriamente."),
@@ -420,6 +430,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_ENVIO_NO_ENCONTRADO(
             "No se encontró el envío con el identificador solicitado."),
+    ERROR_TECNICO_ENVIO_NO_ENCONTRADO(
+            "No existe un registro de envío con id=%s."),
 
     EXITO_ENVIO_CONSULTA_POR_ID(
             "Envío consultado satisfactoriamente."),
@@ -438,6 +450,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_ITEM_CARRITO_NO_ENCONTRADO(
             "No se encontró el ítem del carrito con el identificador solicitado."),
+    ERROR_TECNICO_ITEM_CARRITO_NO_ENCONTRADO(
+            "No existe un registro de ítem del carrito con id=%s."),
 
     EXITO_ITEM_CARRITO_CONSULTA_POR_ID(
             "Ítem del carrito consultado satisfactoriamente."),
@@ -456,6 +470,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_LINEA_PEDIDO_NO_ENCONTRADO(
             "No se encontró la línea de pedido con el identificador solicitado."),
+    ERROR_TECNICO_LINEA_PEDIDO_NO_ENCONTRADO(
+            "No existe un registro de línea de pedido con id=%s."),
 
     EXITO_LINEA_PEDIDO_CONSULTA_POR_ID(
             "Línea de pedido consultada satisfactoriamente."),
@@ -474,6 +490,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_METODO_PAGO_NO_ENCONTRADO(
             "No se encontró el método de pago con el identificador solicitado."),
+    ERROR_TECNICO_METODO_PAGO_NO_ENCONTRADO(
+            "No existe un registro de método de pago con id=%s."),
 
     EXITO_METODO_PAGO_CONSULTA_POR_ID(
             "Método de pago consultado satisfactoriamente."),
@@ -492,6 +510,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_PAGO_NO_ENCONTRADO(
             "No se encontró el pago con el identificador solicitado."),
+    ERROR_TECNICO_PAGO_NO_ENCONTRADO(
+            "No existe un registro de pago con id=%s."),
 
     EXITO_PAGO_CONSULTA_POR_ID(
             "Pago consultado satisfactoriamente."),
@@ -510,6 +530,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_PEDIDO_NO_ENCONTRADO(
             "No se encontró el pedido con el identificador solicitado."),
+    ERROR_TECNICO_PEDIDO_NO_ENCONTRADO(
+            "No existe un registro de pedido con id=%s."),
 
     EXITO_PEDIDO_CONSULTA_POR_ID(
             "Pedido consultado satisfactoriamente."),
@@ -528,6 +550,8 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_PRODUCTO_NO_ENCONTRADO(
             "No se encontró el producto con el identificador solicitado."),
+    ERROR_TECNICO_PRODUCTO_NO_ENCONTRADO(
+            "No existe un registro de producto con id=%s."),
 
     EXITO_PRODUCTO_CONSULTA_POR_ID(
             "Producto consultado satisfactoriamente."),

@@ -17,8 +17,8 @@ public final class FechaNoEsValorPorDefectoRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static FechaNoEsValorPorDefectoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

@@ -15,8 +15,8 @@ public final class LongitudTextoEsValidaRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static LongitudTextoEsValidaRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

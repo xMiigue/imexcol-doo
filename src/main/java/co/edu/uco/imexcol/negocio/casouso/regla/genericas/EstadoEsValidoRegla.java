@@ -15,8 +15,8 @@ public final class EstadoEsValidoRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static EstadoEsValidoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

@@ -14,8 +14,8 @@ public final class NumeroEsMayorACeroRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static NumeroEsMayorACeroRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

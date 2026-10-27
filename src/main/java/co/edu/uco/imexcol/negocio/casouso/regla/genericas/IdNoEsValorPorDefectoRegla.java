@@ -17,8 +17,8 @@ public final class IdNoEsValorPorDefectoRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static IdNoEsValorPorDefectoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

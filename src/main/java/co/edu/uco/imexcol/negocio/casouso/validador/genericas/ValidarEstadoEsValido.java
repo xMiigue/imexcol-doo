@@ -17,6 +17,6 @@ public final class ValidarEstadoEsValido implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        EstadoEsValidoRegla.ejecutarRegla(datos);
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(datos);
     }
 }

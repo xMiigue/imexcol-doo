@@ -14,8 +14,8 @@ public final class NumeroEsPositivoRegla implements Regla {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static NumeroEsPositivoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override

@@ -22,6 +22,6 @@ public final class ValidarEstadoPagoEsValido implements Validador {
     @Override
     public void validar(final Object... datos) {
         final var estado = (String) datos[0];
-        EstadoEsValidoRegla.ejecutarRegla(estado, "estado del pago", ESTADOS_VALIDOS);
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, "estado del pago", ESTADOS_VALIDOS);
     }
 }

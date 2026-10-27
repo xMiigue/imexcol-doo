@@ -17,6 +17,6 @@ public final class ValidarFechaNoEsValorPorDefecto implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        FechaNoEsValorPorDefectoRegla.ejecutarRegla(datos);
+        FechaNoEsValorPorDefectoRegla.obtenerInstancia().ejecutar(datos);
     }
 }

@@ -20,6 +20,6 @@ public final class ValidarEstadoCarritoComprasEsValido implements Validador {
     @Override
     public void validar(final Object... datos) {
         final var estado = (String) datos[0];
-        EstadoEsValidoRegla.ejecutarRegla(estado, "estado del carrito de compras", ESTADOS_VALIDOS);
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, "estado del carrito de compras", ESTADOS_VALIDOS);
     }
 }

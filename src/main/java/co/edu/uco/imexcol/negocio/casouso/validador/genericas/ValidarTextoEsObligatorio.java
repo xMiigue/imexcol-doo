@@ -17,6 +17,6 @@ public final class ValidarTextoEsObligatorio implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        TextoEsObligatorioRegla.ejecutarRegla(datos);
+        TextoEsObligatorioRegla.obtenerInstancia().ejecutar(datos);
     }
 }

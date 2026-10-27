@@ -22,6 +22,6 @@ public final class ValidarEstadoEventoRastreoEsValido implements Validador {
     @Override
     public void validar(final Object... datos) {
         final var estado = (String) datos[0];
-        EstadoEsValidoRegla.ejecutarRegla(estado, "estado del evento de rastreo", ESTADOS_VALIDOS);
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, "estado del evento de rastreo", ESTADOS_VALIDOS);
     }
 }

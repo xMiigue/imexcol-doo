@@ -17,6 +17,6 @@ public final class ValidarNumeroEsMayorACero implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        NumeroEsMayorACeroRegla.ejecutarRegla(datos);
+        NumeroEsMayorACeroRegla.obtenerInstancia().ejecutar(datos);
     }
 }
