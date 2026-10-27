@@ -6,13 +6,20 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.CarritoComprasEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.CarritoComprasNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasNoEstaConvertido;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasPerteneceAlCliente;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasTieneItemsParaConvertirse;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarClienteNoTieneOtroCarritoActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarEstadoCarritoComprasEsValido;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.CarritoComprasDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
@@ -35,22 +42,29 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
     public void registrar(final CarritoComprasDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CarritoComprasDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerCarritoComprasDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarClienteExista(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarClienteNoTengaOtroCarritoActivo(dominioSeguro);
+        asegurarCarritoTengaItemsParaConvertirse(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final CarritoComprasDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CarritoComprasDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "carrito de compras");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerCarritoComprasDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarCarritoExista(dominioSeguro.getId());
+        asegurarCarritoPertenezcaAlCliente(dominioSeguro);
+        asegurarClienteNoTengaOtroCarritoActivo(dominioSeguro);
+        asegurarCarritoTengaItemsParaConvertirse(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "carrito de compras");
-        fabrica.obtenerCarritoComprasDAO().eliminar(id);
+        asegurarCarritoExista(id);
+        asegurarCarritoNoEsteConvertido(id);
+        borrar(id);
     }
 
     @Override
@@ -70,5 +84,46 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(),
                 "estado del carrito de compras");
         ValidarEstadoCarritoComprasEsValido.ejecutarValidacion(dominio.getEstado());
+    }
+
+    private void asegurarClienteExista(final CarritoComprasDominio dominio) {
+        ValidarClienteExistePorId.ejecutarValidacion(dominio.getCliente().getId(), fabrica);
+    }
+
+    private void asegurarClienteNoTengaOtroCarritoActivo(final CarritoComprasDominio dominio) {
+        ValidarClienteNoTieneOtroCarritoActivo.ejecutarValidacion(dominio, fabrica);
+    }
+
+    private void asegurarCarritoExista(final UUID id) {
+        ValidarCarritoComprasExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarCarritoPertenezcaAlCliente(final CarritoComprasDominio dominio) {
+        ValidarCarritoComprasPerteneceAlCliente.ejecutarValidacion(dominio.getId(), dominio.getCliente().getId(),
+                fabrica);
+    }
+
+    private void asegurarCarritoNoEsteConvertido(final UUID id) {
+        ValidarCarritoComprasNoEstaConvertido.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarCarritoTengaItemsParaConvertirse(final CarritoComprasDominio dominio) {
+        ValidarCarritoComprasTieneItemsParaConvertirse.ejecutarValidacion(dominio, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final CarritoComprasDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final CarritoComprasDominio dominio) {
+        fabrica.obtenerCarritoComprasDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final CarritoComprasDominio dominio) {
+        fabrica.obtenerCarritoComprasDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerCarritoComprasDAO().eliminar(id);
     }
 }

@@ -137,6 +137,26 @@ public enum MensajesEnum {
     ERROR_TECNICO_METODO_PAGO_NOMBRE_DUPLICADO(
             "Ya existe otro método de pago registrado con nombre=%s."),
 
+    ERROR_USUARIO_CARRITO_COMPRAS_ACTIVO_DUPLICADO(
+            "El cliente ya tiene un carrito de compras activo. Debe usar ese carrito antes de crear uno nuevo."),
+    ERROR_TECNICO_CARRITO_COMPRAS_ACTIVO_DUPLICADO(
+            "El cliente id=%s ya tiene otro carrito en estado %s."),
+
+    ERROR_USUARIO_CARRITO_COMPRAS_NO_PERTENECE_AL_CLIENTE(
+            "El carrito de compras no pertenece al cliente indicado."),
+    ERROR_TECNICO_CARRITO_COMPRAS_NO_PERTENECE_AL_CLIENTE(
+            "El carrito id=%s pertenece al cliente id=%s y no al cliente id=%s."),
+
+    ERROR_USUARIO_CARRITO_COMPRAS_YA_CONVERTIDO(
+            "No es posible vaciar el carrito porque ya fue convertido en un pedido."),
+    ERROR_TECNICO_CARRITO_COMPRAS_YA_CONVERTIDO(
+            "El carrito id=%s está en estado %s y no puede vaciarse."),
+
+    ERROR_USUARIO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
+            "El carrito solo puede marcarse como convertido si tiene al menos un producto."),
+    ERROR_TECNICO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
+            "El carrito id=%s no tiene ítems y no puede pasar a estado %s."),
+
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(
