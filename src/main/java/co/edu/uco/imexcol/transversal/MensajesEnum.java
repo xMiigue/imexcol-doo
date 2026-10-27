@@ -615,6 +615,26 @@ public enum MensajesEnum {
     ERROR_TECNICO_PEDIDO_CON_FACTURA(
             "El pedido id=%s ya está asociado a la factura id=%s."),
 
+    ERROR_USUARIO_PEDIDO_CON_LINEAS(
+            "No es posible eliminar el pedido porque tiene productos registrados. Se recomienda cancelarlo."),
+    ERROR_TECNICO_PEDIDO_CON_LINEAS(
+            "El pedido id=%s tiene %s línea(s) asociada(s) y no puede eliminarse."),
+
+    ERROR_USUARIO_PEDIDO_CON_PAGOS(
+            "No es posible eliminar el pedido porque tiene pagos registrados. Se recomienda cancelarlo."),
+    ERROR_TECNICO_PEDIDO_CON_PAGOS(
+            "El pedido id=%s tiene %s pago(s) asociado(s) y no puede eliminarse."),
+
+    ERROR_USUARIO_PEDIDO_CON_ENVIOS(
+            "No es posible eliminar el pedido porque tiene envíos registrados."),
+    ERROR_TECNICO_PEDIDO_CON_ENVIOS(
+            "El pedido id=%s tiene %s envío(s) asociado(s) y no puede eliminarse."),
+
+    ERROR_USUARIO_DIRECCION_CON_PEDIDOS(
+            "No es posible eliminar la dirección porque está asociada a uno o más pedidos."),
+    ERROR_TECNICO_DIRECCION_CON_PEDIDOS(
+            "La dirección id=%s está asociada a %s pedido(s) y no puede eliminarse."),
+
     ERROR_USUARIO_PEDIDO_SIN_FACTURA(
             "El pedido aún no tiene una factura emitida."),
     ERROR_TECNICO_PEDIDO_SIN_FACTURA(

@@ -44,6 +44,7 @@ public final class PedidoSql {
     public static final String FILTRO_ID = "p.id = ?";
     public static final String FILTRO_CLIENTE = "p.cliente_id = ?";
     public static final String FILTRO_ESTADO = "p.estado = ?";
+    public static final String FILTRO_DIRECCION = "p.direccion_id = ?";
     public static final String COLUMNA_ID = "pedido_id";
     public static final String COLUMNA_CLIENTE_ID = "pedido_cliente_id";
     public static final String COLUMNA_FECHA_PEDIDO = "pedido_fecha_pedido";

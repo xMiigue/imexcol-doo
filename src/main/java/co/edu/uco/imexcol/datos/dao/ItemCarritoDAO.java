@@ -9,4 +9,6 @@ public interface ItemCarritoDAO
                 RecuperarDAO<ItemCarritoEntidad, UUID>,
                 ActualizarDAO<ItemCarritoEntidad>,
                 EliminarDAO<UUID> {
+
+    void eliminarPorCarrito(UUID idCarrito);
 }

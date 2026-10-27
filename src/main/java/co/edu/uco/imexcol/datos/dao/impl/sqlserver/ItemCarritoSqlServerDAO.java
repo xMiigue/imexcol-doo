@@ -21,6 +21,8 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCarritoDAO {
 
+    private static final int POSICION_ID_CARRITO_ELIMINAR = 1;
+
     public ItemCarritoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -71,6 +73,21 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
 
         try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ELIMINAR)) {
             sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.executeUpdate();
+        } catch (final SQLException excepcion) {
+            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
+                    MensajesEnum.ERROR_TECNICO_DAO_ELIMINAR_GENERICO);
+        } catch (final Exception excepcion) {
+            throw envolverErrorInesperado(excepcion);
+        }
+    }
+
+    @Override
+    public void eliminarPorCarrito(final UUID idCarrito) {
+        UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
+
+        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ELIMINAR_POR_CARRITO)) {
+            sentencia.setObject(POSICION_ID_CARRITO_ELIMINAR, UtilUUID.obtenerValorDefecto(idCarrito));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

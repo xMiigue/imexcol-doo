@@ -141,6 +141,10 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
             condiciones.add(PedidoSql.FILTRO_ESTADO);
             parametros.add(filtro.getEstado());
         }
+        if (!UtilUUID.esUUIDPorDefecto(filtro.getDireccion().getId())) {
+            condiciones.add(PedidoSql.FILTRO_DIRECCION);
+            parametros.add(filtro.getDireccion().getId());
+        }
 
         if (!condiciones.isEmpty()) {
             consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));

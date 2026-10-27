@@ -15,6 +15,10 @@ import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPos
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarEstadoPedidoEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneEnvios;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneFactura;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneLineas;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTienePagos;
 import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.negocio.dominio.PedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -71,6 +75,10 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     @Override
     public void eliminar(final UUID id) {
         asegurarPedidoExista(id);
+        asegurarPedidoNoTengaFactura(id);
+        asegurarPedidoNoTengaPagos(id);
+        asegurarPedidoNoTengaEnvios(id);
+        asegurarPedidoNoTengaLineas(id);
         borrar(id);
     }
 
@@ -121,6 +129,22 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
 
     private void asegurarPedidoExista(final UUID id) {
         ValidarPedidoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPedidoNoTengaFactura(final UUID id) {
+        ValidarPedidoNoTieneFactura.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPedidoNoTengaPagos(final UUID id) {
+        ValidarPedidoNoTienePagos.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPedidoNoTengaEnvios(final UUID id) {
+        ValidarPedidoNoTieneEnvios.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPedidoNoTengaLineas(final UUID id) {
+        ValidarPedidoNoTieneLineas.ejecutarValidacion(id, fabrica);
     }
 
     private void asignarNuevoIdentificador(final PedidoDominio dominio) {

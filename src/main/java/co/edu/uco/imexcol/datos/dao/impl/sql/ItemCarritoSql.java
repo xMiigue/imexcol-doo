@@ -38,6 +38,11 @@ public final class ItemCarritoSql {
             WHERE id = ?
             """;
 
+    public static final String ELIMINAR_POR_CARRITO = """
+            DELETE FROM imex_item_carrito
+            WHERE carrito_id = ?
+            """;
+
     public static final String FILTRO_ID = "i.id = ?";
     public static final String FILTRO_CARRITO = "i.carrito_id = ?";
     public static final String FILTRO_PRODUCTO = "i.producto_id = ?";

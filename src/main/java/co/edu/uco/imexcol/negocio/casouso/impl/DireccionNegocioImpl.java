@@ -9,6 +9,7 @@ import co.edu.uco.imexcol.negocio.casouso.DireccionNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoEstaDuplicadaParaCliente;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoTienePedidosAsociados;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
@@ -75,6 +76,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     @Override
     public void eliminar(final UUID id) {
         asegurarDireccionExista(id);
+        asegurarDireccionNoTengaPedidos(id);
         borrar(id);
     }
 
@@ -132,6 +134,10 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
 
     private void modificar(final DireccionDominio dominio) {
         fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void asegurarDireccionNoTengaPedidos(final UUID id) {
+        ValidarDireccionNoTienePedidosAsociados.ejecutarValidacion(id, fabrica);
     }
 
     private void borrar(final UUID id) {

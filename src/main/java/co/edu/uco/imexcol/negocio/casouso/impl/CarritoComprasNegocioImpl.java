@@ -69,6 +69,7 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
     public void eliminar(final UUID id) {
         asegurarCarritoExista(id);
         asegurarCarritoNoEsteConvertido(id);
+        borrarItems(id);
         borrar(id);
     }
 
@@ -122,6 +123,10 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
 
     private void modificar(final CarritoComprasDominio dominio) {
         fabrica.obtenerCarritoComprasDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrarItems(final UUID id) {
+        fabrica.obtenerItemCarritoDAO().eliminarPorCarrito(id);
     }
 
     private void borrar(final UUID id) {
