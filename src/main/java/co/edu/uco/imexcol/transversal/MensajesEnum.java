@@ -240,7 +240,7 @@ public enum MensajesEnum {
     ERROR_USUARIO_SOLICITUD_INVALIDA(
             "La solicitud enviada está vacía o no tiene un formato válido. Por favor verifique la información e intente de nuevo."),
     ERROR_TECNICO_SOLICITUD_INVALIDA(
-            "No fue posible leer la petición HTTP: el cuerpo está vacío, el JSON está mal formado o un parámetro no tiene el tipo esperado."),
+            "No fue posible leer la petición HTTP: el cuerpo está vacío, el JSON está mal formado o un parámetro no tiene el tipo esperado. Detalle: %s"),
 
     ERROR_USUARIO_METODO_NO_SOPORTADO(
             "La operación solicitada no está permitida sobre este recurso. Por favor verifique la acción e intente de nuevo."),

@@ -40,7 +40,7 @@ public final class ManejadorExcepcionesControlador {
 
     @ExceptionHandler(ImexcolException.class)
     public ResponseEntity<Respuesta<Object>> manejarExcepcionImexcol(final ImexcolException excepcion) {
-        REGISTRO.warn(excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
+        REGISTRO.warn(excepcion.getMensajeTecnico());
         return responderFallida(excepcion.getMensajeUsuario(), HttpStatus.BAD_REQUEST);
     }
 
@@ -54,7 +54,8 @@ public final class ManejadorExcepcionesControlador {
 
     @ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
     public ResponseEntity<Respuesta<Object>> manejarSolicitudInvalida(final Exception excepcion) {
-        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA.getContenido(), excepcion);
+        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA.getContenido()
+                .formatted(excepcion.getMessage()));
         return responderFallida(MensajesEnum.ERROR_USUARIO_SOLICITUD_INVALIDA.getContenido(),
                 HttpStatus.BAD_REQUEST);
     }
