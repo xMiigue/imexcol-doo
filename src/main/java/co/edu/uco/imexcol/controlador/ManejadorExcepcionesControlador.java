@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -47,6 +49,24 @@ public final class ManejadorExcepcionesControlador {
         REGISTRO.warn(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA.getContenido(), excepcion);
         return responderFallida(MensajesEnum.ERROR_USUARIO_SOLICITUD_INVALIDA.getContenido(),
                 HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Respuesta<Object>> manejarMetodoNoSoportado(
+            final HttpRequestMethodNotSupportedException excepcion) {
+        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_METODO_NO_SOPORTADO.getContenido()
+                .formatted(excepcion.getMethod(), excepcion.getSupportedHttpMethods()));
+        return responderFallida(MensajesEnum.ERROR_USUARIO_METODO_NO_SOPORTADO.getContenido(),
+                HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Respuesta<Object>> manejarTipoContenidoNoSoportado(
+            final HttpMediaTypeNotSupportedException excepcion) {
+        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_TIPO_CONTENIDO_NO_SOPORTADO.getContenido()
+                .formatted(excepcion.getContentType(), excepcion.getSupportedMediaTypes()));
+        return responderFallida(MensajesEnum.ERROR_USUARIO_TIPO_CONTENIDO_NO_SOPORTADO.getContenido(),
+                HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
     @ExceptionHandler(Exception.class)

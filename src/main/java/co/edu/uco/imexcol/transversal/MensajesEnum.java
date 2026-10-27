@@ -347,6 +347,16 @@ public enum MensajesEnum {
     ERROR_TECNICO_SOLICITUD_INVALIDA(
             "No fue posible leer la petición HTTP: el cuerpo está vacío, el JSON está mal formado o un parámetro no tiene el tipo esperado."),
 
+    ERROR_USUARIO_METODO_NO_SOPORTADO(
+            "La operación solicitada no está permitida sobre este recurso. Por favor verifique la acción e intente de nuevo."),
+    ERROR_TECNICO_METODO_NO_SOPORTADO(
+            "El método HTTP %s no está soportado por el recurso solicitado. Métodos soportados: %s."),
+
+    ERROR_USUARIO_TIPO_CONTENIDO_NO_SOPORTADO(
+            "El formato de la información enviada no es válido. Envíe los datos en formato JSON."),
+    ERROR_TECNICO_TIPO_CONTENIDO_NO_SOPORTADO(
+            "El tipo de contenido %s no está soportado. Tipos soportados: %s."),
+
     ERROR_USUARIO_DATO_TEXTO_REQUERIDO(
             "El dato [%s] es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_DATO_TEXTO_REQUERIDO(
