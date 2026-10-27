@@ -8,6 +8,7 @@ import co.edu.uco.imexcol.negocio.assembler.entidad.impl.EnvioEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.EnvioNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEnvioExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEstadoEnvioEsValido;
+import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarFechaEntregaNoEsAnteriorAFechaEnvio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
@@ -17,7 +18,6 @@ import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePo
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneEnvioActivo;
 import co.edu.uco.imexcol.negocio.dominio.EnvioDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
@@ -99,13 +99,8 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     }
 
     private void validarCoherenciaFechas(final EnvioDominio dominio) {
-        if (!UtilFecha.esFechaPorDefecto(dominio.getFechaEntrega())
-                && dominio.getFechaEntrega().isBefore(dominio.getFechaEnvio())) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO.getContenido()
-                            .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()));
-        }
+        ValidarFechaEntregaNoEsAnteriorAFechaEnvio.ejecutarValidacion(dominio.getFechaEntrega(),
+                dominio.getFechaEnvio());
     }
 
     private void asegurarPedidoExista(final EnvioDominio dominio) {

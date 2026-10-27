@@ -6,12 +6,16 @@ import java.time.temporal.ChronoUnit;
 
 public final class UtilFecha {
 
+    private static final int ANIO_POR_DEFECTO = 1;
+    private static final int MES_POR_DEFECTO = 1;
+    private static final int DIA_POR_DEFECTO = 1;
+
     private UtilFecha() {
         super();
     }
 
     public static LocalDate obtenerFechaPorDefecto() {
-        return LocalDate.of(1, 1, 1);
+        return LocalDate.of(ANIO_POR_DEFECTO, MES_POR_DEFECTO, DIA_POR_DEFECTO);
     }
 
     public static LocalDate obtenerValorDefecto(final LocalDate valor) {
@@ -23,15 +27,31 @@ public final class UtilFecha {
     }
 
     public static boolean esFechaPorDefecto(final LocalDate fecha) {
-        return obtenerFechaPorDefecto().equals(fecha);
+        return sonFechasIguales(fecha, obtenerFechaPorDefecto());
     }
 
-    public static boolean esFechaPosteriorOIgualAHoy(final LocalDate valor) {
-        return valor.isAfter(LocalDate.now()) || valor.isEqual(LocalDate.now());
+    public static boolean sonFechasIguales(final LocalDate valor, final LocalDate referencia) {
+        return obtenerValorDefecto(valor).isEqual(obtenerValorDefecto(referencia));
     }
 
     public static boolean esFechaAnteriorA(final LocalDate valor, final LocalDate referencia) {
-        return valor.isBefore(referencia);
+        return obtenerValorDefecto(valor).isBefore(obtenerValorDefecto(referencia));
+    }
+
+    public static boolean esFechaPosteriorA(final LocalDate valor, final LocalDate referencia) {
+        return obtenerValorDefecto(valor).isAfter(obtenerValorDefecto(referencia));
+    }
+
+    public static boolean esFechaAnteriorAHoy(final LocalDate valor) {
+        return esFechaAnteriorA(valor, obtenerFechaActual());
+    }
+
+    public static boolean esFechaPosteriorAHoy(final LocalDate valor) {
+        return esFechaPosteriorA(valor, obtenerFechaActual());
+    }
+
+    public static boolean esFechaPosteriorOIgualAHoy(final LocalDate valor) {
+        return !esFechaAnteriorAHoy(valor);
     }
 
     public static LocalDateTime obtenerFechaHoraPorDefecto() {
@@ -51,10 +71,14 @@ public final class UtilFecha {
     }
 
     public static boolean esFechaHoraPorDefecto(final LocalDateTime valor) {
-        return obtenerFechaHoraPorDefecto().equals(valor);
+        return sonFechasHoraIguales(valor, obtenerFechaHoraPorDefecto());
+    }
+
+    public static boolean sonFechasHoraIguales(final LocalDateTime valor, final LocalDateTime referencia) {
+        return obtenerValorDefecto(valor).isEqual(obtenerValorDefecto(referencia));
     }
 
     public static boolean esFechaHoraAnteriorA(final LocalDateTime valor, final LocalDate referencia) {
-        return esFechaAnteriorA(obtenerValorDefecto(valor).toLocalDate(), obtenerValorDefecto(referencia));
+        return esFechaAnteriorA(obtenerValorDefecto(valor).toLocalDate(), referencia);
     }
 }

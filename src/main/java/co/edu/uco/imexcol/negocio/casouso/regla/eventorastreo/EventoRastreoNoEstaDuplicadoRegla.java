@@ -54,7 +54,7 @@ public final class EventoRastreoNoEstaDuplicadoRegla implements Regla {
         filtro.setEnvio(new EnvioEntidad(idEnvio));
         return fabrica.obtenerEventoRastreoDAO().consultarPorFiltro(filtro).stream()
                 .filter(evento -> estadoLogistico.equalsIgnoreCase(evento.getEstadoLogistico()))
-                .filter(evento -> fechaHora.equals(evento.getFechaHora()))
+                .filter(evento -> UtilFecha.sonFechasHoraIguales(fechaHora, evento.getFechaHora()))
                 .findFirst()
                 .orElse(new EventoRastreoEntidad());
     }
