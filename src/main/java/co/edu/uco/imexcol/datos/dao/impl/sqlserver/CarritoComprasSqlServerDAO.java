@@ -19,8 +19,7 @@ import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class CarritoComprasSqlServerDAO extends ConexionSql implements CarritoComprasDAO {
 
@@ -149,15 +148,14 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         return resultados;
     }
 
-    private static ImexcolException envolverErrorDao(final Exception excepcion,
+    private static ImexcolDatosException envolverErrorDao(final Exception excepcion,
             final MensajesEnum usuarioMsg, final MensajesEnum tecnicoMsg) {
-        return ImexcolException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido(), Lugar.DATOS);
+        return ImexcolDatosException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido());
     }
 
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
+    private static ImexcolDatosException envolverErrorInesperado(final Exception excepcion) {
+        return ImexcolDatosException.crear(excepcion,
                 MensajesEnum.ERROR_USUARIO_DAO_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido(),
-                Lugar.DATOS);
+                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido());
     }
 }

@@ -3,8 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class NumeroEsPositivoRegla implements Regla {
 
@@ -22,16 +21,14 @@ public final class NumeroEsPositivoRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido());
         }
         if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido());
         }
 
         final var valor = ((Number) datos[0]).doubleValue();
@@ -42,7 +39,7 @@ public final class NumeroEsPositivoRegla implements Regla {
                     .formatted(nombreDato);
             final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_NUMERO_NEGATIVO.getContenido()
                     .formatted(nombreDato);
-            throw ImexcolException.crear(mensajeUsuario, mensajeTecnico, Lugar.NEGOCIO);
+            throw ImexcolNegocioException.crear(mensajeUsuario, mensajeTecnico);
         }
     }
 }

@@ -13,8 +13,7 @@ import co.edu.uco.imexcol.negocio.dominio.CategoriaDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
 
@@ -24,10 +23,9 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
     public CategoriaNegocioImpl(final CategoriaDAO dao) {
         super();
         if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
         this.dao = dao;
         this.ensamblador = CategoriaEntidadAssembler.obtenerInstancia();
@@ -79,10 +77,9 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
 
         final var existentes = dao.consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente.",
-                    "Intento de inserción de categoría duplicada: nombre=%s.".formatted(dominio.getNombre()),
-                    Lugar.NEGOCIO);
+                    "Intento de inserción de categoría duplicada: nombre=%s.".formatted(dominio.getNombre()));
         }
     }
 }

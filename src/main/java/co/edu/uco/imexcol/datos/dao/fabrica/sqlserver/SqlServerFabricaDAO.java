@@ -17,6 +17,7 @@ import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
 import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.AdministradorSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CarritoComprasSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CategoriaSqlServerDAO;
@@ -29,11 +30,9 @@ import co.edu.uco.imexcol.datos.dao.impl.sqlserver.MetodoPagoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PagoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PedidoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ProductoSqlServerDAO;
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class SqlServerFabricaDAO extends FabricaDAO {
 
@@ -78,11 +77,10 @@ public final class SqlServerFabricaDAO extends FabricaDAO {
         }
     }
 
-    private static ImexcolException crearExcepcionAbrirConexion(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
+    private static ImexcolDatosException crearExcepcionAbrirConexion(final Exception excepcion) {
+        return ImexcolDatosException.crear(excepcion,
                 MensajesEnum.ERROR_USUARIO_CONEXION_SQL_ABRIR.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CONEXION_SQL_ABRIR.getContenido(),
-                Lugar.DATOS);
+                MensajesEnum.ERROR_TECNICO_CONEXION_SQL_ABRIR.getContenido());
     }
 
     private static String obtenerValorPropiedad(final Properties propiedades, final String nombrePropiedad) {
@@ -126,11 +124,10 @@ public final class SqlServerFabricaDAO extends FabricaDAO {
         return expresion.substring(expresion.indexOf(SEPARADOR_VALOR_DEFECTO) + SEPARADOR_VALOR_DEFECTO.length());
     }
 
-    private static ImexcolException crearExcepcionVariableNoDefinida(final String nombreVariable) {
-        return ImexcolException.crear(
+    private static ImexcolDatosException crearExcepcionVariableNoDefinida(final String nombreVariable) {
+        return ImexcolDatosException.crear(
                 MensajesEnum.ERROR_USUARIO_VARIABLE_ENTORNO_NO_DEFINIDA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_VARIABLE_ENTORNO_NO_DEFINIDA.getContenido().formatted(nombreVariable),
-                Lugar.DATOS);
+                MensajesEnum.ERROR_TECNICO_VARIABLE_ENTORNO_NO_DEFINIDA.getContenido().formatted(nombreVariable));
     }
 
     @Override

@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import co.edu.uco.imexcol.entidad.AdministradorEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class AdministradorMapper {
 
@@ -24,15 +23,13 @@ public final class AdministradorMapper {
             entidad.setContrasena(resultSet.getString("administrador_contrasena"));
             entidad.setEstado(resultSet.getBoolean("administrador_estado"));
         } catch (final SQLException excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido());
         } catch (final Exception excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_INESPERADO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido());
         }
         return entidad;
     }

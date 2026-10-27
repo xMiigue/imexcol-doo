@@ -12,8 +12,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPos
 import co.edu.uco.imexcol.negocio.dominio.LineaPedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
 
@@ -23,10 +22,9 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
     public LineaPedidoNegocioImpl(final LineaPedidoDAO dao) {
         super();
         if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
         this.dao = dao;
         this.ensamblador = LineaPedidoEntidadAssembler.obtenerInstancia();
@@ -82,11 +80,10 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         final var esperado = dominio.getCantidad() * dominio.getPrecioUnitario();
         final var diferencia = Math.abs(esperado - dominio.getSubtotal());
         if (diferencia > 0.01) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     "El subtotal de la línea del pedido no coincide con cantidad × precio unitario. Por favor verifique los valores.",
                     "Inconsistencia detectada en LineaPedido: subtotal=%s, esperado=%s (cantidad=%s * precioUnitario=%s)."
-                            .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(), dominio.getPrecioUnitario()),
-                    Lugar.NEGOCIO);
+                            .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(), dominio.getPrecioUnitario()));
         }
     }
 }

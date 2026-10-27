@@ -12,8 +12,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPos
 import co.edu.uco.imexcol.negocio.dominio.ItemCarritoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
 
@@ -23,10 +22,9 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
     public ItemCarritoNegocioImpl(final ItemCarritoDAO dao) {
         super();
         if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
         this.dao = dao;
         this.ensamblador = ItemCarritoEntidadAssembler.obtenerInstancia();

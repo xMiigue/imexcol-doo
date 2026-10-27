@@ -17,8 +17,7 @@ import co.edu.uco.imexcol.datos.dao.ProductoDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.sqlserver.SqlServerFabricaDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public abstract class FabricaDAO {
 
@@ -33,10 +32,9 @@ public abstract class FabricaDAO {
         if (FabricaEnum.SQLSERVER.equals(tipo)) {
             return new SqlServerFabricaDAO();
         }
-        throw ImexcolException.crear(
+        throw ImexcolDatosException.crear(
                 MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                Lugar.DATOS);
+                MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
     }
 
     public abstract CategoriaDAO obtenerCategoriaDAO();

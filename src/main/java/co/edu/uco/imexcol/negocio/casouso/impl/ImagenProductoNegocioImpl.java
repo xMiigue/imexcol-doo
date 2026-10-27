@@ -12,8 +12,7 @@ import co.edu.uco.imexcol.negocio.dominio.ImagenProductoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ImagenProductoNegocioImpl implements ImagenProductoNegocio {
 
@@ -63,10 +62,9 @@ public final class ImagenProductoNegocioImpl implements ImagenProductoNegocio {
         }
     }
 
-    private static ImexcolException operacionPendiente(final String operacion) {
-        return ImexcolException.crear(
+    private static ImexcolNegocioException operacionPendiente(final String operacion) {
+        return ImexcolNegocioException.crear(
                 MensajesEnum.ERROR_USUARIO_CASO_USO_DAO_PENDIENTE.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO),
-                Lugar.NEGOCIO);
+                MensajesEnum.ERROR_TECNICO_CASO_USO_DAO_PENDIENTE.getContenido().formatted(operacion, CASO_USO));
     }
 }

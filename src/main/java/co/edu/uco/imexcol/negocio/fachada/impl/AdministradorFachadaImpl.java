@@ -12,7 +12,7 @@ import co.edu.uco.imexcol.negocio.fachada.AdministradorFachada;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 public final class AdministradorFachadaImpl implements AdministradorFachada {
 
@@ -107,10 +107,9 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
         }
     }
 
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
+    private static ImexcolFachadaException envolverErrorInesperado(final Exception excepcion) {
+        return ImexcolFachadaException.crear(excepcion,
                 MensajesEnum.ERROR_USUARIO_FACHADA_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_FACHADA_OPERACION_INESPERADA.getContenido(),
-                Lugar.FACHADA);
+                MensajesEnum.ERROR_TECNICO_FACHADA_OPERACION_INESPERADA.getContenido());
     }
 }

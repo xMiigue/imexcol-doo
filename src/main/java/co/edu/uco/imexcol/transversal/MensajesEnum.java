@@ -147,6 +147,11 @@ public enum MensajesEnum {
     ERROR_TECNICO_TRANSACCION_VALIDACION_INESPERADA(
             "Se presentó un error inesperado validando el estado de la transacción SQL. Revise el log para más detalles."),
 
+    ERROR_USUARIO_UUID_FORMATO_INVALIDO(
+            "Se ha presentado un problema procesando un identificador de la información solicitada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
+    ERROR_TECNICO_UUID_FORMATO_INVALIDO(
+            "El texto [%s] no tiene el formato de un UUID válido y no pudo convertirse con UUID.fromString."),
+
     ERROR_USUARIO_DAO_CREAR_GENERICO(
             "Se ha presentado un problema al registrar la información. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_DAO_CREAR_GENERICO(

@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import co.edu.uco.imexcol.entidad.ClienteEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class ClienteMapper {
 
@@ -26,15 +25,13 @@ public final class ClienteMapper {
             entidad.setTelefono(resultSet.getString("cliente_telefono"));
             entidad.setEstado(resultSet.getBoolean("cliente_estado"));
         } catch (final SQLException excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido());
         } catch (final Exception excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_INESPERADO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido());
         }
         return entidad;
     }

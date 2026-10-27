@@ -15,8 +15,7 @@ import co.edu.uco.imexcol.negocio.dominio.EnvioDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class EnvioNegocioImpl implements EnvioNegocio {
 
@@ -26,10 +25,9 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     public EnvioNegocioImpl(final EnvioDAO dao) {
         super();
         if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
         this.dao = dao;
         this.ensamblador = EnvioEntidadAssembler.obtenerInstancia();
@@ -91,11 +89,10 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     private void validarCoherenciaFechas(final EnvioDominio dominio) {
         if (!UtilFecha.esFechaPorDefecto(dominio.getFechaEntrega())
                 && dominio.getFechaEntrega().isBefore(dominio.getFechaEnvio())) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     "La fecha de entrega no puede ser anterior a la fecha de envío.",
                     "Inconsistencia detectada en Envio: fechaEntrega=%s anterior a fechaEnvio=%s."
-                            .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()),
-                    Lugar.NEGOCIO);
+                            .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()));
         }
     }
 }

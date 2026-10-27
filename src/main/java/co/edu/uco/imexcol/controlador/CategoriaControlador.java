@@ -25,8 +25,8 @@ import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolControladorException;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 @CrossOrigin
 @RestController
@@ -155,10 +155,9 @@ public final class CategoriaControlador {
         return new ResponseEntity<>(respuesta, estado);
     }
 
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
+    private static ImexcolControladorException envolverErrorInesperado(final Exception excepcion) {
+        return ImexcolControladorException.crear(excepcion,
                 MensajesEnum.ERROR_USUARIO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
-                Lugar.CONTROLADOR);
+                MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido());
     }
 }

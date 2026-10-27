@@ -8,8 +8,7 @@ import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.entidad.ProductoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class LineaPedidoMapper {
 
@@ -34,15 +33,13 @@ public final class LineaPedidoMapper {
             entidad.setPrecioUnitario(resultSet.getDouble("linea_pedido_precio_unitario"));
             entidad.setSubtotal(resultSet.getDouble("linea_pedido_subtotal"));
         } catch (final SQLException excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido());
         } catch (final Exception excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_INESPERADO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido());
         }
         return entidad;
     }

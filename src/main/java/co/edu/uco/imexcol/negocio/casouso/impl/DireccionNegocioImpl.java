@@ -13,8 +13,7 @@ import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
@@ -24,10 +23,9 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     public DireccionNegocioImpl(final DireccionDAO dao) {
         super();
         if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
         this.dao = dao;
         this.ensamblador = DireccionEntidadAssembler.obtenerInstancia();
@@ -98,12 +96,11 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
 
         final var existentes = dao.consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
-            throw ImexcolException.crear(
+            throw ImexcolNegocioException.crear(
                     "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente.",
                     "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."
                             .formatted(dominio.getCliente().getId(), dominio.getCalle(),
-                                    dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()),
-                    Lugar.NEGOCIO);
+                                    dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()));
         }
     }
 }

@@ -10,8 +10,7 @@ import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class EnvioMapper {
 
@@ -42,15 +41,13 @@ public final class EnvioMapper {
             entidad.setNumeroGuia(resultSet.getString("envio_numero_guia"));
             entidad.setEstado(resultSet.getString("envio_estado"));
         } catch (final SQLException excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_GENERICO.getContenido());
         } catch (final Exception excepcion) {
-            throw ImexcolException.crear(excepcion,
+            throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_INESPERADO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido(),
-                    Lugar.DATOS);
+                    MensajesEnum.ERROR_TECNICO_MAPPER_INESPERADO.getContenido());
         }
         return entidad;
     }

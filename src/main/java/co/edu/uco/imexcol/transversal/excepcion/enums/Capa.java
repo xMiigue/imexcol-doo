@@ -1,14 +1,11 @@
 package co.edu.uco.imexcol.transversal.excepcion.enums;
 
-public enum Lugar {
+public enum Capa {
 
     GENERAL,
     TRANSVERSAL,
     DATOS,
     NEGOCIO,
     FACHADA,
-    CONTROLADOR,
-    DOMINIO,
-    DTO,
-    ENTIDAD;
+    CONTROLADOR;
 }
