@@ -2,91 +2,6 @@ package co.edu.uco.imexcol.transversal;
 
 public enum MensajesEnum {
 
-    ERROR_USUARIO_CATEGORIA_NOMBRE_NULO(
-            "El nombre de la categoría es obligatorio. Por favor, ingréselo."),
-    ERROR_TECNICO_CATEGORIA_NOMBRE_NULO(
-            "El nombre recibido para la categoría es nulo."),
-
-    ERROR_USUARIO_CATEGORIA_NOMBRE_VACIO(
-            "El nombre de la categoría no puede estar vacío. Por favor, ingréselo."),
-    ERROR_TECNICO_CATEGORIA_NOMBRE_VACIO(
-            "El nombre recibido para la categoría está vacío o contiene solo espacios."),
-
-    ERROR_USUARIO_CATEGORIA_NOMBRE_LONGITUD_INVALIDA(
-            "El nombre de la categoría debe tener entre 3 y 100 caracteres."),
-    ERROR_TECNICO_CATEGORIA_NOMBRE_LONGITUD_INVALIDA(
-            "La longitud del nombre de la categoría no se encuentra en el rango permitido [3, 100]."),
-
-    ERROR_USUARIO_CATEGORIA_DESCRIPCION_LONGITUD_INVALIDA(
-            "La descripción de la categoría no puede superar los 255 caracteres."),
-    ERROR_TECNICO_CATEGORIA_DESCRIPCION_LONGITUD_INVALIDA(
-            "La longitud de la descripción de la categoría supera el máximo permitido de 255 caracteres."),
-
-    ERROR_USUARIO_METODO_PAGO_NOMBRE_NULO(
-            "El nombre del método de pago es obligatorio. Por favor, ingréselo."),
-    ERROR_TECNICO_METODO_PAGO_NOMBRE_NULO(
-            "El nombre recibido para el método de pago es nulo."),
-
-    ERROR_USUARIO_METODO_PAGO_NOMBRE_VACIO(
-            "El nombre del método de pago no puede estar vacío. Por favor, ingréselo."),
-    ERROR_TECNICO_METODO_PAGO_NOMBRE_VACIO(
-            "El nombre recibido para el método de pago está vacío o contiene solo espacios."),
-
-    ERROR_USUARIO_METODO_PAGO_NOMBRE_LONGITUD_INVALIDA(
-            "El nombre del método de pago debe tener entre 3 y 100 caracteres."),
-    ERROR_TECNICO_METODO_PAGO_NOMBRE_LONGITUD_INVALIDA(
-            "La longitud del nombre del método de pago no se encuentra en el rango permitido [3, 100]."),
-
-    ERROR_USUARIO_METODO_PAGO_DESCRIPCION_LONGITUD_INVALIDA(
-            "La descripción del método de pago no puede superar los 255 caracteres."),
-    ERROR_TECNICO_METODO_PAGO_DESCRIPCION_LONGITUD_INVALIDA(
-            "La longitud de la descripción del método de pago supera el máximo permitido de 255 caracteres."),
-
-    ERROR_USUARIO_ADMINISTRADOR_NOMBRE_USUARIO_NULO(
-            "El nombre de usuario del administrador es obligatorio. Por favor, ingréselo."),
-    ERROR_TECNICO_ADMINISTRADOR_NOMBRE_USUARIO_NULO(
-            "El nombreUsuario recibido para el administrador es nulo."),
-
-    ERROR_USUARIO_ADMINISTRADOR_NOMBRE_USUARIO_VACIO(
-            "El nombre de usuario del administrador no puede estar vacío."),
-    ERROR_TECNICO_ADMINISTRADOR_NOMBRE_USUARIO_VACIO(
-            "El nombreUsuario recibido para el administrador está vacío o contiene solo espacios."),
-
-    ERROR_USUARIO_ADMINISTRADOR_NOMBRE_USUARIO_LONGITUD_INVALIDA(
-            "El nombre de usuario del administrador debe tener entre 4 y 50 caracteres."),
-    ERROR_TECNICO_ADMINISTRADOR_NOMBRE_USUARIO_LONGITUD_INVALIDA(
-            "La longitud del nombreUsuario del administrador no se encuentra en el rango permitido [4, 50]."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CORREO_NULO(
-            "El correo electrónico del administrador es obligatorio. Por favor, ingréselo."),
-    ERROR_TECNICO_ADMINISTRADOR_CORREO_NULO(
-            "El correoElectronico recibido para el administrador es nulo."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CORREO_VACIO(
-            "El correo electrónico del administrador no puede estar vacío."),
-    ERROR_TECNICO_ADMINISTRADOR_CORREO_VACIO(
-            "El correoElectronico recibido para el administrador está vacío o contiene solo espacios."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CORREO_LONGITUD_INVALIDA(
-            "El correo electrónico del administrador debe tener entre 6 y 150 caracteres."),
-    ERROR_TECNICO_ADMINISTRADOR_CORREO_LONGITUD_INVALIDA(
-            "La longitud del correoElectronico del administrador no se encuentra en el rango permitido [6, 150]."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CONTRASENA_NULA(
-            "La contraseña del administrador es obligatoria. Por favor, ingrésela."),
-    ERROR_TECNICO_ADMINISTRADOR_CONTRASENA_NULA(
-            "La contrasena recibida para el administrador es nula."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CONTRASENA_VACIA(
-            "La contraseña del administrador no puede estar vacía."),
-    ERROR_TECNICO_ADMINISTRADOR_CONTRASENA_VACIA(
-            "La contrasena recibida para el administrador está vacía o contiene solo espacios."),
-
-    ERROR_USUARIO_ADMINISTRADOR_CONTRASENA_LONGITUD_INVALIDA(
-            "La contraseña del administrador debe tener entre 8 y 255 caracteres."),
-    ERROR_TECNICO_ADMINISTRADOR_CONTRASENA_LONGITUD_INVALIDA(
-            "La longitud de la contrasena del administrador no se encuentra en el rango permitido [8, 255]."),
-
     ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO(
             "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente."),
     ERROR_TECNICO_CATEGORIA_NOMBRE_DUPLICADO(
@@ -307,30 +222,10 @@ public enum MensajesEnum {
     ERROR_TECNICO_FACTORY_NO_INICIALIZADA(
             "La fábrica de acceso a datos (DAOFactory) no ha sido inicializada o devolvió null."),
 
-    ERROR_USUARIO_NEGOCIO_OPERACION_FALLIDA(
-            "No fue posible completar la operación solicitada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
-    ERROR_TECNICO_NEGOCIO_OPERACION_FALLIDA(
-            "Se presentó un error en la capa de negocio al ejecutar la operación. Revise el log para más detalles."),
-
-    ERROR_USUARIO_NEGOCIO_OPERACION_INESPERADA(
-            "Se ha presentado un problema INESPERADO al ejecutar la operación solicitada."),
-    ERROR_TECNICO_NEGOCIO_OPERACION_INESPERADA(
-            "Se presentó una excepción inesperada en la capa de negocio. Revise el log para más detalles."),
-
-    ERROR_USUARIO_FACHADA_OPERACION_FALLIDA(
-            "No fue posible completar la operación solicitada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
-    ERROR_TECNICO_FACHADA_OPERACION_FALLIDA(
-            "Se presentó un error en la capa de fachada al orquestar la operación. Revise el log para más detalles."),
-
     ERROR_USUARIO_FACHADA_OPERACION_INESPERADA(
             "Se ha presentado un problema INESPERADO al ejecutar la operación solicitada."),
     ERROR_TECNICO_FACHADA_OPERACION_INESPERADA(
             "Se presentó una excepción inesperada en la capa de fachada. Revise el log para más detalles."),
-
-    ERROR_USUARIO_CONTROLADOR_OPERACION_FALLIDA(
-            "No fue posible procesar la solicitud. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
-    ERROR_TECNICO_CONTROLADOR_OPERACION_FALLIDA(
-            "Se presentó un error en la capa de controlador al procesar la solicitud. Revise el log para más detalles."),
 
     ERROR_USUARIO_CONTROLADOR_OPERACION_INESPERADA(
             "Se ha presentado un problema INESPERADO al procesar la solicitud."),
@@ -694,8 +589,6 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_FACTURA_NO_ENCONTRADA(
             "No se encontró la factura con el identificador solicitado."),
-    ERROR_TECNICO_FACTURA_NO_ENCONTRADA(
-            "No existe un registro de factura con id=%s."),
 
     ERROR_USUARIO_FACTURA_TOTAL_INCONSISTENTE(
             "La sumatoria del subtotal más los impuestos no coincide con el total facturado."),
@@ -850,12 +743,7 @@ public enum MensajesEnum {
     ERROR_USUARIO_ENVIO_NO_PERTENECE_AL_CLIENTE(
             "Acceso denegado: el envío no pertenece al cliente indicado."),
     ERROR_TECNICO_ENVIO_NO_PERTENECE_AL_CLIENTE(
-            "El envío id=%s pertenece al pedido id=%s del cliente id=%s y no al cliente id=%s."),
-
-    ERROR_USUARIO_INESPERADO(
-            "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
-    ERROR_TECNICO_INESPERADO(
-            "Se presentó una excepción inesperada. Revise el log para más detalles.");
+            "El envío id=%s pertenece al pedido id=%s del cliente id=%s y no al cliente id=%s.");
 
     private final String contenido;
 
