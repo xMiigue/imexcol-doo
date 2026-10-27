@@ -21,6 +21,7 @@ const ESTADOS_PAGO = ['PENDIENTE', 'EN_PROCESO', 'APROBADO', 'RECHAZADO', 'REEMB
 const ESTADOS_ENVIO = ['PREPARANDO', 'EN_TRANSITO', 'ENTREGADO', 'DEVUELTO', 'EXTRAVIADO'];
 const COPIAS_PISTA_CARRUSEL_CONTINUA = 4;
 const ESTADO_CARRITO_ACTIVO = 'Activo';
+const FECHA_POR_DEFECTO = '0001-01-01';
 
 const estado = {
     usuario: null,
@@ -62,7 +63,7 @@ function fechaHoyIso() {
 }
 
 function formatoFecha(valor) {
-    if (!valor) return '—';
+    if (!valor || String(valor).startsWith(FECHA_POR_DEFECTO)) return '—';
     const partes = String(valor).split('-');
     if (partes.length < 3) return valor;
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
@@ -1782,7 +1783,7 @@ async function cambiarEstadoEnvio(selector) {
         estado: nuevoEstado
     };
     if (nuevoEstado === 'ENTREGADO' &&
-        (!cuerpo.fechaEntrega || cuerpo.fechaEntrega === '0001-01-01' || cuerpo.fechaEntrega === 'null')) {
+        (!cuerpo.fechaEntrega || cuerpo.fechaEntrega === FECHA_POR_DEFECTO || cuerpo.fechaEntrega === 'null')) {
         cuerpo.fechaEntrega = fechaHoyIso();
     }
     selector.disabled = true;

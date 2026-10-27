@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -37,7 +39,7 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getPedido().getId());
             sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
-            sentencia.setDate(4, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEntrega())));
+            asignarFechaEntrega(sentencia, 4, entidadSegura.getFechaEntrega());
             sentencia.setString(5, entidadSegura.getTransportadora());
             sentencia.setString(6, entidadSegura.getNumeroGuia());
             sentencia.setString(7, entidadSegura.getEstado());
@@ -58,7 +60,7 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
         try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.ACTUALIZAR)) {
             sentencia.setObject(1, entidadSegura.getPedido().getId());
             sentencia.setDate(2, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
-            sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEntrega())));
+            asignarFechaEntrega(sentencia, 3, entidadSegura.getFechaEntrega());
             sentencia.setString(4, entidadSegura.getTransportadora());
             sentencia.setString(5, entidadSegura.getNumeroGuia());
             sentencia.setString(6, entidadSegura.getEstado());
@@ -114,6 +116,15 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
                     MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
         } catch (final Exception excepcion) {
             throw envolverErrorInesperado(excepcion);
+        }
+    }
+
+    private static void asignarFechaEntrega(final PreparedStatement sentencia, final int posicion,
+            final LocalDate fechaEntrega) throws SQLException {
+        if (UtilFecha.esFechaPorDefecto(fechaEntrega)) {
+            sentencia.setNull(posicion, Types.DATE);
+        } else {
+            sentencia.setDate(posicion, Date.valueOf(fechaEntrega));
         }
     }
 
