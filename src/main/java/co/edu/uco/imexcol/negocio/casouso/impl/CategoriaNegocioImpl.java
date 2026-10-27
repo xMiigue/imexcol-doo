@@ -78,8 +78,9 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         final var existentes = dao.consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
             throw ImexcolNegocioException.crear(
-                    "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente.",
-                    "Intento de inserción de categoría duplicada: nombre=%s.".formatted(dominio.getNombre()));
+                    MensajesEnum.ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_CATEGORIA_NOMBRE_DUPLICADO.getContenido()
+                            .formatted(dominio.getNombre()));
         }
     }
 }

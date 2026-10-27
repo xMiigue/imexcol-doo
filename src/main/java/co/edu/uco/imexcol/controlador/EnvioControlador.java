@@ -61,7 +61,7 @@ public final class EnvioControlador {
             filtros.setPedido(pedidoFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Envíos consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ENVIO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -85,11 +85,11 @@ public final class EnvioControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el envío con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_ENVIO_NO_ENCONTRADO.getContenido());
                 estadoHttp = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Envío consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_ENVIO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -109,7 +109,7 @@ public final class EnvioControlador {
         HttpStatusCode estadoHttp = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Envío registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ENVIO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -131,7 +131,7 @@ public final class EnvioControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new EnvioDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Envío actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ENVIO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -150,7 +150,7 @@ public final class EnvioControlador {
         HttpStatusCode estadoHttp = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Envío eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ENVIO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

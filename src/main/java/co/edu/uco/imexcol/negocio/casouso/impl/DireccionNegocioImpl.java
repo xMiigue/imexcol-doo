@@ -97,8 +97,8 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         final var existentes = dao.consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
             throw ImexcolNegocioException.crear(
-                    "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente.",
-                    "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."
+                    MensajesEnum.ERROR_USUARIO_DIRECCION_DUPLICADA.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_DIRECCION_DUPLICADA.getContenido()
                             .formatted(dominio.getCliente().getId(), dominio.getCalle(),
                                     dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()));
         }

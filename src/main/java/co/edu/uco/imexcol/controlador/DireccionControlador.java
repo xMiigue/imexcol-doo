@@ -59,7 +59,7 @@ public final class DireccionControlador {
             filtros.setCliente(clienteFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Direcciones consultadas satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_DIRECCION_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -83,11 +83,11 @@ public final class DireccionControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró la dirección con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_DIRECCION_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Dirección consultada satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_DIRECCION_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -107,7 +107,7 @@ public final class DireccionControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Dirección registrada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_DIRECCION_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -129,7 +129,7 @@ public final class DireccionControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new DireccionDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Dirección actualizada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_DIRECCION_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -148,7 +148,7 @@ public final class DireccionControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Dirección eliminada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_DIRECCION_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

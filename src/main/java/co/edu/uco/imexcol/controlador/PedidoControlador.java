@@ -59,7 +59,7 @@ public final class PedidoControlador {
             filtros.setCliente(clienteFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Pedidos consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PEDIDO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -83,11 +83,11 @@ public final class PedidoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el pedido con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_PEDIDO_NO_ENCONTRADO.getContenido());
                 estadoHttp = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Pedido consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_PEDIDO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -107,7 +107,7 @@ public final class PedidoControlador {
         HttpStatusCode estadoHttp = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Pedido registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PEDIDO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -129,7 +129,7 @@ public final class PedidoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new PedidoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Pedido actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PEDIDO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -148,7 +148,7 @@ public final class PedidoControlador {
         HttpStatusCode estadoHttp = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Pedido eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PEDIDO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

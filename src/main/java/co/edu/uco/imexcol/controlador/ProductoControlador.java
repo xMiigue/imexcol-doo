@@ -59,7 +59,7 @@ public final class ProductoControlador {
             filtros.setCategoria(categoriaFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Productos consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PRODUCTO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -83,11 +83,11 @@ public final class ProductoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el producto con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_PRODUCTO_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Producto consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_PRODUCTO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -107,7 +107,7 @@ public final class ProductoControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Producto registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PRODUCTO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -129,7 +129,7 @@ public final class ProductoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ProductoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Producto actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PRODUCTO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -148,7 +148,7 @@ public final class ProductoControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Producto eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PRODUCTO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

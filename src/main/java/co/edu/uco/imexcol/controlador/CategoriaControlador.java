@@ -53,7 +53,7 @@ public final class CategoriaControlador {
             filtros.setNombre(UtilTexto.aplicarTrim(nombre));
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Categorías consultadas satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CATEGORIA_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -77,11 +77,11 @@ public final class CategoriaControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró la categoría con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_CATEGORIA_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Categoría consultada satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_CATEGORIA_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -101,7 +101,7 @@ public final class CategoriaControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Categoría registrada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CATEGORIA_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -123,7 +123,7 @@ public final class CategoriaControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new CategoriaDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Categoría actualizada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CATEGORIA_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -142,7 +142,7 @@ public final class CategoriaControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Categoría eliminada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CATEGORIA_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

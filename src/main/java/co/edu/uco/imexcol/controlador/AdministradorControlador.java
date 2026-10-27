@@ -55,7 +55,7 @@ public final class AdministradorControlador {
             filtros.setCorreoElectronico(UtilTexto.aplicarTrim(correoElectronico));
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Administradores consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ADMINISTRADOR_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -79,11 +79,11 @@ public final class AdministradorControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el administrador con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_ADMINISTRADOR_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Administrador consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_ADMINISTRADOR_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -103,7 +103,7 @@ public final class AdministradorControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Administrador registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ADMINISTRADOR_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -125,7 +125,7 @@ public final class AdministradorControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Administrador actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ADMINISTRADOR_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -144,7 +144,7 @@ public final class AdministradorControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Administrador eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ADMINISTRADOR_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

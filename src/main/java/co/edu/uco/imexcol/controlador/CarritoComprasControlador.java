@@ -59,7 +59,7 @@ public final class CarritoComprasControlador {
             filtros.setCliente(clienteFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Carritos de compras consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CARRITO_COMPRAS_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -83,11 +83,11 @@ public final class CarritoComprasControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el carrito de compras con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_CARRITO_COMPRAS_NO_ENCONTRADO.getContenido());
                 estadoHttp = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Carrito de compras consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_CARRITO_COMPRAS_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -107,7 +107,7 @@ public final class CarritoComprasControlador {
         HttpStatusCode estadoHttp = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Carrito de compras registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CARRITO_COMPRAS_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -129,7 +129,7 @@ public final class CarritoComprasControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new CarritoComprasDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Carrito de compras actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CARRITO_COMPRAS_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -148,7 +148,7 @@ public final class CarritoComprasControlador {
         HttpStatusCode estadoHttp = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Carrito de compras eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CARRITO_COMPRAS_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

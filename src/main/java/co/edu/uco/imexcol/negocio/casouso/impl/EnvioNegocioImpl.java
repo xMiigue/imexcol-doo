@@ -90,8 +90,8 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         if (!UtilFecha.esFechaPorDefecto(dominio.getFechaEntrega())
                 && dominio.getFechaEntrega().isBefore(dominio.getFechaEnvio())) {
             throw ImexcolNegocioException.crear(
-                    "La fecha de entrega no puede ser anterior a la fecha de envío.",
-                    "Inconsistencia detectada en Envio: fechaEntrega=%s anterior a fechaEnvio=%s."
+                    MensajesEnum.ERROR_USUARIO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO.getContenido()
                             .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()));
         }
     }

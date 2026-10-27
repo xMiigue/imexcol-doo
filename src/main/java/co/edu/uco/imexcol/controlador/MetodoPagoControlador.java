@@ -53,7 +53,7 @@ public final class MetodoPagoControlador {
             filtros.setNombre(UtilTexto.aplicarTrim(nombre));
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Métodos de pago consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_METODO_PAGO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -77,11 +77,11 @@ public final class MetodoPagoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el método de pago con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_METODO_PAGO_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Método de pago consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_METODO_PAGO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -101,7 +101,7 @@ public final class MetodoPagoControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Método de pago registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_METODO_PAGO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -123,7 +123,7 @@ public final class MetodoPagoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new MetodoPagoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Método de pago actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_METODO_PAGO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -142,7 +142,7 @@ public final class MetodoPagoControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Método de pago eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_METODO_PAGO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

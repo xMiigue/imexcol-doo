@@ -65,7 +65,7 @@ public final class PagoControlador {
             filtros.setMetodoPago(metodoPagoFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Pagos consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PAGO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -89,11 +89,11 @@ public final class PagoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el pago con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_PAGO_NO_ENCONTRADO.getContenido());
                 estadoHttp = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Pago consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_PAGO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -113,7 +113,7 @@ public final class PagoControlador {
         HttpStatusCode estadoHttp = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Pago registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PAGO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -135,7 +135,7 @@ public final class PagoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new PagoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Pago actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PAGO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -154,7 +154,7 @@ public final class PagoControlador {
         HttpStatusCode estadoHttp = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Pago eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_PAGO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

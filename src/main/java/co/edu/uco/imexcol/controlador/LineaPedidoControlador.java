@@ -62,7 +62,7 @@ public final class LineaPedidoControlador {
             filtros.setProducto(productoFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Líneas de pedido consultadas satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -86,11 +86,11 @@ public final class LineaPedidoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró la línea de pedido con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Línea de pedido consultada satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -110,7 +110,7 @@ public final class LineaPedidoControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Línea de pedido registrada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -132,7 +132,7 @@ public final class LineaPedidoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new LineaPedidoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Línea de pedido actualizada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -151,7 +151,7 @@ public final class LineaPedidoControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Línea de pedido eliminada satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

@@ -48,7 +48,7 @@ public final class AuthControlador {
             if (UtilTexto.estaVacia(dtoSeguro.getCorreoElectronico())
                     || UtilTexto.estaVacia(dtoSeguro.getContrasena())) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("Correo electrónico y contraseña son obligatorios.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_OBLIGATORIAS.getContenido());
                 return new ResponseEntity<>(respuesta, HttpStatus.BAD_REQUEST);
             }
 
@@ -59,13 +59,13 @@ public final class AuthControlador {
             final var resultados = clienteFachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("Correo o contraseña inválidos.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_INVALIDAS.getContenido());
                 estado = HttpStatus.UNAUTHORIZED;
             } else {
                 final var cliente = resultados.get(0);
-                cliente.setContrasena("");
+                cliente.setContrasena(UtilTexto.VACIO);
                 respuesta.setDatos(List.of(cliente));
-                respuesta.agregarMensaje("Autenticación exitosa.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_AUTENTICACION.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -90,7 +90,7 @@ public final class AuthControlador {
             if (UtilTexto.estaVacia(dtoSeguro.getNombreUsuario())
                     || UtilTexto.estaVacia(dtoSeguro.getContrasena())) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("Nombre de usuario y contraseña son obligatorios.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_OBLIGATORIAS.getContenido());
                 return new ResponseEntity<>(respuesta, HttpStatus.BAD_REQUEST);
             }
 
@@ -101,13 +101,13 @@ public final class AuthControlador {
             final var resultados = administradorFachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("Usuario o contraseña inválidos.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_INVALIDAS.getContenido());
                 estado = HttpStatus.UNAUTHORIZED;
             } else {
                 final var administrador = resultados.get(0);
-                administrador.setContrasena("");
+                administrador.setContrasena(UtilTexto.VACIO);
                 respuesta.setDatos(List.of(administrador));
-                respuesta.agregarMensaje("Autenticación exitosa.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_AUTENTICACION.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -127,7 +127,7 @@ public final class AuthControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             clienteFachada.registrar(dto);
-            respuesta.agregarMensaje("Cliente registrado satisfactoriamente. Ya puede iniciar sesión.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_AUTENTICACION_REGISTRO_CLIENTE.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

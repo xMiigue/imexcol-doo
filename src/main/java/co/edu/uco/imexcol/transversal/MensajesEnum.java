@@ -87,6 +87,26 @@ public enum MensajesEnum {
     ERROR_TECNICO_ADMINISTRADOR_CONTRASENA_LONGITUD_INVALIDA(
             "La longitud de la contrasena del administrador no se encuentra en el rango permitido [8, 255]."),
 
+    ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO(
+            "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente."),
+    ERROR_TECNICO_CATEGORIA_NOMBRE_DUPLICADO(
+            "Intento de inserción de categoría duplicada: nombre=%s."),
+
+    ERROR_USUARIO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO(
+            "La fecha de entrega no puede ser anterior a la fecha de envío."),
+    ERROR_TECNICO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO(
+            "Inconsistencia detectada en Envio: fechaEntrega=%s anterior a fechaEnvio=%s."),
+
+    ERROR_USUARIO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE(
+            "El subtotal de la línea del pedido no coincide con cantidad × precio unitario. Por favor verifique los valores."),
+    ERROR_TECNICO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE(
+            "Inconsistencia detectada en LineaPedido: subtotal=%s, esperado=%s (cantidad=%s * precioUnitario=%s)."),
+
+    ERROR_USUARIO_DIRECCION_DUPLICADA(
+            "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente."),
+    ERROR_TECNICO_DIRECCION_DUPLICADA(
+            "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."),
+
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(
@@ -276,6 +296,240 @@ public enum MensajesEnum {
             "La operación solicitada no se encuentra disponible en este momento. Por favor intente más tarde."),
     ERROR_TECNICO_CASO_USO_DAO_PENDIENTE(
             "La operación [%s] del caso de uso [%s] está pendiente de integración con la capa de datos (DAO)."),
+
+    EXITO_ADMINISTRADOR_CONSULTA(
+            "Administradores consultados satisfactoriamente."),
+
+    ERROR_USUARIO_ADMINISTRADOR_NO_ENCONTRADO(
+            "No se encontró el administrador con el identificador solicitado."),
+
+    EXITO_ADMINISTRADOR_CONSULTA_POR_ID(
+            "Administrador consultado satisfactoriamente."),
+
+    EXITO_ADMINISTRADOR_REGISTRO(
+            "Administrador registrado satisfactoriamente."),
+
+    EXITO_ADMINISTRADOR_ACTUALIZACION(
+            "Administrador actualizado satisfactoriamente."),
+
+    EXITO_ADMINISTRADOR_ELIMINACION(
+            "Administrador eliminado satisfactoriamente."),
+
+    ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_OBLIGATORIAS(
+            "Correo electrónico y contraseña son obligatorios."),
+
+    ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_INVALIDAS(
+            "Correo o contraseña inválidos."),
+
+    EXITO_AUTENTICACION(
+            "Autenticación exitosa."),
+
+    ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_OBLIGATORIAS(
+            "Nombre de usuario y contraseña son obligatorios."),
+
+    ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_INVALIDAS(
+            "Usuario o contraseña inválidos."),
+
+    EXITO_AUTENTICACION_REGISTRO_CLIENTE(
+            "Cliente registrado satisfactoriamente. Ya puede iniciar sesión."),
+
+    EXITO_CARRITO_COMPRAS_CONSULTA(
+            "Carritos de compras consultados satisfactoriamente."),
+
+    ERROR_USUARIO_CARRITO_COMPRAS_NO_ENCONTRADO(
+            "No se encontró el carrito de compras con el identificador solicitado."),
+
+    EXITO_CARRITO_COMPRAS_CONSULTA_POR_ID(
+            "Carrito de compras consultado satisfactoriamente."),
+
+    EXITO_CARRITO_COMPRAS_REGISTRO(
+            "Carrito de compras registrado satisfactoriamente."),
+
+    EXITO_CARRITO_COMPRAS_ACTUALIZACION(
+            "Carrito de compras actualizado satisfactoriamente."),
+
+    EXITO_CARRITO_COMPRAS_ELIMINACION(
+            "Carrito de compras eliminado satisfactoriamente."),
+
+    EXITO_CATEGORIA_CONSULTA(
+            "Categorías consultadas satisfactoriamente."),
+
+    ERROR_USUARIO_CATEGORIA_NO_ENCONTRADO(
+            "No se encontró la categoría con el identificador solicitado."),
+
+    EXITO_CATEGORIA_CONSULTA_POR_ID(
+            "Categoría consultada satisfactoriamente."),
+
+    EXITO_CATEGORIA_REGISTRO(
+            "Categoría registrada satisfactoriamente."),
+
+    EXITO_CATEGORIA_ACTUALIZACION(
+            "Categoría actualizada satisfactoriamente."),
+
+    EXITO_CATEGORIA_ELIMINACION(
+            "Categoría eliminada satisfactoriamente."),
+
+    EXITO_CLIENTE_CONSULTA(
+            "Clientes consultados satisfactoriamente."),
+
+    ERROR_USUARIO_CLIENTE_NO_ENCONTRADO(
+            "No se encontró el cliente con el identificador solicitado."),
+
+    EXITO_CLIENTE_CONSULTA_POR_ID(
+            "Cliente consultado satisfactoriamente."),
+
+    EXITO_CLIENTE_REGISTRO(
+            "Cliente registrado satisfactoriamente."),
+
+    EXITO_CLIENTE_ACTUALIZACION(
+            "Cliente actualizado satisfactoriamente."),
+
+    EXITO_CLIENTE_ELIMINACION(
+            "Cliente eliminado satisfactoriamente."),
+
+    EXITO_DIRECCION_CONSULTA(
+            "Direcciones consultadas satisfactoriamente."),
+
+    ERROR_USUARIO_DIRECCION_NO_ENCONTRADO(
+            "No se encontró la dirección con el identificador solicitado."),
+
+    EXITO_DIRECCION_CONSULTA_POR_ID(
+            "Dirección consultada satisfactoriamente."),
+
+    EXITO_DIRECCION_REGISTRO(
+            "Dirección registrada satisfactoriamente."),
+
+    EXITO_DIRECCION_ACTUALIZACION(
+            "Dirección actualizada satisfactoriamente."),
+
+    EXITO_DIRECCION_ELIMINACION(
+            "Dirección eliminada satisfactoriamente."),
+
+    EXITO_ENVIO_CONSULTA(
+            "Envíos consultados satisfactoriamente."),
+
+    ERROR_USUARIO_ENVIO_NO_ENCONTRADO(
+            "No se encontró el envío con el identificador solicitado."),
+
+    EXITO_ENVIO_CONSULTA_POR_ID(
+            "Envío consultado satisfactoriamente."),
+
+    EXITO_ENVIO_REGISTRO(
+            "Envío registrado satisfactoriamente."),
+
+    EXITO_ENVIO_ACTUALIZACION(
+            "Envío actualizado satisfactoriamente."),
+
+    EXITO_ENVIO_ELIMINACION(
+            "Envío eliminado satisfactoriamente."),
+
+    EXITO_ITEM_CARRITO_CONSULTA(
+            "Ítems del carrito consultados satisfactoriamente."),
+
+    ERROR_USUARIO_ITEM_CARRITO_NO_ENCONTRADO(
+            "No se encontró el ítem del carrito con el identificador solicitado."),
+
+    EXITO_ITEM_CARRITO_CONSULTA_POR_ID(
+            "Ítem del carrito consultado satisfactoriamente."),
+
+    EXITO_ITEM_CARRITO_REGISTRO(
+            "Ítem del carrito registrado satisfactoriamente."),
+
+    EXITO_ITEM_CARRITO_ACTUALIZACION(
+            "Ítem del carrito actualizado satisfactoriamente."),
+
+    EXITO_ITEM_CARRITO_ELIMINACION(
+            "Ítem del carrito eliminado satisfactoriamente."),
+
+    EXITO_LINEA_PEDIDO_CONSULTA(
+            "Líneas de pedido consultadas satisfactoriamente."),
+
+    ERROR_USUARIO_LINEA_PEDIDO_NO_ENCONTRADO(
+            "No se encontró la línea de pedido con el identificador solicitado."),
+
+    EXITO_LINEA_PEDIDO_CONSULTA_POR_ID(
+            "Línea de pedido consultada satisfactoriamente."),
+
+    EXITO_LINEA_PEDIDO_REGISTRO(
+            "Línea de pedido registrada satisfactoriamente."),
+
+    EXITO_LINEA_PEDIDO_ACTUALIZACION(
+            "Línea de pedido actualizada satisfactoriamente."),
+
+    EXITO_LINEA_PEDIDO_ELIMINACION(
+            "Línea de pedido eliminada satisfactoriamente."),
+
+    EXITO_METODO_PAGO_CONSULTA(
+            "Métodos de pago consultados satisfactoriamente."),
+
+    ERROR_USUARIO_METODO_PAGO_NO_ENCONTRADO(
+            "No se encontró el método de pago con el identificador solicitado."),
+
+    EXITO_METODO_PAGO_CONSULTA_POR_ID(
+            "Método de pago consultado satisfactoriamente."),
+
+    EXITO_METODO_PAGO_REGISTRO(
+            "Método de pago registrado satisfactoriamente."),
+
+    EXITO_METODO_PAGO_ACTUALIZACION(
+            "Método de pago actualizado satisfactoriamente."),
+
+    EXITO_METODO_PAGO_ELIMINACION(
+            "Método de pago eliminado satisfactoriamente."),
+
+    EXITO_PAGO_CONSULTA(
+            "Pagos consultados satisfactoriamente."),
+
+    ERROR_USUARIO_PAGO_NO_ENCONTRADO(
+            "No se encontró el pago con el identificador solicitado."),
+
+    EXITO_PAGO_CONSULTA_POR_ID(
+            "Pago consultado satisfactoriamente."),
+
+    EXITO_PAGO_REGISTRO(
+            "Pago registrado satisfactoriamente."),
+
+    EXITO_PAGO_ACTUALIZACION(
+            "Pago actualizado satisfactoriamente."),
+
+    EXITO_PAGO_ELIMINACION(
+            "Pago eliminado satisfactoriamente."),
+
+    EXITO_PEDIDO_CONSULTA(
+            "Pedidos consultados satisfactoriamente."),
+
+    ERROR_USUARIO_PEDIDO_NO_ENCONTRADO(
+            "No se encontró el pedido con el identificador solicitado."),
+
+    EXITO_PEDIDO_CONSULTA_POR_ID(
+            "Pedido consultado satisfactoriamente."),
+
+    EXITO_PEDIDO_REGISTRO(
+            "Pedido registrado satisfactoriamente."),
+
+    EXITO_PEDIDO_ACTUALIZACION(
+            "Pedido actualizado satisfactoriamente."),
+
+    EXITO_PEDIDO_ELIMINACION(
+            "Pedido eliminado satisfactoriamente."),
+
+    EXITO_PRODUCTO_CONSULTA(
+            "Productos consultados satisfactoriamente."),
+
+    ERROR_USUARIO_PRODUCTO_NO_ENCONTRADO(
+            "No se encontró el producto con el identificador solicitado."),
+
+    EXITO_PRODUCTO_CONSULTA_POR_ID(
+            "Producto consultado satisfactoriamente."),
+
+    EXITO_PRODUCTO_REGISTRO(
+            "Producto registrado satisfactoriamente."),
+
+    EXITO_PRODUCTO_ACTUALIZACION(
+            "Producto actualizado satisfactoriamente."),
+
+    EXITO_PRODUCTO_ELIMINACION(
+            "Producto eliminado satisfactoriamente."),
 
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),

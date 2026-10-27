@@ -62,7 +62,7 @@ public final class ItemCarritoControlador {
             filtros.setProducto(productoFiltro);
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Ítems del carrito consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -86,11 +86,11 @@ public final class ItemCarritoControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el ítem del carrito con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_ITEM_CARRITO_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Ítem del carrito consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -110,7 +110,7 @@ public final class ItemCarritoControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Ítem del carrito registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -132,7 +132,7 @@ public final class ItemCarritoControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ItemCarritoDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Ítem del carrito actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -151,7 +151,7 @@ public final class ItemCarritoControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Ítem del carrito eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());

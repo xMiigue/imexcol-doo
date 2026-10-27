@@ -81,9 +81,10 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         final var diferencia = Math.abs(esperado - dominio.getSubtotal());
         if (diferencia > 0.01) {
             throw ImexcolNegocioException.crear(
-                    "El subtotal de la línea del pedido no coincide con cantidad × precio unitario. Por favor verifique los valores.",
-                    "Inconsistencia detectada en LineaPedido: subtotal=%s, esperado=%s (cantidad=%s * precioUnitario=%s)."
-                            .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(), dominio.getPrecioUnitario()));
+                    MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE.getContenido(),
+                    MensajesEnum.ERROR_TECNICO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE.getContenido()
+                            .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(),
+                                    dominio.getPrecioUnitario()));
         }
     }
 }

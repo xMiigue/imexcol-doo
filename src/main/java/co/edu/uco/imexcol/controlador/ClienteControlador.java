@@ -57,7 +57,7 @@ public final class ClienteControlador {
             filtros.setCorreoElectronico(UtilTexto.aplicarTrim(correoElectronico));
 
             respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Clientes consultados satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CLIENTE_CONSULTA.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -81,11 +81,11 @@ public final class ClienteControlador {
             final var resultados = fachada.consultar(filtros);
             if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
                 respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró el cliente con el identificador solicitado.");
+                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_CLIENTE_NO_ENCONTRADO.getContenido());
                 estado = HttpStatus.NOT_FOUND;
             } else {
                 respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Cliente consultado satisfactoriamente.");
+                respuesta.agregarMensaje(MensajesEnum.EXITO_CLIENTE_CONSULTA_POR_ID.getContenido());
             }
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
@@ -105,7 +105,7 @@ public final class ClienteControlador {
         HttpStatusCode estado = HttpStatus.CREATED;
         try {
             fachada.registrar(dto);
-            respuesta.agregarMensaje("Cliente registrado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CLIENTE_REGISTRO.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -127,7 +127,7 @@ public final class ClienteControlador {
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ClienteDTO());
             dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
             fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Cliente actualizado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CLIENTE_ACTUALIZACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
@@ -146,7 +146,7 @@ public final class ClienteControlador {
         HttpStatusCode estado = HttpStatus.OK;
         try {
             fachada.eliminar(id);
-            respuesta.agregarMensaje("Cliente eliminado satisfactoriamente.");
+            respuesta.agregarMensaje(MensajesEnum.EXITO_CLIENTE_ELIMINACION.getContenido());
         } catch (final ImexcolException excepcion) {
             respuesta = Respuesta.crearFallida();
             respuesta.agregarMensaje(excepcion.getMensajeUsuario());
