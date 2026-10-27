@@ -6,13 +6,16 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.CategoriaEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.CategoriaNegocio;
-import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
+import co.edu.uco.imexcol.negocio.casouso.validador.categoria.ValidarCategoriaExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.categoria.ValidarCategoriaNoTieneProductos;
+import co.edu.uco.imexcol.negocio.casouso.validador.categoria.ValidarNombreCategoriaNoExiste;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.CategoriaDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
@@ -35,23 +38,25 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
     public void registrar(final CategoriaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         validarDatosComunes(dominioSeguro);
-        validarNombreCategoriaUnico(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerCategoriaDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarNombreNoExista(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final CategoriaDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "categoría");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerCategoriaDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarCategoriaExista(dominioSeguro.getId());
+        asegurarNombreNoExista(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "categoría");
-        fabrica.obtenerCategoriaDAO().eliminar(id);
+        asegurarCategoriaExista(id);
+        asegurarCategoriaNoTengaProductos(id);
+        borrar(id);
     }
 
     @Override
@@ -71,16 +76,31 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         }
     }
 
-    private void validarNombreCategoriaUnico(final CategoriaDominio dominio) {
-        final var filtro = ensamblador.ensamblarEntidad(new CategoriaDominio());
-        filtro.setNombre(dominio.getNombre());
+    private void asignarNuevoIdentificador(final CategoriaDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
 
-        final var existentes = fabrica.obtenerCategoriaDAO().consultarPorFiltro(filtro);
-        if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_CATEGORIA_NOMBRE_DUPLICADO.getContenido()
-                            .formatted(dominio.getNombre()));
-        }
+    private void asegurarNombreNoExista(final CategoriaDominio dominio) {
+        ValidarNombreCategoriaNoExiste.ejecutarValidacion(dominio.getNombre(), dominio.getId(), fabrica);
+    }
+
+    private void asegurarCategoriaExista(final UUID id) {
+        ValidarCategoriaExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarCategoriaNoTengaProductos(final UUID id) {
+        ValidarCategoriaNoTieneProductos.ejecutarValidacion(id, fabrica);
+    }
+
+    private void guardar(final CategoriaDominio dominio) {
+        fabrica.obtenerCategoriaDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final CategoriaDominio dominio) {
+        fabrica.obtenerCategoriaDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerCategoriaDAO().eliminar(id);
     }
 }

@@ -90,7 +90,7 @@ public enum MensajesEnum {
     ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO(
             "Ya existe una categoría registrada con ese nombre. Por favor utilice un nombre diferente."),
     ERROR_TECNICO_CATEGORIA_NOMBRE_DUPLICADO(
-            "Intento de inserción de categoría duplicada: nombre=%s."),
+            "Ya existe otra categoría registrada con nombre=%s."),
 
     ERROR_USUARIO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO(
             "La fecha de entrega no puede ser anterior a la fecha de envío."),
@@ -106,6 +106,16 @@ public enum MensajesEnum {
             "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente."),
     ERROR_TECNICO_DIRECCION_DUPLICADA(
             "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."),
+
+    ERROR_USUARIO_CATEGORIA_CON_PRODUCTOS(
+            "No es posible eliminar la categoría porque tiene productos asociados."),
+    ERROR_TECNICO_CATEGORIA_CON_PRODUCTOS(
+            "La categoría id=%s tiene %s producto(s) asociado(s) y no puede eliminarse."),
+
+    ERROR_USUARIO_PRODUCTO_CON_PEDIDOS(
+            "No es posible eliminar el producto porque ya hace parte de pedidos registrados. Se recomienda desactivarlo."),
+    ERROR_TECNICO_PRODUCTO_CON_PEDIDOS(
+            "El producto id=%s aparece en %s línea(s) de pedido y no puede eliminarse."),
 
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),

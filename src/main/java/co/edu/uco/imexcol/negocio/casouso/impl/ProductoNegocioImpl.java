@@ -6,14 +6,18 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ProductoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ProductoNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.categoria.ValidarCategoriaExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPositivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
+import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoNoTienePedidosAsociados;
 import co.edu.uco.imexcol.negocio.dominio.ProductoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ProductoNegocioImpl implements ProductoNegocio {
@@ -36,22 +40,25 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
     public void registrar(final ProductoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ProductoDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerProductoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarCategoriaExista(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final ProductoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ProductoDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "producto");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerProductoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarProductoExista(dominioSeguro.getId());
+        asegurarCategoriaExista(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "producto");
-        fabrica.obtenerProductoDAO().eliminar(id);
+        asegurarProductoExista(id);
+        asegurarProductoNoTengaPedidosAsociados(id);
+        borrar(id);
     }
 
     @Override
@@ -76,5 +83,33 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
 
         ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecio(), "precio del producto");
         ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getStock(), "stock del producto");
+    }
+
+    private void asegurarCategoriaExista(final ProductoDominio dominio) {
+        ValidarCategoriaExistePorId.ejecutarValidacion(dominio.getCategoria().getId(), fabrica);
+    }
+
+    private void asegurarProductoExista(final UUID id) {
+        ValidarProductoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarProductoNoTengaPedidosAsociados(final UUID id) {
+        ValidarProductoNoTienePedidosAsociados.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final ProductoDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final ProductoDominio dominio) {
+        fabrica.obtenerProductoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final ProductoDominio dominio) {
+        fabrica.obtenerProductoDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerProductoDAO().eliminar(id);
     }
 }
