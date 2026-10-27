@@ -6,19 +6,23 @@ import co.edu.uco.imexcol.transversal.UtilTexto;
 
 public enum EstadoPedidoEnum {
 
-    PENDIENTE("PENDIENTE", false),
-    CONFIRMADO("CONFIRMADO", true),
-    PREPARANDO("PREPARANDO", true),
-    ENVIADO("ENVIADO", true),
-    ENTREGADO("ENTREGADO", true),
-    CANCELADO("CANCELADO", false);
+    PENDIENTE("PENDIENTE", false, true),
+    CONFIRMADO("CONFIRMADO", true, true),
+    PREPARANDO("PREPARANDO", true, false),
+    ENVIADO("ENVIADO", true, false),
+    ENTREGADO("ENTREGADO", true, false),
+    CANCELADO("CANCELADO", false, false);
+
+    private static final int PASO_AL_SIGUIENTE_ESTADO = 1;
 
     private final String valor;
     private final boolean compraExitosa;
+    private final boolean cancelable;
 
-    EstadoPedidoEnum(final String valor, final boolean compraExitosa) {
+    EstadoPedidoEnum(final String valor, final boolean compraExitosa, final boolean cancelable) {
         this.valor = valor;
         this.compraExitosa = compraExitosa;
+        this.cancelable = cancelable;
     }
 
     public String getValor() {
@@ -31,6 +35,31 @@ public enum EstadoPedidoEnum {
 
     public boolean esIgualA(final String estado) {
         return valor.equalsIgnoreCase(UtilTexto.aplicarTrim(estado));
+    }
+
+    public boolean esCancelable() {
+        return cancelable;
+    }
+
+    public boolean permiteTransicionA(final EstadoPedidoEnum destino) {
+        return this == destino || esSiguienteEnElFlujo(destino) || esCancelacionPermitida(destino);
+    }
+
+    private boolean esSiguienteEnElFlujo(final EstadoPedidoEnum destino) {
+        return CANCELADO != this && CANCELADO != destino
+                && destino.ordinal() == ordinal() + PASO_AL_SIGUIENTE_ESTADO;
+    }
+
+    private boolean esCancelacionPermitida(final EstadoPedidoEnum destino) {
+        return CANCELADO == destino && esCancelable();
+    }
+
+    public static boolean esTransicionValida(final String estadoActual, final String estadoNuevo) {
+        return Arrays.stream(values())
+                .filter(origen -> origen.esIgualA(estadoActual))
+                .anyMatch(origen -> Arrays.stream(values())
+                        .filter(destino -> destino.esIgualA(estadoNuevo))
+                        .anyMatch(origen::permiteTransicionA));
     }
 
     public static boolean representaCompraExitosa(final String estado) {

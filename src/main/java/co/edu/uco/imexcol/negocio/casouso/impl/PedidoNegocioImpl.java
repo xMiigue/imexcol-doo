@@ -19,6 +19,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneE
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneFactura;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneLineas;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTienePagos;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarTransicionEstadoPedidoEsValida;
 import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.negocio.dominio.PedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -69,6 +70,7 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
         asegurarDireccionDelCliente(dominioSeguro);
         asegurarTotalNoNegativo(dominioSeguro);
         asegurarEstadoValido(dominioSeguro);
+        asegurarTransicionEstadoValida(dominioSeguro);
         modificar(dominioSeguro);
     }
 
@@ -125,6 +127,10 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     private void asegurarEstadoValido(final PedidoDominio dominio) {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), DATO_ESTADO);
         ValidarEstadoPedidoEsValido.ejecutarValidacion(dominio.getEstado());
+    }
+
+    private void asegurarTransicionEstadoValida(final PedidoDominio dominio) {
+        ValidarTransicionEstadoPedidoEsValida.ejecutarValidacion(dominio.getId(), dominio.getEstado(), fabrica);
     }
 
     private void asegurarPedidoExista(final UUID id) {

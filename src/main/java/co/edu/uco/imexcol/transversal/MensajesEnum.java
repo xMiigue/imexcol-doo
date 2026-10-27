@@ -635,6 +635,11 @@ public enum MensajesEnum {
     ERROR_TECNICO_DIRECCION_CON_PEDIDOS(
             "La dirección id=%s está asociada a %s pedido(s) y no puede eliminarse."),
 
+    ERROR_USUARIO_PEDIDO_TRANSICION_ESTADO_INVALIDA(
+            "El pedido no puede pasar de %s a %s. Los pedidos avanzan en orden (PENDIENTE, CONFIRMADO, PREPARANDO, ENVIADO, ENTREGADO) y solo se pueden cancelar si están PENDIENTE o CONFIRMADO."),
+    ERROR_TECNICO_PEDIDO_TRANSICION_ESTADO_INVALIDA(
+            "Transición de estado no permitida para el pedido id=%s: de [%s] a [%s]."),
+
     ERROR_USUARIO_PEDIDO_SIN_FACTURA(
             "El pedido aún no tiene una factura emitida."),
     ERROR_TECNICO_PEDIDO_SIN_FACTURA(
