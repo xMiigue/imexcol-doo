@@ -24,6 +24,10 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
 
+    private static final String DATO_CLIENTE = "cliente asociado al carrito de compras";
+    private static final String DATO_FECHA_CREACION = "fecha de creación del carrito de compras";
+    private static final String DATO_ESTADO = "estado del carrito de compras";
+
     private final FabricaDAO fabrica;
     private final CarritoComprasEntidadAssembler ensamblador;
 
@@ -76,13 +80,9 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
     }
 
     private void validarDatosComunes(final CarritoComprasDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(),
-                "cliente asociado al carrito de compras");
-        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaCreacion(),
-                "fecha de creación del carrito de compras");
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(),
-                "estado del carrito de compras");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(), DATO_CLIENTE);
+        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaCreacion(), DATO_FECHA_CREACION);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), DATO_ESTADO);
         ValidarEstadoCarritoComprasEsValido.ejecutarValidacion(dominio.getEstado());
     }
 

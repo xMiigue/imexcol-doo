@@ -19,6 +19,22 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ClienteNegocioImpl implements ClienteNegocio {
 
+    private static final String DATO_NOMBRE = "nombre del cliente";
+    private static final String DATO_APELLIDO = "apellido del cliente";
+    private static final String DATO_CORREO = "correo electrónico del cliente";
+    private static final String DATO_CONTRASENA = "contraseña del cliente";
+    private static final String DATO_TELEFONO = "teléfono del cliente";
+    private static final int LONGITUD_MINIMA_NOMBRE = 2;
+    private static final int LONGITUD_MAXIMA_NOMBRE = 100;
+    private static final int LONGITUD_MINIMA_APELLIDO = 2;
+    private static final int LONGITUD_MAXIMA_APELLIDO = 100;
+    private static final int LONGITUD_MINIMA_CORREO = 6;
+    private static final int LONGITUD_MAXIMA_CORREO = 150;
+    private static final int LONGITUD_MINIMA_CONTRASENA = 8;
+    private static final int LONGITUD_MAXIMA_CONTRASENA = 255;
+    private static final int LONGITUD_MINIMA_TELEFONO = 7;
+    private static final int LONGITUD_MAXIMA_TELEFONO = 20;
+
     private final FabricaDAO fabrica;
     private final ClienteEntidadAssembler ensamblador;
 
@@ -66,23 +82,25 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
     }
 
     private void validarDatosComunes(final ClienteDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), "nombre del cliente");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), "nombre del cliente", 2, 100);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE,
+                LONGITUD_MINIMA_NOMBRE, LONGITUD_MAXIMA_NOMBRE);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getApellido(), DATO_APELLIDO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getApellido(), DATO_APELLIDO,
+                LONGITUD_MINIMA_APELLIDO, LONGITUD_MAXIMA_APELLIDO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO,
+                LONGITUD_MINIMA_CORREO, LONGITUD_MAXIMA_CORREO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA,
+                LONGITUD_MINIMA_CONTRASENA, LONGITUD_MAXIMA_CONTRASENA);
+        validarTelefonoOpcional(dominio.getTelefono());
+    }
 
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getApellido(), "apellido del cliente");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getApellido(), "apellido del cliente", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del cliente");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del cliente", 6, 150);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(), "contraseña del cliente");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(), "contraseña del cliente", 8, 255);
-
-        if (!UtilTexto.estaVacia(dominio.getTelefono())) {
-            ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getTelefono(),
-                    "teléfono del cliente", 7, 20);
+    private void validarTelefonoOpcional(final String telefono) {
+        if (!UtilTexto.estaVacia(telefono)) {
+            ValidarLongitudTextoEsValida.ejecutarValidacion(telefono, DATO_TELEFONO,
+                    LONGITUD_MINIMA_TELEFONO, LONGITUD_MAXIMA_TELEFONO);
         }
     }
 

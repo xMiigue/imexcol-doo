@@ -23,6 +23,12 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class PagoNegocioImpl implements PagoNegocio {
 
+    private static final String DATO_PEDIDO = "pedido asociado al pago";
+    private static final String DATO_METODO_PAGO = "método de pago asociado al pago";
+    private static final String DATO_FECHA_PAGO = "fecha del pago";
+    private static final String DATO_MONTO = "monto del pago";
+    private static final String DATO_ESTADO = "estado del pago";
+
     private final FabricaDAO fabrica;
     private final PagoEntidadAssembler ensamblador;
 
@@ -77,12 +83,9 @@ public final class PagoNegocioImpl implements PagoNegocio {
     }
 
     private void validarDatosComunes(final PagoDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(),
-                "pedido asociado al pago");
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getMetodoPago().getId(),
-                "método de pago asociado al pago");
-
-        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPago(), "fecha del pago");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(), DATO_PEDIDO);
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getMetodoPago().getId(), DATO_METODO_PAGO);
+        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPago(), DATO_FECHA_PAGO);
     }
 
     private void asegurarPedidoExista(final PagoDominio dominio) {
@@ -94,11 +97,11 @@ public final class PagoNegocioImpl implements PagoNegocio {
     }
 
     private void asegurarMontoMayorACero(final PagoDominio dominio) {
-        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getMonto(), "monto del pago");
+        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getMonto(), DATO_MONTO);
     }
 
     private void asegurarEstadoValido(final PagoDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), "estado del pago");
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), DATO_ESTADO);
         ValidarEstadoPagoEsValido.ejecutarValidacion(dominio.getEstado());
     }
 

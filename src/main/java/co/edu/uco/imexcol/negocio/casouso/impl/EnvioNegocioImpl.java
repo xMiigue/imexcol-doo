@@ -24,6 +24,16 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class EnvioNegocioImpl implements EnvioNegocio {
 
+    private static final String DATO_PEDIDO = "pedido asociado al envío";
+    private static final String DATO_FECHA_ENVIO = "fecha de envío";
+    private static final String DATO_TRANSPORTADORA = "transportadora del envío";
+    private static final String DATO_NUMERO_GUIA = "número de guía del envío";
+    private static final String DATO_ESTADO = "estado del envío";
+    private static final int LONGITUD_MINIMA_TRANSPORTADORA = 2;
+    private static final int LONGITUD_MAXIMA_TRANSPORTADORA = 100;
+    private static final int LONGITUD_MINIMA_NUMERO_GUIA = 5;
+    private static final int LONGITUD_MAXIMA_NUMERO_GUIA = 100;
+
     private final FabricaDAO fabrica;
     private final EnvioEntidadAssembler ensamblador;
 
@@ -76,23 +86,15 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     }
 
     private void validarDatosComunes(final EnvioDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(),
-                "pedido asociado al envío");
-
-        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaEnvio(),
-                "fecha de envío");
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getTransportadora(),
-                "transportadora del envío");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getTransportadora(),
-                "transportadora del envío", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNumeroGuia(),
-                "número de guía del envío");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNumeroGuia(),
-                "número de guía del envío", 5, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), "estado del envío");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(), DATO_PEDIDO);
+        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaEnvio(), DATO_FECHA_ENVIO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getTransportadora(), DATO_TRANSPORTADORA);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getTransportadora(), DATO_TRANSPORTADORA,
+                LONGITUD_MINIMA_TRANSPORTADORA, LONGITUD_MAXIMA_TRANSPORTADORA);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNumeroGuia(), DATO_NUMERO_GUIA);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNumeroGuia(), DATO_NUMERO_GUIA,
+                LONGITUD_MINIMA_NUMERO_GUIA, LONGITUD_MAXIMA_NUMERO_GUIA);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), DATO_ESTADO);
         ValidarEstadoEnvioEsValido.ejecutarValidacion(dominio.getEstado());
     }
 

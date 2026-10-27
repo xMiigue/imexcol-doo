@@ -21,6 +21,11 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class PedidoNegocioImpl implements PedidoNegocio {
 
+    private static final String DATO_CLIENTE = "cliente asociado al pedido";
+    private static final String DATO_FECHA_PEDIDO = "fecha del pedido";
+    private static final String DATO_TOTAL = "total del pedido";
+    private static final String DATO_ESTADO = "estado del pedido";
+
     private final FabricaDAO fabrica;
     private final PedidoEntidadAssembler ensamblador;
 
@@ -72,10 +77,8 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     }
 
     private void validarDatosComunes(final PedidoDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(),
-                "cliente asociado al pedido");
-        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPedido(),
-                "fecha del pedido");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(), DATO_CLIENTE);
+        ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPedido(), DATO_FECHA_PEDIDO);
     }
 
     private void asegurarClienteExista(final PedidoDominio dominio) {
@@ -83,11 +86,11 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     }
 
     private void asegurarTotalNoNegativo(final PedidoDominio dominio) {
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getTotal(), "total del pedido");
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getTotal(), DATO_TOTAL);
     }
 
     private void asegurarEstadoValido(final PedidoDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), "estado del pedido");
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), DATO_ESTADO);
         ValidarEstadoPedidoEsValido.ejecutarValidacion(dominio.getEstado());
     }
 

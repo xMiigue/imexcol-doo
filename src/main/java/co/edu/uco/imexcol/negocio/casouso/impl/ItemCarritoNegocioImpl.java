@@ -20,6 +20,11 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
 
+    private static final String DATO_CARRITO = "carrito asociado al ítem";
+    private static final String DATO_PRODUCTO = "producto asociado al ítem";
+    private static final String DATO_PRECIO_UNITARIO = "precio unitario del ítem del carrito";
+    private static final String DATO_CANTIDAD = "cantidad del ítem del carrito";
+
     private final FabricaDAO fabrica;
     private final ItemCarritoEntidadAssembler ensamblador;
 
@@ -71,13 +76,10 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
     }
 
     private void validarDatosComunes(final ItemCarritoDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCarrito().getId(),
-                "carrito asociado al ítem");
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getProducto().getId(),
-                "producto asociado al ítem");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCarrito().getId(), DATO_CARRITO);
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getProducto().getId(), DATO_PRODUCTO);
 
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecioUnitario(),
-                "precio unitario del ítem del carrito");
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecioUnitario(), DATO_PRECIO_UNITARIO);
     }
 
     private void asegurarCarritoExista(final ItemCarritoDominio dominio) {
@@ -89,7 +91,7 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
     }
 
     private void asegurarCantidadMayorACero(final ItemCarritoDominio dominio) {
-        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getCantidad(), "cantidad del ítem del carrito");
+        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getCantidad(), DATO_CANTIDAD);
     }
 
     private void asegurarItemExista(final UUID id) {

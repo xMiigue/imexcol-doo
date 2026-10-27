@@ -16,11 +16,23 @@ import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoNoTi
 import co.edu.uco.imexcol.negocio.dominio.ProductoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ProductoNegocioImpl implements ProductoNegocio {
+
+    private static final String DATO_CATEGORIA = "categoría asociada al producto";
+    private static final String DATO_NOMBRE = "nombre del producto";
+    private static final String DATO_DESCRIPCION = "descripción del producto";
+    private static final String DATO_IMAGEN_URL = "imagen principal del producto";
+    private static final String DATO_PRECIO = "precio del producto";
+    private static final String DATO_STOCK = "stock del producto";
+    private static final int LONGITUD_MINIMA_NOMBRE = 3;
+    private static final int LONGITUD_MAXIMA_NOMBRE = 100;
+    private static final int LONGITUD_MINIMA_DESCRIPCION = 0;
+    private static final int LONGITUD_MAXIMA_DESCRIPCION = 1000;
+    private static final int LONGITUD_MINIMA_IMAGEN_URL = 0;
+    private static final int LONGITUD_MAXIMA_IMAGEN_URL = 255;
 
     private final FabricaDAO fabrica;
     private final ProductoEntidadAssembler ensamblador;
@@ -71,19 +83,16 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
     }
 
     private void validarDatosComunes(final ProductoDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCategoria().getId(),
-                "categoría asociada al producto");
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), "nombre del producto");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), "nombre del producto", 3, 100);
-
-        if (!UtilTexto.estaVacia(dominio.getDescripcion())) {
-            ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(),
-                    "descripción del producto", 0, 1000);
-        }
-
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecio(), "precio del producto");
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getStock(), "stock del producto");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCategoria().getId(), DATO_CATEGORIA);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE,
+                LONGITUD_MINIMA_NOMBRE, LONGITUD_MAXIMA_NOMBRE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(), DATO_DESCRIPCION,
+                LONGITUD_MINIMA_DESCRIPCION, LONGITUD_MAXIMA_DESCRIPCION);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getImagenUrl(), DATO_IMAGEN_URL,
+                LONGITUD_MINIMA_IMAGEN_URL, LONGITUD_MAXIMA_IMAGEN_URL);
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecio(), DATO_PRECIO);
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getStock(), DATO_STOCK);
     }
 
     private void asegurarCategoriaExista(final ProductoDominio dominio) {

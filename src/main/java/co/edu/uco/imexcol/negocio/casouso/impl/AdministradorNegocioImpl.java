@@ -19,6 +19,16 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class AdministradorNegocioImpl implements AdministradorNegocio {
 
+    private static final String DATO_NOMBRE_USUARIO = "nombre de usuario del administrador";
+    private static final String DATO_CORREO = "correo electrónico del administrador";
+    private static final String DATO_CONTRASENA = "contraseña del administrador";
+    private static final int LONGITUD_MINIMA_NOMBRE_USUARIO = 4;
+    private static final int LONGITUD_MAXIMA_NOMBRE_USUARIO = 50;
+    private static final int LONGITUD_MINIMA_CORREO = 6;
+    private static final int LONGITUD_MAXIMA_CORREO = 150;
+    private static final int LONGITUD_MINIMA_CONTRASENA = 8;
+    private static final int LONGITUD_MAXIMA_CONTRASENA = 255;
+
     private final FabricaDAO fabrica;
     private final AdministradorEntidadAssembler ensamblador;
 
@@ -67,20 +77,15 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
     }
 
     private void validarDatosComunes(final AdministradorDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombreUsuario(),
-                "nombre de usuario del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombreUsuario(),
-                "nombre de usuario del administrador", 4, 50);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del administrador", 6, 150);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(),
-                "contraseña del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(),
-                "contraseña del administrador", 8, 255);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO,
+                LONGITUD_MINIMA_NOMBRE_USUARIO, LONGITUD_MAXIMA_NOMBRE_USUARIO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO,
+                LONGITUD_MINIMA_CORREO, LONGITUD_MAXIMA_CORREO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA,
+                LONGITUD_MINIMA_CONTRASENA, LONGITUD_MAXIMA_CONTRASENA);
     }
 
     private void asegurarNombreUsuarioNoExista(final AdministradorDominio dominio) {

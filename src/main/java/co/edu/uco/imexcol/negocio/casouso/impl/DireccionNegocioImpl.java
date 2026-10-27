@@ -21,6 +21,23 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
+    private static final String DATO_CLIENTE = "cliente asociado a la dirección";
+    private static final String DATO_CALLE = "calle de la dirección";
+    private static final String DATO_CIUDAD = "ciudad de la dirección";
+    private static final String DATO_DEPARTAMENTO = "departamento de la dirección";
+    private static final String DATO_PAIS = "país de la dirección";
+    private static final String DATO_CODIGO_POSTAL = "código postal de la dirección";
+    private static final int LONGITUD_MINIMA_CALLE = 5;
+    private static final int LONGITUD_MAXIMA_CALLE = 200;
+    private static final int LONGITUD_MINIMA_CIUDAD = 2;
+    private static final int LONGITUD_MAXIMA_CIUDAD = 100;
+    private static final int LONGITUD_MINIMA_DEPARTAMENTO = 2;
+    private static final int LONGITUD_MAXIMA_DEPARTAMENTO = 100;
+    private static final int LONGITUD_MINIMA_PAIS = 2;
+    private static final int LONGITUD_MAXIMA_PAIS = 100;
+    private static final int LONGITUD_MINIMA_CODIGO_POSTAL = 3;
+    private static final int LONGITUD_MAXIMA_CODIGO_POSTAL = 10;
+
     private final FabricaDAO fabrica;
     private final DireccionEntidadAssembler ensamblador;
 
@@ -70,26 +87,26 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     }
 
     private void validarDatosComunes(final DireccionDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(),
-                "cliente asociado a la dirección");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(), DATO_CLIENTE);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCalle(), DATO_CALLE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCalle(), DATO_CALLE,
+                LONGITUD_MINIMA_CALLE, LONGITUD_MAXIMA_CALLE);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCiudad(), DATO_CIUDAD);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCiudad(), DATO_CIUDAD,
+                LONGITUD_MINIMA_CIUDAD, LONGITUD_MAXIMA_CIUDAD);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getDepartamento(), DATO_DEPARTAMENTO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDepartamento(), DATO_DEPARTAMENTO,
+                LONGITUD_MINIMA_DEPARTAMENTO, LONGITUD_MAXIMA_DEPARTAMENTO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getPais(), DATO_PAIS);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getPais(), DATO_PAIS,
+                LONGITUD_MINIMA_PAIS, LONGITUD_MAXIMA_PAIS);
+        validarCodigoPostalOpcional(dominio.getCodigoPostal());
+    }
 
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCalle(), "calle de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCalle(), "calle de la dirección", 5, 200);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCiudad(), "ciudad de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCiudad(), "ciudad de la dirección", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getDepartamento(),
-                "departamento de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDepartamento(),
-                "departamento de la dirección", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getPais(), "país de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getPais(), "país de la dirección", 2, 100);
-
-        if (!UtilTexto.estaVacia(dominio.getCodigoPostal())) {
-            ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCodigoPostal(),
-                    "código postal de la dirección", 3, 10);
+    private void validarCodigoPostalOpcional(final String codigoPostal) {
+        if (!UtilTexto.estaVacia(codigoPostal)) {
+            ValidarLongitudTextoEsValida.ejecutarValidacion(codigoPostal, DATO_CODIGO_POSTAL,
+                    LONGITUD_MINIMA_CODIGO_POSTAL, LONGITUD_MAXIMA_CODIGO_POSTAL);
         }
     }
 

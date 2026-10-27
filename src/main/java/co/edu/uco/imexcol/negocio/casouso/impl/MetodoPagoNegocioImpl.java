@@ -13,11 +13,17 @@ import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarNombreMeto
 import co.edu.uco.imexcol.negocio.dominio.MetodoPagoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class MetodoPagoNegocioImpl implements MetodoPagoNegocio {
+
+    private static final String DATO_NOMBRE = "nombre del método de pago";
+    private static final String DATO_DESCRIPCION = "descripción del método de pago";
+    private static final int LONGITUD_MINIMA_NOMBRE = 3;
+    private static final int LONGITUD_MAXIMA_NOMBRE = 100;
+    private static final int LONGITUD_MINIMA_DESCRIPCION = 0;
+    private static final int LONGITUD_MAXIMA_DESCRIPCION = 255;
 
     private final FabricaDAO fabrica;
     private final MetodoPagoEntidadAssembler ensamblador;
@@ -66,12 +72,11 @@ public final class MetodoPagoNegocioImpl implements MetodoPagoNegocio {
     }
 
     private void validarDatosComunes(final MetodoPagoDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), "nombre del método de pago");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), "nombre del método de pago", 3, 100);
-        if (!UtilTexto.estaVacia(dominio.getDescripcion())) {
-            ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(),
-                    "descripción del método de pago", 0, 255);
-        }
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE,
+                LONGITUD_MINIMA_NOMBRE, LONGITUD_MAXIMA_NOMBRE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDescripcion(), DATO_DESCRIPCION,
+                LONGITUD_MINIMA_DESCRIPCION, LONGITUD_MAXIMA_DESCRIPCION);
     }
 
     private void asegurarNombreNoExista(final MetodoPagoDominio dominio) {
