@@ -6,6 +6,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.AdministradorEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.AdministradorNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorEstaActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorNombreUsuario;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorNoEsElUnico;
@@ -86,6 +87,7 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
         asegurarAdministradorRegistrado(credencialesSeguras.getNombreUsuario());
         final var administrador = consultarPorNombreUsuario(credencialesSeguras.getNombreUsuario());
         asegurarContrasenaCoincida(credencialesSeguras.getContrasena(), administrador);
+        asegurarAdministradorActivo(administrador);
         ocultarContrasena(administrador);
         return administrador;
     }
@@ -145,6 +147,10 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
         final var entidades = fabrica.obtenerAdministradorDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
+    }
+
+    private void asegurarAdministradorActivo(final AdministradorDominio administrador) {
+        ValidarAdministradorEstaActivo.ejecutarValidacion(administrador.isEstado(), administrador.getNombreUsuario());
     }
 
     private void ocultarContrasena(final AdministradorDominio administrador) {

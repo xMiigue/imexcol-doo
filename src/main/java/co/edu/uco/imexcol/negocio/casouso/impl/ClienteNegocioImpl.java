@@ -6,6 +6,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ClienteEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ClienteNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteEstaActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorCorreo;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarContrasenaClienteCoincide;
@@ -90,6 +91,7 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
         asegurarClienteRegistrado(credencialesSeguras.getCorreoElectronico());
         final var cliente = consultarPorCorreo(credencialesSeguras.getCorreoElectronico());
         asegurarContrasenaCoincida(credencialesSeguras.getContrasena(), cliente);
+        asegurarClienteActivo(cliente);
         ocultarContrasena(cliente);
         return cliente;
     }
@@ -154,6 +156,10 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
         final var entidades = fabrica.obtenerClienteDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
+    }
+
+    private void asegurarClienteActivo(final ClienteDominio cliente) {
+        ValidarClienteEstaActivo.ejecutarValidacion(cliente.isEstado(), cliente.getCorreoElectronico());
     }
 
     private void ocultarContrasena(final ClienteDominio cliente) {

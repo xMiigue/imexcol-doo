@@ -22,6 +22,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionPe
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarMetodoPagoEstaActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarMetodoPagoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoEstaActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.CarritoComprasDominio;
 import co.edu.uco.imexcol.negocio.dominio.ClienteDominio;
@@ -88,6 +89,7 @@ public final class CompraNegocioImpl implements CompraNegocio {
         asegurarMetodoPagoActivo(solicitudSegura);
         final var items = consultarItemsDelCarrito(solicitudSegura);
         asegurarProductosExistan(items);
+        asegurarProductosActivos(items);
         final var pedido = registrarPedidoConPreciosCongelados(solicitudSegura, items);
         marcarCarritoComoConvertido(solicitudSegura);
         final var estadoCobro = solicitarCobro(solicitudSegura, pedido);
@@ -137,6 +139,10 @@ public final class CompraNegocioImpl implements CompraNegocio {
 
     private void asegurarProductosExistan(final List<ItemCarritoDominio> items) {
         items.forEach(item -> ValidarProductoExistePorId.ejecutarValidacion(item.getProducto().getId(), fabrica));
+    }
+
+    private void asegurarProductosActivos(final List<ItemCarritoDominio> items) {
+        items.forEach(item -> ValidarProductoEstaActivo.ejecutarValidacion(item.getProducto().getId(), fabrica));
     }
 
     private PedidoDominio registrarPedidoConPreciosCongelados(final SolicitudCompraDominio solicitud,

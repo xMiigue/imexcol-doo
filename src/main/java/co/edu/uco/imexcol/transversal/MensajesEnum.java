@@ -334,6 +334,21 @@ public enum MensajesEnum {
     ERROR_TECNICO_AUTENTICACION_CLIENTE_CONTRASENA_INCORRECTA(
             "La contraseña ingresada no coincide con la registrada para el cliente con correo [%s]."),
 
+    ERROR_USUARIO_AUTENTICACION_CLIENTE_INACTIVO(
+            "Su cuenta de cliente está inactiva. Comuníquese con el administrador de la tienda."),
+    ERROR_TECNICO_AUTENTICACION_CLIENTE_INACTIVO(
+            "El cliente con correo=%s intentó autenticarse pero su cuenta está inactiva."),
+
+    ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_INACTIVO(
+            "Su cuenta de administrador está inactiva. Comuníquese con otro administrador."),
+    ERROR_TECNICO_AUTENTICACION_ADMINISTRADOR_INACTIVO(
+            "El administrador nombreUsuario=%s intentó autenticarse pero su cuenta está inactiva."),
+
+    ERROR_USUARIO_PRODUCTO_INACTIVO(
+            "El producto \"%s\" ya no está disponible para la venta. Retírelo del carrito para continuar con la compra."),
+    ERROR_TECNICO_PRODUCTO_INACTIVO(
+            "El producto id=%s está inactivo y no puede incluirse en una compra."),
+
     EXITO_AUTENTICACION(
             "Autenticación exitosa."),
 
