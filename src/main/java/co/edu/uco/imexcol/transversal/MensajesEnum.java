@@ -157,6 +157,21 @@ public enum MensajesEnum {
     ERROR_TECNICO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
             "El carrito id=%s no tiene ítems y no puede pasar a estado %s."),
 
+    ERROR_USUARIO_LINEA_PEDIDO_PRECIO_DIFERENTE_AL_PRODUCTO(
+            "El precio de la línea del pedido debe ser igual al precio del producto al momento de la compra."),
+    ERROR_TECNICO_LINEA_PEDIDO_PRECIO_DIFERENTE_AL_PRODUCTO(
+            "El precioUnitario=%s de la línea no coincide con el precio=%s del producto id=%s."),
+
+    ERROR_USUARIO_LINEA_PEDIDO_PRECIO_CONGELADO_MODIFICADO(
+            "El precio congelado de una línea de pedido no puede modificarse."),
+    ERROR_TECNICO_LINEA_PEDIDO_PRECIO_CONGELADO_MODIFICADO(
+            "Se intentó cambiar el precioUnitario de la línea id=%s de %s a %s."),
+
+    ERROR_USUARIO_LINEA_PEDIDO_PEDIDO_NO_ENTREGADO(
+            "Solo se puede devolver una línea de un pedido que ya fue entregado."),
+    ERROR_TECNICO_LINEA_PEDIDO_PEDIDO_NO_ENTREGADO(
+            "La línea id=%s pertenece al pedido id=%s en estado %s; se requiere el estado %s."),
+
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(

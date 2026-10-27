@@ -9,9 +9,16 @@ import co.edu.uco.imexcol.negocio.casouso.LineaPedidoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsMayorACero;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPositivo;
+import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarLineaPedidoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPedidoDeLineaEstaEntregado;
+import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPrecioLineaPedidoCoincideConPrecioProducto;
+import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPrecioLineaPedidoNoCambia;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.LineaPedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
@@ -34,24 +41,31 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
     public void registrar(final LineaPedidoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new LineaPedidoDominio());
         validarDatosComunes(dominioSeguro);
+        asegurarPedidoExista(dominioSeguro);
+        asegurarProductoExista(dominioSeguro);
+        asegurarPrecioCongeladoIgualAlDelProducto(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerLineaPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asignarNuevoIdentificador(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final LineaPedidoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new LineaPedidoDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "línea de pedido");
         validarDatosComunes(dominioSeguro);
+        asegurarLineaExista(dominioSeguro.getId());
+        asegurarPedidoExista(dominioSeguro);
+        asegurarProductoExista(dominioSeguro);
+        asegurarPrecioCongeladoNoCambie(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        fabrica.obtenerLineaPedidoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "línea de pedido");
-        fabrica.obtenerLineaPedidoDAO().eliminar(id);
+        asegurarLineaExista(id);
+        asegurarPedidoDeLineaEsteEntregado(id);
+        borrar(id);
     }
 
     @Override
@@ -86,5 +100,46 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
                             .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(),
                                     dominio.getPrecioUnitario()));
         }
+    }
+
+    private void asegurarPedidoExista(final LineaPedidoDominio dominio) {
+        ValidarPedidoExistePorId.ejecutarValidacion(dominio.getPedido().getId(), fabrica);
+    }
+
+    private void asegurarProductoExista(final LineaPedidoDominio dominio) {
+        ValidarProductoExistePorId.ejecutarValidacion(dominio.getProducto().getId(), fabrica);
+    }
+
+    private void asegurarPrecioCongeladoIgualAlDelProducto(final LineaPedidoDominio dominio) {
+        ValidarPrecioLineaPedidoCoincideConPrecioProducto.ejecutarValidacion(dominio.getPrecioUnitario(),
+                dominio.getProducto().getId(), fabrica);
+    }
+
+    private void asegurarPrecioCongeladoNoCambie(final LineaPedidoDominio dominio) {
+        ValidarPrecioLineaPedidoNoCambia.ejecutarValidacion(dominio.getPrecioUnitario(), dominio.getId(), fabrica);
+    }
+
+    private void asegurarLineaExista(final UUID id) {
+        ValidarLineaPedidoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPedidoDeLineaEsteEntregado(final UUID id) {
+        ValidarPedidoDeLineaEstaEntregado.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final LineaPedidoDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final LineaPedidoDominio dominio) {
+        fabrica.obtenerLineaPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final LineaPedidoDominio dominio) {
+        fabrica.obtenerLineaPedidoDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerLineaPedidoDAO().eliminar(id);
     }
 }

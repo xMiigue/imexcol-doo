@@ -6,14 +6,17 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.PedidoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.PedidoNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPositivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarEstadoPedidoEsValido;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.PedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class PedidoNegocioImpl implements PedidoNegocio {
@@ -36,22 +39,28 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     public void registrar(final PedidoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PedidoDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarClienteExista(dominioSeguro);
+        asegurarTotalNoNegativo(dominioSeguro);
+        asegurarEstadoValido(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final PedidoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PedidoDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "pedido");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerPedidoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarPedidoExista(dominioSeguro.getId());
+        asegurarClienteExista(dominioSeguro);
+        asegurarTotalNoNegativo(dominioSeguro);
+        asegurarEstadoValido(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "pedido");
-        fabrica.obtenerPedidoDAO().eliminar(id);
+        asegurarPedidoExista(id);
+        borrar(id);
     }
 
     @Override
@@ -67,9 +76,38 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
                 "cliente asociado al pedido");
         ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPedido(),
                 "fecha del pedido");
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getTotal(), "total del pedido");
+    }
 
+    private void asegurarClienteExista(final PedidoDominio dominio) {
+        ValidarClienteExistePorId.ejecutarValidacion(dominio.getCliente().getId(), fabrica);
+    }
+
+    private void asegurarTotalNoNegativo(final PedidoDominio dominio) {
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getTotal(), "total del pedido");
+    }
+
+    private void asegurarEstadoValido(final PedidoDominio dominio) {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), "estado del pedido");
         ValidarEstadoPedidoEsValido.ejecutarValidacion(dominio.getEstado());
+    }
+
+    private void asegurarPedidoExista(final UUID id) {
+        ValidarPedidoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final PedidoDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final PedidoDominio dominio) {
+        fabrica.obtenerPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final PedidoDominio dominio) {
+        fabrica.obtenerPedidoDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerPedidoDAO().eliminar(id);
     }
 }
