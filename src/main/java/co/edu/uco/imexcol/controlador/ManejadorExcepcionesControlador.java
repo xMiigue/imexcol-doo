@@ -1,0 +1,59 @@
+package co.edu.uco.imexcol.controlador;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import co.edu.uco.imexcol.controlador.dto.Respuesta;
+import co.edu.uco.imexcol.transversal.MensajesEnum;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolControladorException;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
+
+@RestControllerAdvice
+public final class ManejadorExcepcionesControlador {
+
+    private static final Logger REGISTRO = LoggerFactory.getLogger(ManejadorExcepcionesControlador.class);
+
+    @ExceptionHandler(ImexcolException.class)
+    public ResponseEntity<Respuesta<Object>> manejarExcepcionImexcol(final ImexcolException excepcion) {
+        REGISTRO.warn(excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
+        return responderFallida(excepcion.getMensajeUsuario(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Respuesta<Object>> manejarRecursoNoEncontrado(final NoResourceFoundException excepcion) {
+        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_RECURSO_NO_ENCONTRADO.getContenido()
+                .formatted(excepcion.getHttpMethod(), excepcion.getResourcePath()));
+        return responderFallida(MensajesEnum.ERROR_USUARIO_RECURSO_NO_ENCONTRADO.getContenido(),
+                HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
+    public ResponseEntity<Respuesta<Object>> manejarSolicitudInvalida(final Exception excepcion) {
+        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA.getContenido(), excepcion);
+        return responderFallida(MensajesEnum.ERROR_USUARIO_SOLICITUD_INVALIDA.getContenido(),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Respuesta<Object>> manejarExcepcionInesperada(final Exception excepcion) {
+        final var excepcionControlador = ImexcolControladorException.crear(excepcion,
+                MensajesEnum.ERROR_USUARIO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
+                MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido());
+        REGISTRO.error(excepcionControlador.getMensajeTecnico(), excepcionControlador.getExcepcionRaiz());
+        return responderFallida(excepcionControlador.getMensajeUsuario(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private static ResponseEntity<Respuesta<Object>> responderFallida(final String mensaje,
+            final HttpStatus estado) {
+        final var respuesta = Respuesta.<Object>crearFallida();
+        respuesta.agregarMensaje(mensaje);
+        return new ResponseEntity<>(respuesta, estado);
+    }
+}

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,8 +25,6 @@ import co.edu.uco.imexcol.negocio.fachada.impl.ItemCarritoFachadaImpl;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolControladorException;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 
 @CrossOrigin
 @RestController
@@ -47,126 +44,62 @@ public final class ItemCarritoControlador {
             @RequestParam(required = false) final UUID idCarrito,
             @RequestParam(required = false) final UUID idProducto) {
 
-        var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var filtros = new ItemCarritoDTO();
-            filtros.setId(UtilUUID.obtenerValorDefecto(id));
+        final var filtros = new ItemCarritoDTO();
+        filtros.setId(UtilUUID.obtenerValorDefecto(id));
 
-            final var carritoFiltro = new CarritoComprasDTO();
-            carritoFiltro.setId(UtilUUID.obtenerValorDefecto(idCarrito));
-            filtros.setCarrito(carritoFiltro);
+        final var carritoFiltro = new CarritoComprasDTO();
+        carritoFiltro.setId(UtilUUID.obtenerValorDefecto(idCarrito));
+        filtros.setCarrito(carritoFiltro);
 
-            final var productoFiltro = new ProductoDTO();
-            productoFiltro.setId(UtilUUID.obtenerValorDefecto(idProducto));
-            filtros.setProducto(productoFiltro);
+        final var productoFiltro = new ProductoDTO();
+        productoFiltro.setId(UtilUUID.obtenerValorDefecto(idProducto));
+        filtros.setProducto(productoFiltro);
 
-            respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA.getContenido());
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        final var respuesta = Respuesta.crearExitosa(fachada.consultar(filtros));
+        respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Respuesta<ItemCarritoDTO>> consultarPorId(@PathVariable final UUID id) {
-        var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var filtros = new ItemCarritoDTO();
-            filtros.setId(UtilUUID.obtenerValorDefecto(id));
+        final var filtros = new ItemCarritoDTO();
+        filtros.setId(UtilUUID.obtenerValorDefecto(id));
 
-            final var resultados = fachada.consultar(filtros);
-            if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
-                respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje(MensajesEnum.ERROR_USUARIO_ITEM_CARRITO_NO_ENCONTRADO.getContenido());
-                estado = HttpStatus.NOT_FOUND;
-            } else {
-                respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA_POR_ID.getContenido());
-            }
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
+        final var resultados = fachada.consultar(filtros);
+        if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
+            final var respuestaNoEncontrado = Respuesta.<ItemCarritoDTO>crearFallida();
+            respuestaNoEncontrado.agregarMensaje(MensajesEnum.ERROR_USUARIO_ITEM_CARRITO_NO_ENCONTRADO.getContenido());
+            return new ResponseEntity<>(respuestaNoEncontrado, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(respuesta, estado);
+        final var respuesta = Respuesta.crearExitosa(List.of(resultados.get(0)));
+        respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_CONSULTA_POR_ID.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Respuesta<ItemCarritoDTO>> registrar(@RequestBody final ItemCarritoDTO dto) {
-        var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.CREATED;
-        try {
-            fachada.registrar(dto);
-            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_REGISTRO.getContenido());
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        fachada.registrar(dto);
+        final var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_REGISTRO.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Respuesta<ItemCarritoDTO>> actualizar(@PathVariable final UUID id,
             @RequestBody final ItemCarritoDTO dto) {
-        var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ItemCarritoDTO());
-            dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
-            fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ACTUALIZACION.getContenido());
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ItemCarritoDTO());
+        dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
+        fachada.actualizar(dtoSeguro);
+        final var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ACTUALIZACION.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Respuesta<ItemCarritoDTO>> eliminar(@PathVariable final UUID id) {
-        var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            fachada.eliminar(id);
-            respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ELIMINACION.getContenido());
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
-    }
-
-    private static ImexcolControladorException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolControladorException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido());
+        fachada.eliminar(id);
+        final var respuesta = Respuesta.<ItemCarritoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_ITEM_CARRITO_ELIMINACION.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 }

@@ -242,6 +242,16 @@ public enum MensajesEnum {
     ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA(
             "Se presentó una excepción inesperada en la capa de controlador. Revise el log para más detalles."),
 
+    ERROR_USUARIO_RECURSO_NO_ENCONTRADO(
+            "El recurso solicitado no existe. Por favor verifique la dirección e intente de nuevo."),
+    ERROR_TECNICO_RECURSO_NO_ENCONTRADO(
+            "No existe un recurso que atienda la petición %s /%s."),
+
+    ERROR_USUARIO_SOLICITUD_INVALIDA(
+            "La solicitud enviada está vacía o no tiene un formato válido. Por favor verifique la información e intente de nuevo."),
+    ERROR_TECNICO_SOLICITUD_INVALIDA(
+            "No fue posible leer la petición HTTP: el cuerpo está vacío, el JSON está mal formado o un parámetro no tiene el tipo esperado."),
+
     ERROR_USUARIO_DATO_TEXTO_REQUERIDO(
             "El dato [%s] es obligatorio. Por favor, ingréselo."),
     ERROR_TECNICO_DATO_TEXTO_REQUERIDO(
