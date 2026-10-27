@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ItemCarritoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ItemCarritoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
@@ -16,17 +16,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
 
-    private final ItemCarritoDAO dao;
+    private final FabricaDAO fabrica;
     private final ItemCarritoEntidadAssembler ensamblador;
 
-    public ItemCarritoNegocioImpl(final ItemCarritoDAO dao) {
+    public ItemCarritoNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = ItemCarritoEntidadAssembler.obtenerInstancia();
     }
 
@@ -35,7 +35,7 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ItemCarritoDominio());
         validarDatosComunes(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerItemCarritoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -43,20 +43,20 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ItemCarritoDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "ítem del carrito");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerItemCarritoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "ítem del carrito");
-        dao.eliminar(id);
+        fabrica.obtenerItemCarritoDAO().eliminar(id);
     }
 
     @Override
     public List<ItemCarritoDominio> consultar(final ItemCarritoDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new ItemCarritoDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerItemCarritoDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 

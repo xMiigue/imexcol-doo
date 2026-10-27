@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaEnum;
 import co.edu.uco.imexcol.dto.PagoDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.PagoDTOAssembler;
 import co.edu.uco.imexcol.negocio.casouso.impl.PagoNegocioImpl;
@@ -25,12 +24,12 @@ public final class PagoFachadaImpl implements PagoFachada {
 
     @Override
     public void registrar(final PagoDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new PagoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new PagoNegocioImpl(fabrica.obtenerPagoDAO());
+            final var negocio = new PagoNegocioImpl(fabrica);
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -46,12 +45,12 @@ public final class PagoFachadaImpl implements PagoFachada {
 
     @Override
     public void actualizar(final PagoDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new PagoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new PagoNegocioImpl(fabrica.obtenerPagoDAO());
+            final var negocio = new PagoNegocioImpl(fabrica);
             negocio.actualizar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -67,10 +66,10 @@ public final class PagoFachadaImpl implements PagoFachada {
 
     @Override
     public void eliminar(final UUID id) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
-            final var negocio = new PagoNegocioImpl(fabrica.obtenerPagoDAO());
+            final var negocio = new PagoNegocioImpl(fabrica);
             negocio.eliminar(id);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -86,12 +85,12 @@ public final class PagoFachadaImpl implements PagoFachada {
 
     @Override
     public List<PagoDTO> consultar(final PagoDTO filtros) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new PagoDTO());
             final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var negocio = new PagoNegocioImpl(fabrica.obtenerPagoDAO());
+            final var negocio = new PagoNegocioImpl(fabrica);
             final var dominios = negocio.consultar(dominioFiltro);
             final var resultado = ensamblador.ensamblarDTO(dominios);
             fabrica.confirmarTransaccion();

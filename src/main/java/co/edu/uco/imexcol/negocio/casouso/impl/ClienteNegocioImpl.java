@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.ClienteDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ClienteEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ClienteNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
@@ -17,17 +17,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ClienteNegocioImpl implements ClienteNegocio {
 
-    private final ClienteDAO dao;
+    private final FabricaDAO fabrica;
     private final ClienteEntidadAssembler ensamblador;
 
-    public ClienteNegocioImpl(final ClienteDAO dao) {
+    public ClienteNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = ClienteEntidadAssembler.obtenerInstancia();
     }
 
@@ -36,7 +36,7 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ClienteDominio());
         validarDatosComunes(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerClienteDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -44,20 +44,20 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ClienteDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "cliente");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerClienteDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "cliente");
-        dao.eliminar(id);
+        fabrica.obtenerClienteDAO().eliminar(id);
     }
 
     @Override
     public List<ClienteDominio> consultar(final ClienteDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new ClienteDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerClienteDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 

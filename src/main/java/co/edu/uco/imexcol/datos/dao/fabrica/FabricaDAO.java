@@ -22,10 +22,10 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 public abstract class FabricaDAO {
 
     protected Connection conexion;
-    protected static FabricaEnum fabrica = FabricaEnum.SQLSERVER;
+    private static final FabricaEnum FABRICA_POR_DEFECTO = FabricaEnum.SQLSERVER;
 
     public static FabricaDAO obtenerFabrica() {
-        return obtenerFabrica(fabrica);
+        return obtenerFabrica(FABRICA_POR_DEFECTO);
     }
 
     public static FabricaDAO obtenerFabrica(final FabricaEnum tipo) {

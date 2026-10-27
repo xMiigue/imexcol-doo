@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.CategoriaEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.CategoriaNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
@@ -17,17 +17,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class CategoriaNegocioImpl implements CategoriaNegocio {
 
-    private final CategoriaDAO dao;
+    private final FabricaDAO fabrica;
     private final CategoriaEntidadAssembler ensamblador;
 
-    public CategoriaNegocioImpl(final CategoriaDAO dao) {
+    public CategoriaNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = CategoriaEntidadAssembler.obtenerInstancia();
     }
 
@@ -37,7 +37,7 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         validarDatosComunes(dominioSeguro);
         validarNombreCategoriaUnico(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerCategoriaDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -45,20 +45,20 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CategoriaDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "categoría");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerCategoriaDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "categoría");
-        dao.eliminar(id);
+        fabrica.obtenerCategoriaDAO().eliminar(id);
     }
 
     @Override
     public List<CategoriaDominio> consultar(final CategoriaDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new CategoriaDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerCategoriaDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 
@@ -75,7 +75,7 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
         final var filtro = ensamblador.ensamblarEntidad(new CategoriaDominio());
         filtro.setNombre(dominio.getNombre());
 
-        final var existentes = dao.consultarPorFiltro(filtro);
+        final var existentes = fabrica.obtenerCategoriaDAO().consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_CATEGORIA_NOMBRE_DUPLICADO.getContenido(),

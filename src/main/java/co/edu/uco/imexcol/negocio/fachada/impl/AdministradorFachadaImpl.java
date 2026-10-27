@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaEnum;
 import co.edu.uco.imexcol.dto.AdministradorDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.AdministradorDTOAssembler;
 import co.edu.uco.imexcol.negocio.casouso.impl.AdministradorNegocioImpl;
@@ -25,12 +24,12 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
 
     @Override
     public void registrar(final AdministradorDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
+            final var negocio = new AdministradorNegocioImpl(fabrica);
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -46,12 +45,12 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
 
     @Override
     public void actualizar(final AdministradorDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
+            final var negocio = new AdministradorNegocioImpl(fabrica);
             negocio.actualizar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -67,10 +66,10 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
 
     @Override
     public void eliminar(final UUID id) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
+            final var negocio = new AdministradorNegocioImpl(fabrica);
             negocio.eliminar(id);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
@@ -86,12 +85,12 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
 
     @Override
     public List<AdministradorDTO> consultar(final AdministradorDTO filtros) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
             fabrica.iniciarTransaccion();
             final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDTO());
             final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
+            final var negocio = new AdministradorNegocioImpl(fabrica);
             final var dominios = negocio.consultar(dominioFiltro);
             final var resultado = ensamblador.ensamblarDTO(dominios);
             fabrica.confirmarTransaccion();

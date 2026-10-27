@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.EnvioEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.EnvioNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEstadoEnvioEsValido;
@@ -19,17 +19,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class EnvioNegocioImpl implements EnvioNegocio {
 
-    private final EnvioDAO dao;
+    private final FabricaDAO fabrica;
     private final EnvioEntidadAssembler ensamblador;
 
-    public EnvioNegocioImpl(final EnvioDAO dao) {
+    public EnvioNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = EnvioEntidadAssembler.obtenerInstancia();
     }
 
@@ -39,7 +39,7 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerEnvioDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -48,20 +48,20 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "envío");
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerEnvioDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "envío");
-        dao.eliminar(id);
+        fabrica.obtenerEnvioDAO().eliminar(id);
     }
 
     @Override
     public List<EnvioDominio> consultar(final EnvioDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new EnvioDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerEnvioDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 

@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.DireccionDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.DireccionEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.DireccionNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
@@ -17,17 +17,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
-    private final DireccionDAO dao;
+    private final FabricaDAO fabrica;
     private final DireccionEntidadAssembler ensamblador;
 
-    public DireccionNegocioImpl(final DireccionDAO dao) {
+    public DireccionNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = DireccionEntidadAssembler.obtenerInstancia();
     }
 
@@ -37,7 +37,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         validarDatosComunes(dominioSeguro);
         validarNoExisteDireccionDuplicada(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerDireccionDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -45,20 +45,20 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "dirección");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "dirección");
-        dao.eliminar(id);
+        fabrica.obtenerDireccionDAO().eliminar(id);
     }
 
     @Override
     public List<DireccionDominio> consultar(final DireccionDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new DireccionDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerDireccionDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 
@@ -94,7 +94,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         filtro.setDepartamento(dominio.getDepartamento());
         filtro.setPais(dominio.getPais());
 
-        final var existentes = dao.consultarPorFiltro(filtro);
+        final var existentes = fabrica.obtenerDireccionDAO().consultarPorFiltro(filtro);
         if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_DIRECCION_DUPLICADA.getContenido(),

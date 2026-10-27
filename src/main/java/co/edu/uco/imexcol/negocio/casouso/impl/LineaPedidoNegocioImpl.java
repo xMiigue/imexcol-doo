@@ -3,7 +3,7 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.LineaPedidoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.LineaPedidoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
@@ -16,17 +16,17 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
 
-    private final LineaPedidoDAO dao;
+    private final FabricaDAO fabrica;
     private final LineaPedidoEntidadAssembler ensamblador;
 
-    public LineaPedidoNegocioImpl(final LineaPedidoDAO dao) {
+    public LineaPedidoNegocioImpl(final FabricaDAO fabrica) {
         super();
-        if (UtilObjeto.esNulo(dao)) {
+        if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        this.fabrica = fabrica;
         this.ensamblador = LineaPedidoEntidadAssembler.obtenerInstancia();
     }
 
@@ -36,7 +36,7 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         validarDatosComunes(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
         dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerLineaPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
@@ -45,20 +45,20 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "línea de pedido");
         validarDatosComunes(dominioSeguro);
         validarCoherenciaSubtotal(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        fabrica.obtenerLineaPedidoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
     }
 
     @Override
     public void eliminar(final UUID id) {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "línea de pedido");
-        dao.eliminar(id);
+        fabrica.obtenerLineaPedidoDAO().eliminar(id);
     }
 
     @Override
     public List<LineaPedidoDominio> consultar(final LineaPedidoDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new LineaPedidoDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerLineaPedidoDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 
