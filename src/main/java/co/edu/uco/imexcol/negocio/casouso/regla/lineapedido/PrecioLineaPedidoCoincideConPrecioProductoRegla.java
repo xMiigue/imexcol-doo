@@ -35,7 +35,7 @@ public final class PrecioLineaPedidoCoincideConPrecioProductoRegla implements Re
         final var fabrica = (FabricaDAO) datos[POSICION_FABRICA];
 
         final var precioProducto = fabrica.obtenerProductoDAO().consultarPorId(idProducto).getPrecio();
-        if (Double.compare(precioLinea, precioProducto) != 0) {
+        if (!UtilNumerico.sonIgualesConDosDecimales(precioLinea, precioProducto)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_PRECIO_DIFERENTE_AL_PRODUCTO.getContenido(),
                     MensajesEnum.ERROR_TECNICO_LINEA_PEDIDO_PRECIO_DIFERENTE_AL_PRODUCTO.getContenido()

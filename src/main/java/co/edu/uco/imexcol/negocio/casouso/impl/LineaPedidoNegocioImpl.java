@@ -13,6 +13,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarLineaPedi
 import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPedidoDeLineaEstaEntregado;
 import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPrecioLineaPedidoCoincideConPrecioProducto;
 import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarPrecioLineaPedidoNoCambia;
+import co.edu.uco.imexcol.negocio.casouso.validador.lineapedido.ValidarSubtotalLineaPedidoEsCoherente;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.LineaPedidoDominio;
@@ -22,6 +23,12 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
+
+    private static final String DATO_PEDIDO = "pedido asociado a la línea";
+    private static final String DATO_PRODUCTO = "producto asociado a la línea";
+    private static final String DATO_CANTIDAD = "cantidad de la línea del pedido";
+    private static final String DATO_PRECIO_UNITARIO = "precio unitario de la línea del pedido";
+    private static final String DATO_SUBTOTAL = "subtotal de la línea del pedido";
 
     private final FabricaDAO fabrica;
     private final LineaPedidoEntidadAssembler ensamblador;
@@ -77,29 +84,16 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
     }
 
     private void validarDatosComunes(final LineaPedidoDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(),
-                "pedido asociado a la línea");
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getProducto().getId(),
-                "producto asociado a la línea");
-
-        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getCantidad(),
-                "cantidad de la línea del pedido");
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecioUnitario(),
-                "precio unitario de la línea del pedido");
-        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getSubtotal(),
-                "subtotal de la línea del pedido");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getPedido().getId(), DATO_PEDIDO);
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getProducto().getId(), DATO_PRODUCTO);
+        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getCantidad(), DATO_CANTIDAD);
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getPrecioUnitario(), DATO_PRECIO_UNITARIO);
+        ValidarNumeroEsPositivo.ejecutarValidacion(dominio.getSubtotal(), DATO_SUBTOTAL);
     }
 
     private void validarCoherenciaSubtotal(final LineaPedidoDominio dominio) {
-        final var esperado = dominio.getCantidad() * dominio.getPrecioUnitario();
-        final var diferencia = Math.abs(esperado - dominio.getSubtotal());
-        if (diferencia > 0.01) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_LINEA_PEDIDO_SUBTOTAL_INCONSISTENTE.getContenido()
-                            .formatted(dominio.getSubtotal(), esperado, dominio.getCantidad(),
-                                    dominio.getPrecioUnitario()));
-        }
+        ValidarSubtotalLineaPedidoEsCoherente.ejecutarValidacion(dominio.getCantidad(), dominio.getPrecioUnitario(),
+                dominio.getSubtotal());
     }
 
     private void asegurarPedidoExista(final LineaPedidoDominio dominio) {

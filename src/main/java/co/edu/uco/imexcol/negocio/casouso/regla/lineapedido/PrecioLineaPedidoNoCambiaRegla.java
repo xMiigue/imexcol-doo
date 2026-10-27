@@ -34,7 +34,7 @@ public final class PrecioLineaPedidoNoCambiaRegla implements Regla {
         final var fabrica = (FabricaDAO) datos[POSICION_FABRICA];
 
         final var precioCongelado = fabrica.obtenerLineaPedidoDAO().consultarPorId(idLinea).getPrecioUnitario();
-        if (Double.compare(precioNuevo, precioCongelado) != 0) {
+        if (!UtilNumerico.sonIgualesConDosDecimales(precioNuevo, precioCongelado)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_PRECIO_CONGELADO_MODIFICADO.getContenido(),
                     MensajesEnum.ERROR_TECNICO_LINEA_PEDIDO_PRECIO_CONGELADO_MODIFICADO.getContenido()

@@ -1,14 +1,20 @@
 package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
+import co.edu.uco.imexcol.negocio.casouso.regla.UtilRegla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilNumerico;
+import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class NumeroEnRangoRegla implements Regla {
 
     private static final NumeroEnRangoRegla INSTANCIA = new NumeroEnRangoRegla();
     private static final int CANTIDAD_PARAMETROS_REQUERIDOS = 4;
+    private static final int POSICION_VALOR = 0;
+    private static final int POSICION_NOMBRE_DATO = 1;
+    private static final int POSICION_MINIMO = 2;
+    private static final int POSICION_MAXIMO = 3;
 
     private NumeroEnRangoRegla() {
         super();
@@ -20,23 +26,13 @@ public final class NumeroEnRangoRegla implements Regla {
 
     @Override
     public void ejecutar(final Object... datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido());
-        }
-        if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido());
-        }
+        UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
+        final var valor = UtilNumerico.convertirADouble((Number) datos[POSICION_VALOR]);
+        final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
+        final var minimo = UtilNumerico.convertirADouble((Number) datos[POSICION_MINIMO]);
+        final var maximo = UtilNumerico.convertirADouble((Number) datos[POSICION_MAXIMO]);
 
-        final var valor = ((Number) datos[0]).doubleValue();
-        final var nombreDato = (String) datos[1];
-        final var minimo = ((Number) datos[2]).doubleValue();
-        final var maximo = ((Number) datos[3]).doubleValue();
-
-        if (valor < minimo || valor > maximo) {
+        if (!UtilNumerico.estaEnRango(valor, minimo, maximo)) {
             final var mensajeUsuario = MensajesEnum.ERROR_USUARIO_DATO_NUMERO_FUERA_DE_RANGO.getContenido()
                     .formatted(nombreDato, String.valueOf(minimo), String.valueOf(maximo));
             final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_NUMERO_FUERA_DE_RANGO.getContenido()
