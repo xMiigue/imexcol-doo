@@ -6,8 +6,11 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ClienteEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ClienteNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorCorreo;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarContrasenaClienteCoincide;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarCorreoClienteNoExiste;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarCredencialesClienteSonObligatorias;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.ClienteDominio;
@@ -81,6 +84,17 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
         return ensamblador.ensamblarDominio(entidades);
     }
 
+    @Override
+    public ClienteDominio autenticar(final ClienteDominio credenciales) {
+        final var credencialesSeguras = UtilObjeto.obtenerValorDefecto(credenciales, new ClienteDominio());
+        asegurarCredencialesCompletas(credencialesSeguras);
+        asegurarClienteRegistrado(credencialesSeguras.getCorreoElectronico());
+        final var cliente = consultarPorCorreo(credencialesSeguras.getCorreoElectronico());
+        asegurarContrasenaCoincida(credencialesSeguras.getContrasena(), cliente);
+        ocultarContrasena(cliente);
+        return cliente;
+    }
+
     private void validarDatosComunes(final ClienteDominio dominio) {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE);
         ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombre(), DATO_NOMBRE,
@@ -114,6 +128,30 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
 
     private void asegurarClienteExista(final UUID id) {
         ValidarClienteExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarCredencialesCompletas(final ClienteDominio credenciales) {
+        ValidarCredencialesClienteSonObligatorias.ejecutarValidacion(credenciales.getCorreoElectronico(),
+                credenciales.getContrasena());
+    }
+
+    private void asegurarClienteRegistrado(final String correo) {
+        ValidarClienteExistePorCorreo.ejecutarValidacion(correo, fabrica);
+    }
+
+    private ClienteDominio consultarPorCorreo(final String correo) {
+        final var filtro = new ClienteDominio();
+        filtro.setCorreoElectronico(correo);
+        return consultar(filtro).stream().findFirst().orElse(new ClienteDominio());
+    }
+
+    private void asegurarContrasenaCoincida(final String contrasenaIngresada, final ClienteDominio cliente) {
+        ValidarContrasenaClienteCoincide.ejecutarValidacion(contrasenaIngresada, cliente.getContrasena(),
+                cliente.getCorreoElectronico());
+    }
+
+    private void ocultarContrasena(final ClienteDominio cliente) {
+        cliente.setContrasena(UtilTexto.VACIO);
     }
 
     private void guardar(final ClienteDominio dominio) {

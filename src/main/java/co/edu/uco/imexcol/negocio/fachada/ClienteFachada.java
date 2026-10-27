@@ -14,4 +14,6 @@ public interface ClienteFachada {
     void eliminar(UUID id);
 
     List<ClienteDTO> consultar(ClienteDTO filtros);
+
+    ClienteDTO autenticar(ClienteDTO credenciales);
 }

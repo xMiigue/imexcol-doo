@@ -14,4 +14,6 @@ public interface AdministradorNegocio {
     void eliminar(UUID id);
 
     List<AdministradorDominio> consultar(AdministradorDominio filtros);
+
+    AdministradorDominio autenticar(AdministradorDominio credenciales);
 }

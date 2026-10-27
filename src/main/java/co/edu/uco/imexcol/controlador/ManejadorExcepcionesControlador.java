@@ -12,6 +12,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import co.edu.uco.imexcol.controlador.dto.Respuesta;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolAutenticacionException;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolControladorException;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 
@@ -19,6 +20,13 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 public final class ManejadorExcepcionesControlador {
 
     private static final Logger REGISTRO = LoggerFactory.getLogger(ManejadorExcepcionesControlador.class);
+
+    @ExceptionHandler(ImexcolAutenticacionException.class)
+    public ResponseEntity<Respuesta<Object>> manejarAutenticacionFallida(
+            final ImexcolAutenticacionException excepcion) {
+        REGISTRO.warn(excepcion.getMensajeTecnico());
+        return responderFallida(excepcion.getMensajeUsuario(), HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(ImexcolException.class)
     public ResponseEntity<Respuesta<Object>> manejarExcepcionImexcol(final ImexcolException excepcion) {

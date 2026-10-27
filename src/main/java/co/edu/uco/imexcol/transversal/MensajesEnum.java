@@ -419,18 +419,30 @@ public enum MensajesEnum {
 
     ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_OBLIGATORIAS(
             "Correo electrónico y contraseña son obligatorios."),
+    ERROR_TECNICO_AUTENTICACION_CLIENTE_CREDENCIALES_OBLIGATORIAS(
+            "Se intentó autenticar un cliente sin correo electrónico o sin contraseña."),
 
     ERROR_USUARIO_AUTENTICACION_CLIENTE_CREDENCIALES_INVALIDAS(
             "Correo o contraseña inválidos."),
+    ERROR_TECNICO_AUTENTICACION_CLIENTE_NO_REGISTRADO(
+            "No existe un cliente registrado con el correo electrónico [%s]."),
+    ERROR_TECNICO_AUTENTICACION_CLIENTE_CONTRASENA_INCORRECTA(
+            "La contraseña ingresada no coincide con la registrada para el cliente con correo [%s]."),
 
     EXITO_AUTENTICACION(
             "Autenticación exitosa."),
 
     ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_OBLIGATORIAS(
             "Nombre de usuario y contraseña son obligatorios."),
+    ERROR_TECNICO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_OBLIGATORIAS(
+            "Se intentó autenticar un administrador sin nombre de usuario o sin contraseña."),
 
     ERROR_USUARIO_AUTENTICACION_ADMINISTRADOR_CREDENCIALES_INVALIDAS(
             "Usuario o contraseña inválidos."),
+    ERROR_TECNICO_AUTENTICACION_ADMINISTRADOR_NO_REGISTRADO(
+            "No existe un administrador registrado con el nombre de usuario [%s]."),
+    ERROR_TECNICO_AUTENTICACION_ADMINISTRADOR_CONTRASENA_INCORRECTA(
+            "La contraseña ingresada no coincide con la registrada para el administrador [%s]."),
 
     EXITO_AUTENTICACION_REGISTRO_CLIENTE(
             "Cliente registrado satisfactoriamente. Ya puede iniciar sesión."),

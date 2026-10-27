@@ -7,13 +7,17 @@ import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.AdministradorEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.AdministradorNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorNombreUsuario;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorNoEsElUnico;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarContrasenaAdministradorCoincide;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarCredencialesAdministradorSonObligatorias;
 import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarNombreUsuarioAdministradorNoExiste;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.AdministradorDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
@@ -76,6 +80,17 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
         return ensamblador.ensamblarDominio(entidades);
     }
 
+    @Override
+    public AdministradorDominio autenticar(final AdministradorDominio credenciales) {
+        final var credencialesSeguras = UtilObjeto.obtenerValorDefecto(credenciales, new AdministradorDominio());
+        asegurarCredencialesCompletas(credencialesSeguras);
+        asegurarAdministradorRegistrado(credencialesSeguras.getNombreUsuario());
+        final var administrador = consultarPorNombreUsuario(credencialesSeguras.getNombreUsuario());
+        asegurarContrasenaCoincida(credencialesSeguras.getContrasena(), administrador);
+        ocultarContrasena(administrador);
+        return administrador;
+    }
+
     private void validarDatosComunes(final AdministradorDominio dominio) {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO);
         ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO,
@@ -103,6 +118,31 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
 
     private void asignarNuevoIdentificador(final AdministradorDominio dominio) {
         dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void asegurarCredencialesCompletas(final AdministradorDominio credenciales) {
+        ValidarCredencialesAdministradorSonObligatorias.ejecutarValidacion(credenciales.getNombreUsuario(),
+                credenciales.getContrasena());
+    }
+
+    private void asegurarAdministradorRegistrado(final String nombreUsuario) {
+        ValidarAdministradorExistePorNombreUsuario.ejecutarValidacion(nombreUsuario, fabrica);
+    }
+
+    private AdministradorDominio consultarPorNombreUsuario(final String nombreUsuario) {
+        final var filtro = new AdministradorDominio();
+        filtro.setNombreUsuario(nombreUsuario);
+        return consultar(filtro).stream().findFirst().orElse(new AdministradorDominio());
+    }
+
+    private void asegurarContrasenaCoincida(final String contrasenaIngresada,
+            final AdministradorDominio administrador) {
+        ValidarContrasenaAdministradorCoincide.ejecutarValidacion(contrasenaIngresada,
+                administrador.getContrasena(), administrador.getNombreUsuario());
+    }
+
+    private void ocultarContrasena(final AdministradorDominio administrador) {
+        administrador.setContrasena(UtilTexto.VACIO);
     }
 
     private void guardar(final AdministradorDominio dominio) {

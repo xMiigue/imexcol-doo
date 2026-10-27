@@ -14,4 +14,6 @@ public interface ClienteNegocio {
     void eliminar(UUID id);
 
     List<ClienteDominio> consultar(ClienteDominio filtros);
+
+    ClienteDominio autenticar(ClienteDominio credenciales);
 }

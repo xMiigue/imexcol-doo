@@ -106,6 +106,28 @@ public final class ClienteFachadaImpl implements ClienteFachada {
         }
     }
 
+    @Override
+    public ClienteDTO autenticar(final ClienteDTO credenciales) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
+        try {
+            fabrica.iniciarTransaccion();
+            final var credencialesSeguras = UtilObjeto.obtenerValorDefecto(credenciales, new ClienteDTO());
+            final var dominioCredenciales = ensamblador.ensamblarDominio(credencialesSeguras);
+            final var negocio = new ClienteNegocioImpl(fabrica);
+            final var autenticado = ensamblador.ensamblarDTO(negocio.autenticar(dominioCredenciales));
+            fabrica.confirmarTransaccion();
+            return autenticado;
+        } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
+            throw excepcion;
+        } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
+            throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
+        }
+    }
+
     private static ImexcolFachadaException envolverErrorInesperado(final Exception excepcion) {
         return ImexcolFachadaException.crear(excepcion,
                 MensajesEnum.ERROR_USUARIO_FACHADA_OPERACION_INESPERADA.getContenido(),
