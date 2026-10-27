@@ -1,17 +1,3 @@
--- ============================================================
--- schema.sql — Imexcol (SQL Server)
---
--- Script idempotente para crear el esquema de las 5 entidades principales.
--- Los nombres de tablas y columnas coinciden exactamente con los definidos
--- en datos/dao/entidad/sql/*.java
---
--- Para activar la ejecucion automatica de Spring Boot establezca
--- spring.sql.init.mode=always en application.properties.
--- ============================================================
-
--- ------------------------------------------------------------
--- Tabla: imex_categoria
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_categoria', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_categoria (
@@ -23,9 +9,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_administrador
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_administrador', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_administrador (
@@ -40,9 +23,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_cliente
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_cliente', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_cliente (
@@ -58,9 +38,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_producto (FK -> imex_categoria)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_producto', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_producto (
@@ -77,9 +54,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_pedido (FK -> imex_cliente)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_pedido', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_pedido (
@@ -94,9 +68,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_metodo_pago
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_metodo_pago', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_metodo_pago (
@@ -108,9 +79,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_direccion (FK -> imex_cliente)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_direccion', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_direccion (
@@ -128,9 +96,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_carrito_compras (FK -> imex_cliente)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_carrito_compras', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_carrito_compras (
@@ -144,9 +109,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_item_carrito (FK -> imex_carrito_compras, imex_producto)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_item_carrito', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_item_carrito (
@@ -163,9 +125,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Alteracion: imex_producto — agrega imagen_url (opcional)
--- ------------------------------------------------------------
 IF NOT EXISTS (
     SELECT 1 FROM sys.columns
     WHERE name = 'imagen_url' AND object_id = OBJECT_ID(N'dbo.imex_producto')
@@ -175,9 +134,6 @@ BEGIN
         ADD imagen_url NVARCHAR(255) NULL;
 END;
 
--- ------------------------------------------------------------
--- Alteracion: imex_pedido — agrega direccion_id (FK -> imex_direccion)
--- ------------------------------------------------------------
 IF NOT EXISTS (
     SELECT 1 FROM sys.columns
     WHERE name = 'direccion_id' AND object_id = OBJECT_ID(N'dbo.imex_pedido')
@@ -188,9 +144,6 @@ BEGIN
             CONSTRAINT fk_imex_pedido_direccion REFERENCES dbo.imex_direccion (id);
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_linea_pedido (FK -> imex_pedido, imex_producto)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_linea_pedido', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_linea_pedido (
@@ -208,9 +161,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_pago (FK -> imex_pedido, imex_metodo_pago)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_pago', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_pago (
@@ -228,9 +178,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_envio (FK -> imex_pedido)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_envio', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_envio (
@@ -247,9 +194,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_factura (FK -> imex_pago)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_factura', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_factura (
@@ -271,9 +215,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_imagen_producto (FK -> imex_producto)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_imagen_producto', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_imagen_producto (
@@ -290,9 +231,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_resena (FK -> imex_cliente, imex_producto)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_resena', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_resena (
@@ -312,9 +250,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Tabla: imex_evento_rastreo (FK -> imex_envio)
--- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_evento_rastreo', N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_evento_rastreo (
@@ -333,9 +268,6 @@ BEGIN
     );
 END;
 
--- ------------------------------------------------------------
--- Indices auxiliares para acelerar consultas por filtro
--- ------------------------------------------------------------
 IF NOT EXISTS (
     SELECT 1 FROM sys.indexes
     WHERE name = 'ix_imex_producto_categoria_id' AND object_id = OBJECT_ID(N'dbo.imex_producto')
