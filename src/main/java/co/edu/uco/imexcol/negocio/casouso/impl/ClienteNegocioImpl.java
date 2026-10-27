@@ -6,13 +6,15 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ClienteEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ClienteNegocio;
-import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarCorreoClienteNoExiste;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.ClienteDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class ClienteNegocioImpl implements ClienteNegocio {
@@ -35,22 +37,24 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
     public void registrar(final ClienteDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ClienteDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerClienteDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarCorreoNoExista(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final ClienteDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ClienteDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "cliente");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerClienteDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarClienteExista(dominioSeguro.getId());
+        asegurarCorreoNoExista(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "cliente");
-        fabrica.obtenerClienteDAO().eliminar(id);
+        asegurarClienteExista(id);
+        borrar(id);
     }
 
     @Override
@@ -80,5 +84,29 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
             ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getTelefono(),
                     "teléfono del cliente", 7, 20);
         }
+    }
+
+    private void asignarNuevoIdentificador(final ClienteDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void asegurarCorreoNoExista(final ClienteDominio dominio) {
+        ValidarCorreoClienteNoExiste.ejecutarValidacion(dominio.getCorreoElectronico(), dominio.getId(), fabrica);
+    }
+
+    private void asegurarClienteExista(final UUID id) {
+        ValidarClienteExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void guardar(final ClienteDominio dominio) {
+        fabrica.obtenerClienteDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final ClienteDominio dominio) {
+        fabrica.obtenerClienteDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerClienteDAO().eliminar(id);
     }
 }

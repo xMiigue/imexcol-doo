@@ -6,6 +6,9 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.DireccionEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.DireccionNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoEstaDuplicadaParaCliente;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
@@ -13,6 +16,7 @@ import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class DireccionNegocioImpl implements DireccionNegocio {
@@ -35,23 +39,26 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     public void registrar(final DireccionDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
         validarDatosComunes(dominioSeguro);
-        validarNoExisteDireccionDuplicada(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerDireccionDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarClienteExista(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarDireccionNoEsteDuplicada(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final DireccionDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "dirección");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarDireccionExista(dominioSeguro.getId());
+        asegurarClienteExista(dominioSeguro);
+        asegurarDireccionNoEsteDuplicada(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "dirección");
-        fabrica.obtenerDireccionDAO().eliminar(id);
+        asegurarDireccionExista(id);
+        borrar(id);
     }
 
     @Override
@@ -86,21 +93,31 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         }
     }
 
-    private void validarNoExisteDireccionDuplicada(final DireccionDominio dominio) {
-        final var filtro = ensamblador.ensamblarEntidad(new DireccionDominio());
-        filtro.getCliente().setId(dominio.getCliente().getId());
-        filtro.setCalle(dominio.getCalle());
-        filtro.setCiudad(dominio.getCiudad());
-        filtro.setDepartamento(dominio.getDepartamento());
-        filtro.setPais(dominio.getPais());
+    private void asegurarClienteExista(final DireccionDominio dominio) {
+        ValidarClienteExistePorId.ejecutarValidacion(dominio.getCliente().getId(), fabrica);
+    }
 
-        final var existentes = fabrica.obtenerDireccionDAO().consultarPorFiltro(filtro);
-        if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
-            throw ImexcolNegocioException.crear(
-                    MensajesEnum.ERROR_USUARIO_DIRECCION_DUPLICADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_DIRECCION_DUPLICADA.getContenido()
-                            .formatted(dominio.getCliente().getId(), dominio.getCalle(),
-                                    dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()));
-        }
+    private void asignarNuevoIdentificador(final DireccionDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void asegurarDireccionNoEsteDuplicada(final DireccionDominio dominio) {
+        ValidarDireccionNoEstaDuplicadaParaCliente.ejecutarValidacion(dominio, fabrica);
+    }
+
+    private void asegurarDireccionExista(final UUID id) {
+        ValidarDireccionExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void guardar(final DireccionDominio dominio) {
+        fabrica.obtenerDireccionDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final DireccionDominio dominio) {
+        fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerDireccionDAO().eliminar(id);
     }
 }
