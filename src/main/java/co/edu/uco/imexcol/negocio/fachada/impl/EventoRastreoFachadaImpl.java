@@ -3,9 +3,9 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.dto.EventoRastreoDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.EventoRastreoDTOAssembler;
-import co.edu.uco.imexcol.negocio.casouso.EventoRastreoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.impl.EventoRastreoNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.EventoRastreoFachada;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -15,63 +15,73 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 public final class EventoRastreoFachadaImpl implements EventoRastreoFachada {
 
-    private final EventoRastreoNegocio negocio;
     private final EventoRastreoDTOAssembler ensamblador;
 
     public EventoRastreoFachadaImpl() {
         super();
-        this.negocio = new EventoRastreoNegocioImpl();
         this.ensamblador = EventoRastreoDTOAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final EventoRastreoDTO dto) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new EventoRastreoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new EventoRastreoNegocioImpl(fabrica);
             negocio.registrar(dominio);
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
-    public void actualizar(final EventoRastreoDTO dto) {
+    public List<EventoRastreoDTO> consultarHistorialPorEnvio(final UUID idEnvio) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new EventoRastreoDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            negocio.actualizar(dominio);
+            fabrica.iniciarTransaccion();
+            final var negocio = new EventoRastreoNegocioImpl(fabrica);
+            final var dominios = negocio.consultarHistorialPorEnvio(idEnvio);
+            final var resultado = ensamblador.ensamblarDTO(dominios);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
-    public void eliminar(final UUID id) {
+    public List<EventoRastreoDTO> consultarHistorialDelCliente(final UUID idEnvio, final UUID idCliente) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
-            negocio.eliminar(id);
+            fabrica.iniciarTransaccion();
+            final var negocio = new EventoRastreoNegocioImpl(fabrica);
+            final var dominios = negocio.consultarHistorialDelCliente(idEnvio, idCliente);
+            final var resultado = ensamblador.ensamblarDTO(dominios);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
-        }
-    }
-
-    @Override
-    public List<EventoRastreoDTO> consultar(final EventoRastreoDTO filtros) {
-        try {
-            final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new EventoRastreoDTO());
-            final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var dominios = negocio.consultar(dominioFiltro);
-            return ensamblador.ensamblarDTO(dominios);
-        } catch (final ImexcolException excepcion) {
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 

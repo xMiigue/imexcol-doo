@@ -63,6 +63,7 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     @Override
     public void eliminar(final UUID id) {
         asegurarEnvioExista(id);
+        borrarEventosRastreo(id);
         borrar(id);
     }
 
@@ -131,6 +132,10 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
 
     private void modificar(final EnvioDominio dominio) {
         fabrica.obtenerEnvioDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrarEventosRastreo(final UUID id) {
+        fabrica.obtenerEventoRastreoDAO().eliminarPorEnvio(id);
     }
 
     private void borrar(final UUID id) {

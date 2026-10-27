@@ -8,6 +8,7 @@ import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
 import co.edu.uco.imexcol.datos.dao.DireccionDAO;
 import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.EventoRastreoDAO;
 import co.edu.uco.imexcol.datos.dao.FacturaDAO;
 import co.edu.uco.imexcol.datos.dao.ImagenProductoDAO;
 import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
@@ -69,6 +70,8 @@ public abstract class FabricaDAO {
     public abstract ResenaDAO obtenerResenaDAO();
 
     public abstract ImagenProductoDAO obtenerImagenProductoDAO();
+
+    public abstract EventoRastreoDAO obtenerEventoRastreoDAO();
 
     protected abstract void abrirConexion();
 

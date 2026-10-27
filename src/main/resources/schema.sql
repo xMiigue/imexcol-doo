@@ -313,6 +313,27 @@ BEGIN
 END;
 
 -- ------------------------------------------------------------
+-- Tabla: imex_evento_rastreo (FK -> imex_envio)
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.imex_evento_rastreo', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.imex_evento_rastreo (
+        id               UNIQUEIDENTIFIER NOT NULL,
+        envio_id         UNIQUEIDENTIFIER NOT NULL,
+        estado_logistico NVARCHAR(30)     NOT NULL,
+        fecha_hora       DATETIME         NOT NULL,
+        observacion      NVARCHAR(255)    NULL,
+        CONSTRAINT pk_imex_evento_rastreo PRIMARY KEY (id),
+        CONSTRAINT fk_imex_evento_rastreo_envio
+            FOREIGN KEY (envio_id) REFERENCES dbo.imex_envio (id),
+        CONSTRAINT uq_imex_evento_rastreo_envio_estado_fecha
+            UNIQUE (envio_id, estado_logistico, fecha_hora),
+        CONSTRAINT chk_imex_evento_rastreo_estado
+            CHECK (estado_logistico IN (N'Recibido', N'En transito', N'En reparto', N'Entregado', N'Novedad'))
+    );
+END;
+
+-- ------------------------------------------------------------
 -- Indices auxiliares para acelerar consultas por filtro
 -- ------------------------------------------------------------
 IF NOT EXISTS (
@@ -353,4 +374,12 @@ IF NOT EXISTS (
 )
 BEGIN
     CREATE INDEX ix_imex_resena_fecha ON dbo.imex_resena (fecha);
+END;
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'ix_imex_evento_rastreo_fecha_hora' AND object_id = OBJECT_ID(N'dbo.imex_evento_rastreo')
+)
+BEGIN
+    CREATE INDEX ix_imex_evento_rastreo_fecha_hora ON dbo.imex_evento_rastreo (fecha_hora);
 END;

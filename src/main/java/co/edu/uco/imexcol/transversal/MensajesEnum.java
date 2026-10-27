@@ -377,11 +377,6 @@ public enum MensajesEnum {
     ERROR_TECNICO_DATO_NUMERO_NO_MAYOR_A_CERO(
             "El dato numérico [%s] llegó con un valor menor o igual a cero a la regla NumeroEsMayorACeroRegla."),
 
-    ERROR_USUARIO_CASO_USO_DAO_PENDIENTE(
-            "La operación solicitada no se encuentra disponible en este momento. Por favor intente más tarde."),
-    ERROR_TECNICO_CASO_USO_DAO_PENDIENTE(
-            "La operación [%s] del caso de uso [%s] está pendiente de integración con la capa de datos (DAO)."),
-
     EXITO_ADMINISTRADOR_CONSULTA(
             "Administradores consultados satisfactoriamente."),
 
@@ -780,6 +775,37 @@ public enum MensajesEnum {
             "No se puede eliminar la imagen porque el producto debe conservar al menos una."),
     ERROR_TECNICO_PRODUCTO_DEBE_CONSERVAR_IMAGEN(
             "El producto id=%s tiene %s imagen(es); el mínimo que debe conservar es %s."),
+
+    EXITO_EVENTO_RASTREO_CONSULTA(
+            "Historial de rastreo consultado satisfactoriamente."),
+
+    EXITO_EVENTO_RASTREO_REGISTRO(
+            "Novedad de rastreo registrada satisfactoriamente."),
+
+    ERROR_USUARIO_EVENTO_RASTREO_ENVIO_NO_ACTIVO(
+            "Solo se pueden registrar novedades de rastreo en envíos que estén en preparación o en tránsito."),
+    ERROR_TECNICO_EVENTO_RASTREO_ENVIO_NO_ACTIVO(
+            "El envío id=%s está en estado [%s], que no es un estado activo."),
+
+    ERROR_USUARIO_EVENTO_RASTREO_FECHA_ANTERIOR_AL_DESPACHO(
+            "La fecha del evento no puede ser anterior a la fecha de despacho del envío."),
+    ERROR_TECNICO_EVENTO_RASTREO_FECHA_ANTERIOR_AL_DESPACHO(
+            "Inconsistencia cronológica: fechaHora=%s es anterior a fechaEnvio=%s del envío id=%s."),
+
+    ERROR_USUARIO_EVENTO_RASTREO_DUPLICADO(
+            "Ya existe un evento con el mismo estado y la misma fecha para este envío."),
+    ERROR_TECNICO_EVENTO_RASTREO_DUPLICADO(
+            "El envío id=%s ya tiene el evento id=%s con estadoLogistico=%s y fechaHora=%s."),
+
+    ERROR_USUARIO_EVENTO_RASTREO_OBSERVACION_REQUERIDA(
+            "La observación es obligatoria cuando el estado logístico es %s."),
+    ERROR_TECNICO_EVENTO_RASTREO_OBSERVACION_REQUERIDA(
+            "Se recibió un evento con estadoLogistico=%s sin observación."),
+
+    ERROR_USUARIO_ENVIO_NO_PERTENECE_AL_CLIENTE(
+            "Acceso denegado: el envío no pertenece al cliente indicado."),
+    ERROR_TECNICO_ENVIO_NO_PERTENECE_AL_CLIENTE(
+            "El envío id=%s pertenece al pedido id=%s del cliente id=%s y no al cliente id=%s."),
 
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),

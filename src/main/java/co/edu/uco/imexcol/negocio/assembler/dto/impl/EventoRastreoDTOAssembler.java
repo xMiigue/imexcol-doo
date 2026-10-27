@@ -26,10 +26,9 @@ public final class EventoRastreoDTOAssembler implements DTOAssembler<EventoRastr
         return new EventoRastreoDominio(
                 dtoAEnsamblar.getId(),
                 EnvioDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getEnvio()),
-                dtoAEnsamblar.getFecha(),
-                dtoAEnsamblar.getUbicacion(),
-                dtoAEnsamblar.getDescripcion(),
-                dtoAEnsamblar.getEstado());
+                dtoAEnsamblar.getEstadoLogistico(),
+                dtoAEnsamblar.getFechaHora(),
+                dtoAEnsamblar.getObservacion());
     }
 
     @Override
@@ -38,10 +37,9 @@ public final class EventoRastreoDTOAssembler implements DTOAssembler<EventoRastr
         return new EventoRastreoDTO(
                 dominioAEnsamblar.getId(),
                 EnvioDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getEnvio()),
-                dominioAEnsamblar.getFecha(),
-                dominioAEnsamblar.getUbicacion(),
-                dominioAEnsamblar.getDescripcion(),
-                dominioAEnsamblar.getEstado());
+                dominioAEnsamblar.getEstadoLogistico(),
+                dominioAEnsamblar.getFechaHora(),
+                dominioAEnsamblar.getObservacion());
     }
 
     @Override

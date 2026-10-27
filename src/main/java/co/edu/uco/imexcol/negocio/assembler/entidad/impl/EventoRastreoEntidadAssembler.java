@@ -26,10 +26,9 @@ public final class EventoRastreoEntidadAssembler implements EntidadAssembler<Eve
         return new EventoRastreoEntidad(
                 dominioAEnsamblar.getId(),
                 EnvioEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getEnvio()),
-                dominioAEnsamblar.getFecha(),
-                dominioAEnsamblar.getUbicacion(),
-                dominioAEnsamblar.getDescripcion(),
-                dominioAEnsamblar.getEstado());
+                dominioAEnsamblar.getEstadoLogistico(),
+                dominioAEnsamblar.getFechaHora(),
+                dominioAEnsamblar.getObservacion());
     }
 
     @Override
@@ -38,10 +37,9 @@ public final class EventoRastreoEntidadAssembler implements EntidadAssembler<Eve
         return new EventoRastreoDominio(
                 entidadAEnsamblar.getId(),
                 EnvioEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getEnvio()),
-                entidadAEnsamblar.getFecha(),
-                entidadAEnsamblar.getUbicacion(),
-                entidadAEnsamblar.getDescripcion(),
-                entidadAEnsamblar.getEstado());
+                entidadAEnsamblar.getEstadoLogistico(),
+                entidadAEnsamblar.getFechaHora(),
+                entidadAEnsamblar.getObservacion());
     }
 
     @Override
