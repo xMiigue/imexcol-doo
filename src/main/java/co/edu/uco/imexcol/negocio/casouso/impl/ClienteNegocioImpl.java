@@ -78,10 +78,9 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
 
     @Override
     public List<ClienteDominio> consultar(final ClienteDominio filtros) {
-        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new ClienteDominio());
-        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = fabrica.obtenerClienteDAO().consultarPorFiltro(entidadFiltro);
-        return ensamblador.ensamblarDominio(entidades);
+        final var registros = consultarConContrasena(filtros);
+        registros.forEach(this::ocultarContrasena);
+        return registros;
     }
 
     @Override
@@ -142,12 +141,19 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
     private ClienteDominio consultarPorCorreo(final String correo) {
         final var filtro = new ClienteDominio();
         filtro.setCorreoElectronico(correo);
-        return consultar(filtro).stream().findFirst().orElse(new ClienteDominio());
+        return consultarConContrasena(filtro).stream().findFirst().orElse(new ClienteDominio());
     }
 
     private void asegurarContrasenaCoincida(final String contrasenaIngresada, final ClienteDominio cliente) {
         ValidarContrasenaClienteCoincide.ejecutarValidacion(contrasenaIngresada, cliente.getContrasena(),
                 cliente.getCorreoElectronico());
+    }
+
+    private List<ClienteDominio> consultarConContrasena(final ClienteDominio filtros) {
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new ClienteDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = fabrica.obtenerClienteDAO().consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void ocultarContrasena(final ClienteDominio cliente) {

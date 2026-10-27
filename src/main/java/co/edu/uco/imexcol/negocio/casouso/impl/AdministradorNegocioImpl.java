@@ -74,10 +74,9 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
 
     @Override
     public List<AdministradorDominio> consultar(final AdministradorDominio filtros) {
-        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDominio());
-        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = fabrica.obtenerAdministradorDAO().consultarPorFiltro(entidadFiltro);
-        return ensamblador.ensamblarDominio(entidades);
+        final var registros = consultarConContrasena(filtros);
+        registros.forEach(this::ocultarContrasena);
+        return registros;
     }
 
     @Override
@@ -132,13 +131,20 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
     private AdministradorDominio consultarPorNombreUsuario(final String nombreUsuario) {
         final var filtro = new AdministradorDominio();
         filtro.setNombreUsuario(nombreUsuario);
-        return consultar(filtro).stream().findFirst().orElse(new AdministradorDominio());
+        return consultarConContrasena(filtro).stream().findFirst().orElse(new AdministradorDominio());
     }
 
     private void asegurarContrasenaCoincida(final String contrasenaIngresada,
             final AdministradorDominio administrador) {
         ValidarContrasenaAdministradorCoincide.ejecutarValidacion(contrasenaIngresada,
                 administrador.getContrasena(), administrador.getNombreUsuario());
+    }
+
+    private List<AdministradorDominio> consultarConContrasena(final AdministradorDominio filtros) {
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = fabrica.obtenerAdministradorDAO().consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
     }
 
     private void ocultarContrasena(final AdministradorDominio administrador) {
