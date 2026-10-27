@@ -9,6 +9,9 @@ const API = {
     pagos: '/api/v1/pagos',
     metodosPago: '/api/v1/metodos-pago',
     direcciones: '/api/v1/direcciones',
+    carritosCompras: '/api/v1/carritos-compras',
+    itemsCarrito: '/api/v1/items-carrito',
+    compras: '/api/v1/compras',
     clientes: '/api/v1/clientes',
     envios: '/api/v1/envios'
 };
@@ -17,6 +20,7 @@ const ESTADOS_PEDIDO = ['PENDIENTE', 'CONFIRMADO', 'PREPARANDO', 'ENVIADO', 'ENT
 const ESTADOS_PAGO = ['PENDIENTE', 'EN_PROCESO', 'APROBADO', 'RECHAZADO', 'REEMBOLSADO'];
 const ESTADOS_ENVIO = ['PREPARANDO', 'EN_TRANSITO', 'ENTREGADO', 'DEVUELTO', 'EXTRAVIADO'];
 const COPIAS_PISTA_CARRUSEL_CONTINUA = 4;
+const ESTADO_CARRITO_ACTIVO = 'Activo';
 
 const estado = {
     usuario: null,
@@ -435,6 +439,7 @@ function renderizarResumenCheckout() {
 }
 
 async function prepararCheckout() {
+    ocultarResultadoCompra();
     renderizarResumenCheckout();
     estado.direccionSeleccionada = null;
     document.getElementById('form-nueva-direccion').classList.add('oculto');
@@ -506,133 +511,201 @@ async function cargarMetodosPago() {
 }
 
 async function confirmarCompra() {
-    if (estado.carrito.length === 0) {
-        mostrarNotificacion('Tu carrito está vacío.', 'error');
-        return;
-    }
-    if (!estado.usuario || estado.usuario.tipo !== 'cliente') {
-        mostrarNotificacion('Debes iniciar sesión como cliente.', 'error');
-        return;
-    }
-
     const idMetodoPago = document.getElementById('checkout-metodo-pago').value;
-    if (!idMetodoPago) {
-        mostrarNotificacion('Selecciona un método de pago.', 'error');
-        return;
-    }
-
-    const formNueva = document.getElementById('form-nueva-direccion');
-    const nuevaCalle = document.getElementById('dir-calle').value.trim();
-    const usaNueva = !formNueva.classList.contains('oculto') && nuevaCalle.length > 0;
-
-    if (!usaNueva && !estado.direccionSeleccionada) {
-        mostrarNotificacion('Selecciona o agrega una dirección de envío.', 'error');
+    const usaNueva = usaDireccionNueva();
+    const errorIntegridad = validarIntegridadCompra(idMetodoPago, usaNueva);
+    if (errorIntegridad) {
+        mostrarResultadoCompra(errorIntegridad, 'error');
+        mostrarNotificacion(errorIntegridad, 'error');
         return;
     }
 
     const boton = document.getElementById('btn-confirmar-compra');
     boton.disabled = true;
     boton.textContent = 'Procesando…';
+    ocultarResultadoCompra();
 
     try {
-        if (usaNueva) {
-            await crearDireccionNueva();
-        }
-
-        const total = calcularTotalCarrito();
-        const clienteId = estado.usuario.datos.id;
-        const fecha = fechaHoyIso();
-
-        const antes = await peticionApi(`${API.pedidos}?idCliente=${clienteId}`);
-        const idsAntes = new Set((antes.datos || []).map(p => p.id));
-
-        await peticionApi(API.pedidos, {
+        const idDireccion = usaNueva ? await crearDireccionNueva() : estado.direccionSeleccionada;
+        const idCarrito = await guardarCarritoEnServidor();
+        const respuesta = await peticionApi(API.compras, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                cliente: { id: clienteId },
-                fechaPedido: fecha,
-                total: total,
-                estado: 'PENDIENTE'
+                idCliente: estado.usuario.datos.id,
+                idCarrito: idCarrito,
+                idDireccion: idDireccion,
+                idMetodoPago: idMetodoPago
             })
         });
-
-        const despues = await peticionApi(`${API.pedidos}?idCliente=${clienteId}`);
-        const pedidoNuevo = (despues.datos || []).find(p => !idsAntes.has(p.id));
-        if (!pedidoNuevo) {
-            throw new Error('No fue posible identificar el pedido creado.');
-        }
-
-        for (const item of estado.carrito) {
-            const cantidad = item.cantidad;
-            const precio = item.producto.precio;
-            const subtotal = +(cantidad * precio).toFixed(2);
-            await peticionApi(API.lineasPedido, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    pedido: { id: pedidoNuevo.id },
-                    producto: { id: item.producto.id },
-                    cantidad: cantidad,
-                    precioUnitario: precio,
-                    subtotal: subtotal
-                })
-            });
-        }
-
-        await peticionApi(API.pagos, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                pedido: { id: pedidoNuevo.id },
-                metodoPago: { id: idMetodoPago },
-                monto: total,
-                fechaPago: fecha,
-                estado: 'PENDIENTE'
-            })
-        });
-
-        mostrarNotificacion(`Compra confirmada por ${formatoMoneda(total)}.`, 'exito');
-        estado.carrito = [];
-        actualizarBadgeCarrito();
-        renderizarCarrito();
-        formNueva.classList.add('oculto');
-        document.getElementById('form-nueva-direccion').querySelectorAll('input').forEach(i => {
-            if (i.type === 'checkbox') i.checked = false;
-            else if (i.id === 'dir-pais') i.value = 'Colombia';
-            else i.value = '';
-        });
-        cambiarVista('mis-pedidos');
-        await cargarMisPedidos();
+        finalizarCompraExitosa(respuesta.datos[0]);
     } catch (error) {
-        mostrarNotificacion(error.message || 'No fue posible procesar la compra.', 'error');
+        const mensaje = `No se pudo realizar la compra: ${error.message || 'ocurrió un problema inesperado.'}`;
+        mostrarResultadoCompra(mensaje, 'error');
+        mostrarNotificacion(mensaje, 'error');
     } finally {
         boton.disabled = false;
         boton.textContent = 'Confirmar compra';
     }
 }
 
-async function crearDireccionNueva() {
-    const calle = document.getElementById('dir-calle').value.trim();
-    const ciudad = document.getElementById('dir-ciudad').value.trim();
-    const departamento = document.getElementById('dir-departamento').value.trim();
-    const pais = document.getElementById('dir-pais').value.trim();
-    const codigoPostal = document.getElementById('dir-codigo-postal').value.trim();
-    const esPrincipal = document.getElementById('dir-es-principal').checked;
+function usaDireccionNueva() {
+    const formNueva = document.getElementById('form-nueva-direccion');
+    return !formNueva.classList.contains('oculto') && leerDireccionNueva().calle.length > 0;
+}
 
-    if (!calle || !ciudad || !departamento || !pais) {
-        throw new Error('Completa calle, ciudad, departamento y país de la dirección.');
+function validarIntegridadCompra(idMetodoPago, usaNueva) {
+    if (estado.carrito.length === 0) {
+        return 'Tu carrito está vacío.';
     }
+    if (!estado.usuario || estado.usuario.tipo !== 'cliente') {
+        return 'Debes iniciar sesión como cliente.';
+    }
+    if (usaNueva && !direccionNuevaEstaCompleta(leerDireccionNueva())) {
+        return 'Completa calle, ciudad, departamento y país de la nueva dirección.';
+    }
+    if (!usaNueva && !estado.direccionSeleccionada) {
+        return 'Selecciona o agrega una dirección de envío.';
+    }
+    if (!idMetodoPago) {
+        return 'Selecciona un método de pago.';
+    }
+    return '';
+}
 
+function leerDireccionNueva() {
+    return {
+        calle: document.getElementById('dir-calle').value.trim(),
+        ciudad: document.getElementById('dir-ciudad').value.trim(),
+        departamento: document.getElementById('dir-departamento').value.trim(),
+        pais: document.getElementById('dir-pais').value.trim(),
+        codigoPostal: document.getElementById('dir-codigo-postal').value.trim(),
+        esPrincipal: document.getElementById('dir-es-principal').checked
+    };
+}
+
+function direccionNuevaEstaCompleta(direccion) {
+    return Boolean(direccion.calle && direccion.ciudad && direccion.departamento && direccion.pais);
+}
+
+function esMismaDireccion(registrada, buscada) {
+    const normalizar = texto => String(texto || '').trim().toLowerCase();
+    return normalizar(registrada.calle) === normalizar(buscada.calle)
+        && normalizar(registrada.ciudad) === normalizar(buscada.ciudad)
+        && normalizar(registrada.departamento) === normalizar(buscada.departamento);
+}
+
+async function crearDireccionNueva() {
+    const direccion = leerDireccionNueva();
     await peticionApi(API.direcciones, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             cliente: { id: estado.usuario.datos.id },
-            calle, ciudad, departamento, pais, codigoPostal,
-            esPrincipal
+            ...direccion
         })
     });
+    await cargarDireccionesCliente();
+    const creada = estado.direccionesCliente.find(d => esMismaDireccion(d, direccion));
+    if (!creada) {
+        throw new Error('No fue posible identificar la dirección registrada.');
+    }
+    limpiarFormularioDireccionNueva();
+    seleccionarDireccionCheckout(creada.id);
+    return creada.id;
+}
+
+function limpiarFormularioDireccionNueva() {
+    const formNueva = document.getElementById('form-nueva-direccion');
+    formNueva.classList.add('oculto');
+    formNueva.querySelectorAll('input').forEach(i => {
+        if (i.type === 'checkbox') i.checked = false;
+        else if (i.id === 'dir-pais') i.value = 'Colombia';
+        else i.value = '';
+    });
+}
+
+function seleccionarDireccionCheckout(idDireccion) {
+    estado.direccionSeleccionada = idDireccion;
+    document.querySelectorAll('input[name="direccion-envio"]').forEach(radio => {
+        radio.checked = radio.value === idDireccion;
+    });
+}
+
+async function guardarCarritoEnServidor() {
+    const idCarrito = await obtenerCarritoActivoServidor();
+    await reemplazarItemsCarritoServidor(idCarrito);
+    return idCarrito;
+}
+
+async function consultarCarritoActivoServidor() {
+    const idCliente = estado.usuario.datos.id;
+    const respuesta = await peticionApi(
+        `${API.carritosCompras}?idCliente=${idCliente}&estado=${encodeURIComponent(ESTADO_CARRITO_ACTIVO)}`
+    );
+    return (respuesta.datos || [])[0];
+}
+
+async function obtenerCarritoActivoServidor() {
+    const existente = await consultarCarritoActivoServidor();
+    if (existente) {
+        return existente.id;
+    }
+    await peticionApi(API.carritosCompras, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            cliente: { id: estado.usuario.datos.id },
+            fechaCreacion: fechaHoyIso(),
+            estado: ESTADO_CARRITO_ACTIVO
+        })
+    });
+    const creado = await consultarCarritoActivoServidor();
+    if (!creado) {
+        throw new Error('No fue posible preparar el carrito de compras.');
+    }
+    return creado.id;
+}
+
+async function reemplazarItemsCarritoServidor(idCarrito) {
+    const respuesta = await peticionApi(`${API.itemsCarrito}?idCarrito=${idCarrito}`);
+    for (const itemGuardado of (respuesta.datos || [])) {
+        await peticionApi(`${API.itemsCarrito}/${itemGuardado.id}`, { method: 'DELETE' });
+    }
+    for (const item of estado.carrito) {
+        await peticionApi(API.itemsCarrito, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                carrito: { id: idCarrito },
+                producto: { id: item.producto.id },
+                cantidad: item.cantidad,
+                precioUnitario: item.producto.precio
+            })
+        });
+    }
+}
+
+function finalizarCompraExitosa(resultado) {
+    const mensaje = `Compra realizada: pedido ${idCortoPedido(resultado.idPedido)}, `
+        + `factura ${resultado.numeroFactura}, total ${formatoMoneda(resultado.total)}.`;
+    mostrarResultadoCompra(mensaje, 'exito');
+    mostrarNotificacion(mensaje, 'exito');
+    estado.carrito = [];
+    actualizarBadgeCarrito();
+    renderizarCarrito();
+    renderizarResumenCheckout();
+}
+
+function mostrarResultadoCompra(mensaje, tipo) {
+    const caja = document.getElementById('checkout-resultado');
+    document.getElementById('checkout-resultado-mensaje').textContent = mensaje;
+    caja.className = `checkout-resultado checkout-resultado-${tipo}`;
+    document.getElementById('btn-ver-mis-pedidos').classList.toggle('oculto', tipo !== 'exito');
+}
+
+function ocultarResultadoCompra() {
+    document.getElementById('checkout-resultado').classList.add('oculto');
 }
 
 async function cargarMisPedidos() {
@@ -1891,6 +1964,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('btn-cancelar-checkout').addEventListener('click', () => cambiarVista('carrito'));
     document.getElementById('btn-confirmar-compra').addEventListener('click', confirmarCompra);
+    document.getElementById('btn-ver-mis-pedidos').addEventListener('click', () => cambiarVista('mis-pedidos'));
 
     document.getElementById('tabla-mis-pedidos-body').addEventListener('click', manejarAccionPedido);
     document.getElementById('btn-recargar-mis-pedidos').addEventListener('click', cargarMisPedidos);

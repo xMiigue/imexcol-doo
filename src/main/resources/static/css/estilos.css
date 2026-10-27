@@ -1248,6 +1248,36 @@ button {
     letter-spacing: -0.01em;
 }
 
+.checkout-resultado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px 22px;
+    border: 1px solid transparent;
+    border-radius: var(--radio);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.checkout-resultado p {
+    margin: 0;
+}
+
+.checkout-resultado-exito {
+    background-color: var(--color-exito-fondo);
+    color: var(--color-exito);
+    border-color: rgba(22, 163, 74, 0.25);
+}
+
+.checkout-resultado-error {
+    background-color: var(--color-error-fondo);
+    color: var(--color-error);
+    border-color: rgba(220, 38, 38, 0.25);
+}
+
 .checkout-opciones {
     display: flex;
     flex-direction: column;
