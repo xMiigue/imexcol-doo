@@ -248,6 +248,30 @@ BEGIN
 END;
 
 -- ------------------------------------------------------------
+-- Tabla: imex_factura (FK -> imex_pago)
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.imex_factura', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.imex_factura (
+        id              UNIQUEIDENTIFIER NOT NULL,
+        pago_id         UNIQUEIDENTIFIER NOT NULL,
+        numero_factura  NVARCHAR(20)     NOT NULL,
+        fecha_emision   DATETIME         NOT NULL,
+        subtotal        DECIMAL(12, 2)   NOT NULL,
+        total_impuestos DECIMAL(12, 2)   NOT NULL,
+        total_facturado DECIMAL(12, 2)   NOT NULL,
+        CONSTRAINT pk_imex_factura PRIMARY KEY (id),
+        CONSTRAINT fk_imex_factura_pago
+            FOREIGN KEY (pago_id) REFERENCES dbo.imex_pago (id),
+        CONSTRAINT uq_imex_factura_pago UNIQUE (pago_id),
+        CONSTRAINT uq_imex_factura_numero UNIQUE (numero_factura),
+        CONSTRAINT chk_imex_factura_subtotal CHECK (subtotal >= 0),
+        CONSTRAINT chk_imex_factura_impuestos CHECK (total_impuestos >= 0),
+        CONSTRAINT chk_imex_factura_total CHECK (total_facturado = subtotal + total_impuestos)
+    );
+END;
+
+-- ------------------------------------------------------------
 -- Indices auxiliares para acelerar consultas por filtro
 -- ------------------------------------------------------------
 IF NOT EXISTS (

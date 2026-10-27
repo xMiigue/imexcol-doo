@@ -1,6 +1,8 @@
 package co.edu.uco.imexcol.transversal;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public final class UtilFecha {
 
@@ -30,5 +32,29 @@ public final class UtilFecha {
 
     public static boolean esFechaAnteriorA(final LocalDate valor, final LocalDate referencia) {
         return valor.isBefore(referencia);
+    }
+
+    public static LocalDateTime obtenerFechaHoraPorDefecto() {
+        return obtenerFechaPorDefecto().atStartOfDay();
+    }
+
+    public static LocalDateTime obtenerValorDefecto(final LocalDateTime valor) {
+        return UtilObjeto.obtenerValorDefecto(valor, obtenerFechaHoraPorDefecto());
+    }
+
+    public static LocalDateTime obtenerFechaHoraActual() {
+        return truncarASegundos(LocalDateTime.now());
+    }
+
+    public static LocalDateTime truncarASegundos(final LocalDateTime valor) {
+        return obtenerValorDefecto(valor).truncatedTo(ChronoUnit.SECONDS);
+    }
+
+    public static boolean esFechaHoraPorDefecto(final LocalDateTime valor) {
+        return obtenerFechaHoraPorDefecto().equals(valor);
+    }
+
+    public static boolean esFechaHoraAnteriorA(final LocalDateTime valor, final LocalDate referencia) {
+        return esFechaAnteriorA(obtenerValorDefecto(valor).toLocalDate(), obtenerValorDefecto(referencia));
     }
 }

@@ -9,9 +9,7 @@ public interface FacturaFachada {
 
     void registrar(FacturaDTO dto);
 
-    void actualizar(FacturaDTO dto);
-
-    void eliminar(UUID id);
+    FacturaDTO consultarPorPedidoDelCliente(UUID idPedido, UUID idCliente);
 
     List<FacturaDTO> consultar(FacturaDTO filtros);
 }

@@ -3,9 +3,9 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.dto.FacturaDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.FacturaDTOAssembler;
-import co.edu.uco.imexcol.negocio.casouso.FacturaNegocio;
 import co.edu.uco.imexcol.negocio.casouso.impl.FacturaNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.FacturaFachada;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -15,63 +15,75 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 public final class FacturaFachadaImpl implements FacturaFachada {
 
-    private final FacturaNegocio negocio;
     private final FacturaDTOAssembler ensamblador;
 
     public FacturaFachadaImpl() {
         super();
-        this.negocio = new FacturaNegocioImpl();
         this.ensamblador = FacturaDTOAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final FacturaDTO dto) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new FacturaDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new FacturaNegocioImpl(fabrica);
             negocio.registrar(dominio);
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
-    public void actualizar(final FacturaDTO dto) {
+    public FacturaDTO consultarPorPedidoDelCliente(final UUID idPedido, final UUID idCliente) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new FacturaDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            negocio.actualizar(dominio);
+            fabrica.iniciarTransaccion();
+            final var negocio = new FacturaNegocioImpl(fabrica);
+            final var dominio = negocio.consultarPorPedidoDelCliente(idPedido, idCliente);
+            final var resultado = ensamblador.ensamblarDTO(dominio);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
-        }
-    }
-
-    @Override
-    public void eliminar(final UUID id) {
-        try {
-            negocio.eliminar(id);
-        } catch (final ImexcolException excepcion) {
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
     public List<FacturaDTO> consultar(final FacturaDTO filtros) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
+            fabrica.iniciarTransaccion();
             final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new FacturaDTO());
             final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
+            final var negocio = new FacturaNegocioImpl(fabrica);
             final var dominios = negocio.consultar(dominioFiltro);
-            return ensamblador.ensamblarDTO(dominios);
+            final var resultado = ensamblador.ensamblarDTO(dominios);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 

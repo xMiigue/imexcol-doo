@@ -13,6 +13,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObli
 import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarMetodoPagoExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.pago.ValidarEstadoPagoEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.pago.ValidarPagoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.pago.ValidarPagoNoTieneFactura;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.PagoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -63,6 +64,7 @@ public final class PagoNegocioImpl implements PagoNegocio {
     @Override
     public void eliminar(final UUID id) {
         asegurarPagoExista(id);
+        asegurarPagoNoTengaFactura(id);
         borrar(id);
     }
 
@@ -102,6 +104,10 @@ public final class PagoNegocioImpl implements PagoNegocio {
 
     private void asegurarPagoExista(final UUID id) {
         ValidarPagoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarPagoNoTengaFactura(final UUID id) {
+        ValidarPagoNoTieneFactura.ejecutarValidacion(id, fabrica);
     }
 
     private void asignarNuevoIdentificador(final PagoDominio dominio) {

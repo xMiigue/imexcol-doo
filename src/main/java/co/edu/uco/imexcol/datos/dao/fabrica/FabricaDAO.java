@@ -8,6 +8,7 @@ import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
 import co.edu.uco.imexcol.datos.dao.DireccionDAO;
 import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.FacturaDAO;
 import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
 import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
 import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
@@ -60,6 +61,8 @@ public abstract class FabricaDAO {
     public abstract PagoDAO obtenerPagoDAO();
 
     public abstract EnvioDAO obtenerEnvioDAO();
+
+    public abstract FacturaDAO obtenerFacturaDAO();
 
     protected abstract void abrirConexion();
 

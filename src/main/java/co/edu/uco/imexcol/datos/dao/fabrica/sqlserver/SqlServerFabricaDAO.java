@@ -11,6 +11,7 @@ import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
 import co.edu.uco.imexcol.datos.dao.DireccionDAO;
 import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.FacturaDAO;
 import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
 import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
 import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
@@ -24,6 +25,7 @@ import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CategoriaSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ClienteSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.DireccionSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.EnvioSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.FacturaSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ItemCarritoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.LineaPedidoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.MetodoPagoSqlServerDAO;
@@ -188,5 +190,10 @@ public final class SqlServerFabricaDAO extends FabricaDAO {
     @Override
     public EnvioDAO obtenerEnvioDAO() {
         return new EnvioSqlServerDAO(conexion);
+    }
+
+    @Override
+    public FacturaDAO obtenerFacturaDAO() {
+        return new FacturaSqlServerDAO(conexion);
     }
 }

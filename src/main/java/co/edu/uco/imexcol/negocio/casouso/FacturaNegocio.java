@@ -9,9 +9,11 @@ public interface FacturaNegocio {
 
     void registrar(FacturaDominio dominio);
 
-    void actualizar(FacturaDominio dominio);
+    void registrarParaPedido(UUID idPedido, double totalFacturado);
 
-    void eliminar(UUID id);
+    FacturaDominio consultarPorPedido(UUID idPedido);
+
+    FacturaDominio consultarPorPedidoDelCliente(UUID idPedido, UUID idCliente);
 
     List<FacturaDominio> consultar(FacturaDominio filtros);
 }

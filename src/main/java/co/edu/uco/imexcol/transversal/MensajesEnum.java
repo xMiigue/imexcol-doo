@@ -640,6 +640,63 @@ public enum MensajesEnum {
     EXITO_PRODUCTO_ELIMINACION(
             "Producto eliminado satisfactoriamente."),
 
+    EXITO_FACTURA_CONSULTA(
+            "Facturas consultadas satisfactoriamente."),
+
+    EXITO_FACTURA_CONSULTA_POR_ID(
+            "Factura consultada satisfactoriamente."),
+
+    EXITO_FACTURA_CONSULTA_POR_PEDIDO(
+            "Factura del pedido consultada satisfactoriamente."),
+
+    EXITO_FACTURA_REGISTRO(
+            "Factura generada satisfactoriamente."),
+
+    ERROR_USUARIO_FACTURA_NO_ENCONTRADA(
+            "No se encontró la factura con el identificador solicitado."),
+    ERROR_TECNICO_FACTURA_NO_ENCONTRADA(
+            "No existe un registro de factura con id=%s."),
+
+    ERROR_USUARIO_FACTURA_TOTAL_INCONSISTENTE(
+            "La sumatoria del subtotal más los impuestos no coincide con el total facturado."),
+    ERROR_TECNICO_FACTURA_TOTAL_INCONSISTENTE(
+            "Inconsistencia detectada en Factura: totalFacturado=%s, subtotal=%s, totalImpuestos=%s, suma esperada=%s."),
+
+    ERROR_USUARIO_FACTURA_NUMERO_DUPLICADO(
+            "Ya existe una factura con el número generado. Por favor intente de nuevo."),
+    ERROR_TECNICO_FACTURA_NUMERO_DUPLICADO(
+            "Ya existe una factura registrada con numeroFactura=%s."),
+
+    ERROR_USUARIO_PAGO_NO_APROBADO(
+            "El pago asociado no existe o aún no ha sido aprobado, por lo que no puede facturarse."),
+    ERROR_TECNICO_PAGO_NO_APROBADO(
+            "El pago id=%s está en estado [%s]; se requiere el estado %s."),
+
+    ERROR_USUARIO_PAGO_CON_FACTURA(
+            "El pago ya tiene una factura emitida."),
+    ERROR_TECNICO_PAGO_CON_FACTURA(
+            "El pago id=%s ya está asociado a la factura id=%s."),
+
+    ERROR_USUARIO_PEDIDO_CON_FACTURA(
+            "El pedido ya tiene una factura emitida."),
+    ERROR_TECNICO_PEDIDO_CON_FACTURA(
+            "El pedido id=%s ya está asociado a la factura id=%s."),
+
+    ERROR_USUARIO_PEDIDO_SIN_FACTURA(
+            "El pedido aún no tiene una factura emitida."),
+    ERROR_TECNICO_PEDIDO_SIN_FACTURA(
+            "No existe una factura asociada a los pagos del pedido id=%s."),
+
+    ERROR_USUARIO_PEDIDO_SIN_PAGO_APROBADO_PARA_FACTURAR(
+            "El pedido aún no tiene un pago aprobado, por lo que no puede facturarse."),
+    ERROR_TECNICO_PEDIDO_SIN_PAGO_APROBADO_PARA_FACTURAR(
+            "El pedido id=%s no tiene ningún pago en estado %s."),
+
+    ERROR_USUARIO_PEDIDO_NO_PERTENECE_AL_CLIENTE(
+            "Acceso denegado: el pedido no pertenece al cliente indicado."),
+    ERROR_TECNICO_PEDIDO_NO_PERTENECE_AL_CLIENTE(
+            "El pedido id=%s pertenece al cliente id=%s y no al cliente id=%s."),
+
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_INESPERADO(

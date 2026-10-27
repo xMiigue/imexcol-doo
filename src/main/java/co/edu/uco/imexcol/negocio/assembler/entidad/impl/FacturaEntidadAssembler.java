@@ -25,10 +25,12 @@ public final class FacturaEntidadAssembler implements EntidadAssembler<FacturaDo
         var dominioAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new FacturaDominio());
         return new FacturaEntidad(
                 dominioAEnsamblar.getId(),
-                PedidoEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getPedido()),
+                PagoEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getPago()),
                 dominioAEnsamblar.getNumeroFactura(),
                 dominioAEnsamblar.getFechaEmision(),
-                dominioAEnsamblar.getTotal());
+                dominioAEnsamblar.getSubtotal(),
+                dominioAEnsamblar.getTotalImpuestos(),
+                dominioAEnsamblar.getTotalFacturado());
     }
 
     @Override
@@ -36,10 +38,12 @@ public final class FacturaEntidadAssembler implements EntidadAssembler<FacturaDo
         var entidadAEnsamblar = UtilObjeto.obtenerValorDefecto(entidad, new FacturaEntidad());
         return new FacturaDominio(
                 entidadAEnsamblar.getId(),
-                PedidoEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getPedido()),
+                PagoEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getPago()),
                 entidadAEnsamblar.getNumeroFactura(),
                 entidadAEnsamblar.getFechaEmision(),
-                entidadAEnsamblar.getTotal());
+                entidadAEnsamblar.getSubtotal(),
+                entidadAEnsamblar.getTotalImpuestos(),
+                entidadAEnsamblar.getTotalFacturado());
     }
 
     @Override
