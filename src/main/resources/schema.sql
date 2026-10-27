@@ -5,9 +5,7 @@
 -- Los nombres de tablas y columnas coinciden exactamente con los definidos
 -- en datos/dao/entidad/sql/*.java
 --
--- Ejecucion manual:
---
--- O activar la ejecucion automatica de Spring Boot estableciendo
+-- Para activar la ejecucion automatica de Spring Boot establezca
 -- spring.sql.init.mode=always en application.properties.
 -- ============================================================
 
