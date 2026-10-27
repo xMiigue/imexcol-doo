@@ -5,7 +5,8 @@ import co.edu.uco.imexcol.negocio.casouso.validador.Validador;
 
 public final class ValidarDireccionNoEstaDuplicadaParaCliente implements Validador {
 
-    private static final ValidarDireccionNoEstaDuplicadaParaCliente INSTANCIA = new ValidarDireccionNoEstaDuplicadaParaCliente();
+    private static final ValidarDireccionNoEstaDuplicadaParaCliente INSTANCIA =
+            new ValidarDireccionNoEstaDuplicadaParaCliente();
 
     private ValidarDireccionNoEstaDuplicadaParaCliente() {
         super();

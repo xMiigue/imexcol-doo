@@ -122,6 +122,21 @@ public enum MensajesEnum {
     ERROR_TECNICO_CLIENTE_CORREO_DUPLICADO(
             "Ya existe otro cliente registrado con correoElectronico=%s."),
 
+    ERROR_USUARIO_ADMINISTRADOR_NOMBRE_USUARIO_DUPLICADO(
+            "Ya existe un administrador con ese nombre de usuario. Por favor utilice uno diferente."),
+    ERROR_TECNICO_ADMINISTRADOR_NOMBRE_USUARIO_DUPLICADO(
+            "Ya existe otro administrador registrado con nombreUsuario=%s."),
+
+    ERROR_USUARIO_ADMINISTRADOR_UNICO_NO_ELIMINABLE(
+            "No es posible eliminar al único administrador registrado en el sistema."),
+    ERROR_TECNICO_ADMINISTRADOR_UNICO_NO_ELIMINABLE(
+            "Se intentó eliminar el administrador id=%s, que es el único registrado."),
+
+    ERROR_USUARIO_METODO_PAGO_NOMBRE_DUPLICADO(
+            "Ya existe un método de pago con ese nombre. Por favor utilice uno diferente."),
+    ERROR_TECNICO_METODO_PAGO_NOMBRE_DUPLICADO(
+            "Ya existe otro método de pago registrado con nombre=%s."),
+
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(
