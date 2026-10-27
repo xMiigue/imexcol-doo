@@ -37,4 +37,8 @@ public enum EstadoPedidoEnum {
         return Arrays.stream(values())
                 .anyMatch(valorEnum -> valorEnum.esCompraExitosa() && valorEnum.esIgualA(estado));
     }
+
+    public static String[] obtenerValoresPermitidos() {
+        return Arrays.stream(values()).map(EstadoPedidoEnum::getValor).toArray(String[]::new);
+    }
 }

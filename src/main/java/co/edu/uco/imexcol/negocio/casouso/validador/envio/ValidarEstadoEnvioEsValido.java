@@ -2,14 +2,13 @@ package co.edu.uco.imexcol.negocio.casouso.validador.envio;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.genericas.EstadoEsValidoRegla;
 import co.edu.uco.imexcol.negocio.casouso.validador.Validador;
+import co.edu.uco.imexcol.negocio.dominio.enums.EstadoEnvioEnum;
 
 public final class ValidarEstadoEnvioEsValido implements Validador {
 
     private static final ValidarEstadoEnvioEsValido INSTANCIA = new ValidarEstadoEnvioEsValido();
-
-    public static final String[] ESTADOS_VALIDOS = {
-            "PREPARANDO", "EN_TRANSITO", "ENTREGADO", "DEVUELTO", "EXTRAVIADO"
-    };
+    private static final String NOMBRE_DATO = "estado del envío";
+    private static final int POSICION_ESTADO = 0;
 
     private ValidarEstadoEnvioEsValido() {
         super();
@@ -21,7 +20,8 @@ public final class ValidarEstadoEnvioEsValido implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        final var estado = (String) datos[0];
-        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, "estado del envío", ESTADOS_VALIDOS);
+        final var estado = (String) datos[POSICION_ESTADO];
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, NOMBRE_DATO,
+                EstadoEnvioEnum.obtenerValoresPermitidos());
     }
 }

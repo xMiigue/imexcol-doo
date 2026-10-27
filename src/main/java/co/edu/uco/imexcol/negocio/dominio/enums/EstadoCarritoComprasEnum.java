@@ -1,5 +1,7 @@
 package co.edu.uco.imexcol.negocio.dominio.enums;
 
+import java.util.Arrays;
+
 import co.edu.uco.imexcol.transversal.UtilTexto;
 
 public enum EstadoCarritoComprasEnum {
@@ -20,5 +22,9 @@ public enum EstadoCarritoComprasEnum {
 
     public boolean esIgualA(final String estado) {
         return valor.equalsIgnoreCase(UtilTexto.aplicarTrim(estado));
+    }
+
+    public static String[] obtenerValoresPermitidos() {
+        return Arrays.stream(values()).map(EstadoCarritoComprasEnum::getValor).toArray(String[]::new);
     }
 }

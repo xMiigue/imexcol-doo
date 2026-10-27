@@ -35,4 +35,8 @@ public enum EstadoEnvioEnum {
     public static boolean esEstadoActivo(final String estado) {
         return Arrays.stream(values()).anyMatch(valorEnum -> valorEnum.estaActivo() && valorEnum.esIgualA(estado));
     }
+
+    public static String[] obtenerValoresPermitidos() {
+        return Arrays.stream(values()).map(EstadoEnvioEnum::getValor).toArray(String[]::new);
+    }
 }

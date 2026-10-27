@@ -1,5 +1,7 @@
 package co.edu.uco.imexcol.negocio.dominio.enums;
 
+import java.util.Arrays;
+
 import co.edu.uco.imexcol.transversal.UtilTexto;
 
 public enum EstadoPagoEnum {
@@ -22,5 +24,9 @@ public enum EstadoPagoEnum {
 
     public boolean esIgualA(final String estado) {
         return valor.equalsIgnoreCase(UtilTexto.aplicarTrim(estado));
+    }
+
+    public static String[] obtenerValoresPermitidos() {
+        return Arrays.stream(values()).map(EstadoPagoEnum::getValor).toArray(String[]::new);
     }
 }
