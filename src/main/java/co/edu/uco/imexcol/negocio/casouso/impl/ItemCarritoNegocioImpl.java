@@ -6,6 +6,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.ItemCarritoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.ItemCarritoNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasEstaActivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.carritocompras.ValidarCarritoComprasExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsMayorACero;
@@ -44,6 +45,7 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ItemCarritoDominio());
         validarDatosComunes(dominioSeguro);
         asegurarCarritoExista(dominioSeguro);
+        asegurarCarritoEsteActivo(dominioSeguro.getCarrito().getId());
         asegurarProductoExista(dominioSeguro);
         asegurarCantidadMayorACero(dominioSeguro);
         asignarNuevoIdentificador(dominioSeguro);
@@ -55,7 +57,9 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new ItemCarritoDominio());
         validarDatosComunes(dominioSeguro);
         asegurarItemExista(dominioSeguro.getId());
+        asegurarCarritoDelItemEsteActivo(dominioSeguro.getId());
         asegurarCarritoExista(dominioSeguro);
+        asegurarCarritoEsteActivo(dominioSeguro.getCarrito().getId());
         asegurarProductoExista(dominioSeguro);
         asegurarCantidadMayorACero(dominioSeguro);
         modificar(dominioSeguro);
@@ -64,6 +68,7 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
     @Override
     public void eliminar(final UUID id) {
         asegurarItemExista(id);
+        asegurarCarritoDelItemEsteActivo(id);
         borrar(id);
     }
 
@@ -84,6 +89,15 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
 
     private void asegurarCarritoExista(final ItemCarritoDominio dominio) {
         ValidarCarritoComprasExistePorId.ejecutarValidacion(dominio.getCarrito().getId(), fabrica);
+    }
+
+    private void asegurarCarritoEsteActivo(final UUID idCarrito) {
+        ValidarCarritoComprasEstaActivo.ejecutarValidacion(idCarrito, fabrica);
+    }
+
+    private void asegurarCarritoDelItemEsteActivo(final UUID idItem) {
+        final var itemGuardado = fabrica.obtenerItemCarritoDAO().consultarPorId(idItem);
+        asegurarCarritoEsteActivo(itemGuardado.getCarrito().getId());
     }
 
     private void asegurarProductoExista(final ItemCarritoDominio dominio) {

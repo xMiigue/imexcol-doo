@@ -63,9 +63,9 @@ public enum MensajesEnum {
             "El carrito id=%s pertenece al cliente id=%s y no al cliente id=%s."),
 
     ERROR_USUARIO_CARRITO_COMPRAS_YA_CONVERTIDO(
-            "No es posible vaciar el carrito porque ya fue convertido en un pedido."),
+            "El carrito ya fue convertido en un pedido, por lo que no puede modificarse ni vaciarse."),
     ERROR_TECNICO_CARRITO_COMPRAS_YA_CONVERTIDO(
-            "El carrito id=%s está en estado %s y no puede vaciarse."),
+            "El carrito id=%s está en estado %s y no puede modificarse ni vaciarse."),
 
     ERROR_USUARIO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
             "El carrito de compras no tiene productos. Agregue al menos uno para poder convertirlo en un pedido."),

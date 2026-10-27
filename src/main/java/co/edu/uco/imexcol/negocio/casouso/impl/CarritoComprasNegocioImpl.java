@@ -58,6 +58,7 @@ public final class CarritoComprasNegocioImpl implements CarritoComprasNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new CarritoComprasDominio());
         validarDatosComunes(dominioSeguro);
         asegurarCarritoExista(dominioSeguro.getId());
+        asegurarCarritoNoEsteConvertido(dominioSeguro.getId());
         asegurarCarritoPertenezcaAlCliente(dominioSeguro);
         asegurarClienteNoTengaOtroCarritoActivo(dominioSeguro);
         asegurarCarritoTengaItemsParaConvertirse(dominioSeguro);
