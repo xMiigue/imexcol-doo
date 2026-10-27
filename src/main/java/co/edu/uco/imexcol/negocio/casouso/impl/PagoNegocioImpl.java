@@ -60,6 +60,7 @@ public final class PagoNegocioImpl implements PagoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PagoDominio());
         validarDatosComunes(dominioSeguro);
         asegurarPagoExista(dominioSeguro.getId());
+        asegurarPagoNoTengaFactura(dominioSeguro.getId());
         asegurarPedidoExista(dominioSeguro);
         asegurarMetodoPagoExista(dominioSeguro);
         asegurarMontoMayorACero(dominioSeguro);

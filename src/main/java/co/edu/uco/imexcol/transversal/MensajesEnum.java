@@ -606,7 +606,7 @@ public enum MensajesEnum {
             "El pago id=%s está en estado [%s]; se requiere el estado %s."),
 
     ERROR_USUARIO_PAGO_CON_FACTURA(
-            "El pago ya tiene una factura emitida."),
+            "El pago ya tiene una factura emitida, por lo que no puede modificarse ni eliminarse."),
     ERROR_TECNICO_PAGO_CON_FACTURA(
             "El pago id=%s ya está asociado a la factura id=%s."),
 
