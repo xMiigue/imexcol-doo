@@ -272,6 +272,28 @@ BEGIN
 END;
 
 -- ------------------------------------------------------------
+-- Tabla: imex_resena (FK -> imex_cliente, imex_producto)
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.imex_resena', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.imex_resena (
+        id           UNIQUEIDENTIFIER NOT NULL,
+        cliente_id   UNIQUEIDENTIFIER NOT NULL,
+        producto_id  UNIQUEIDENTIFIER NOT NULL,
+        calificacion INT              NOT NULL,
+        comentario   NVARCHAR(255)    NULL,
+        fecha        DATETIME         NOT NULL,
+        CONSTRAINT pk_imex_resena PRIMARY KEY (id),
+        CONSTRAINT fk_imex_resena_cliente
+            FOREIGN KEY (cliente_id) REFERENCES dbo.imex_cliente (id),
+        CONSTRAINT fk_imex_resena_producto
+            FOREIGN KEY (producto_id) REFERENCES dbo.imex_producto (id),
+        CONSTRAINT uq_imex_resena_cliente_producto UNIQUE (cliente_id, producto_id),
+        CONSTRAINT chk_imex_resena_calificacion CHECK (calificacion BETWEEN 1 AND 5)
+    );
+END;
+
+-- ------------------------------------------------------------
 -- Indices auxiliares para acelerar consultas por filtro
 -- ------------------------------------------------------------
 IF NOT EXISTS (
@@ -296,4 +318,20 @@ IF NOT EXISTS (
 )
 BEGIN
     CREATE INDEX ix_imex_pedido_estado ON dbo.imex_pedido (estado);
+END;
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'ix_imex_resena_producto_id' AND object_id = OBJECT_ID(N'dbo.imex_resena')
+)
+BEGIN
+    CREATE INDEX ix_imex_resena_producto_id ON dbo.imex_resena (producto_id);
+END;
+
+IF NOT EXISTS (
+    SELECT 1 FROM sys.indexes
+    WHERE name = 'ix_imex_resena_fecha' AND object_id = OBJECT_ID(N'dbo.imex_resena')
+)
+BEGIN
+    CREATE INDEX ix_imex_resena_fecha ON dbo.imex_resena (fecha);
 END;

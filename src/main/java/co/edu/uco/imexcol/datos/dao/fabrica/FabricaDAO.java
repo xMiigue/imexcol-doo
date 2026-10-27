@@ -15,6 +15,7 @@ import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
 import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
+import co.edu.uco.imexcol.datos.dao.ResenaDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.sqlserver.SqlServerFabricaDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
@@ -63,6 +64,8 @@ public abstract class FabricaDAO {
     public abstract EnvioDAO obtenerEnvioDAO();
 
     public abstract FacturaDAO obtenerFacturaDAO();
+
+    public abstract ResenaDAO obtenerResenaDAO();
 
     protected abstract void abrirConexion();
 

@@ -18,6 +18,7 @@ import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
 import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
+import co.edu.uco.imexcol.datos.dao.ResenaDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.AdministradorSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.CarritoComprasSqlServerDAO;
@@ -32,6 +33,7 @@ import co.edu.uco.imexcol.datos.dao.impl.sqlserver.MetodoPagoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PagoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.PedidoSqlServerDAO;
 import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ProductoSqlServerDAO;
+import co.edu.uco.imexcol.datos.dao.impl.sqlserver.ResenaSqlServerDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
@@ -195,5 +197,10 @@ public final class SqlServerFabricaDAO extends FabricaDAO {
     @Override
     public FacturaDAO obtenerFacturaDAO() {
         return new FacturaSqlServerDAO(conexion);
+    }
+
+    @Override
+    public ResenaDAO obtenerResenaDAO() {
+        return new ResenaSqlServerDAO(conexion);
     }
 }

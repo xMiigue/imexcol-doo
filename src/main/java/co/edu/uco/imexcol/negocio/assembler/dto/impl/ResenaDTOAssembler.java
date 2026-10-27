@@ -25,8 +25,8 @@ public final class ResenaDTOAssembler implements DTOAssembler<ResenaDominio, Res
         var dtoAEnsamblar = UtilObjeto.obtenerValorDefecto(dto, new ResenaDTO());
         return new ResenaDominio(
                 dtoAEnsamblar.getId(),
-                ProductoDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getProducto()),
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getCliente()),
+                ProductoDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getProducto()),
                 dtoAEnsamblar.getCalificacion(),
                 dtoAEnsamblar.getComentario(),
                 dtoAEnsamblar.getFecha());
@@ -37,8 +37,8 @@ public final class ResenaDTOAssembler implements DTOAssembler<ResenaDominio, Res
         var dominioAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new ResenaDominio());
         return new ResenaDTO(
                 dominioAEnsamblar.getId(),
-                ProductoDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getProducto()),
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getCliente()),
+                ProductoDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getProducto()),
                 dominioAEnsamblar.getCalificacion(),
                 dominioAEnsamblar.getComentario(),
                 dominioAEnsamblar.getFecha());

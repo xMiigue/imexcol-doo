@@ -697,6 +697,43 @@ public enum MensajesEnum {
     ERROR_TECNICO_PEDIDO_NO_PERTENECE_AL_CLIENTE(
             "El pedido id=%s pertenece al cliente id=%s y no al cliente id=%s."),
 
+    EXITO_RESENA_CONSULTA(
+            "Reseñas consultadas satisfactoriamente."),
+
+    EXITO_RESENA_CONSULTA_POR_ID(
+            "Reseña consultada satisfactoriamente."),
+
+    EXITO_RESENA_REGISTRO(
+            "Reseña publicada satisfactoriamente."),
+
+    EXITO_RESENA_ELIMINACION(
+            "Reseña eliminada satisfactoriamente."),
+
+    ERROR_USUARIO_RESENA_NO_ENCONTRADA(
+            "La reseña solicitada no se encuentra registrada."),
+    ERROR_TECNICO_RESENA_NO_ENCONTRADA(
+            "No existe un registro de reseña con id=%s."),
+
+    ERROR_USUARIO_RESENA_CALIFICACION_FUERA_DE_RANGO(
+            "La calificación debe estar entre %s y %s."),
+    ERROR_TECNICO_RESENA_CALIFICACION_FUERA_DE_RANGO(
+            "La calificación=%s está fuera del rango permitido [%s, %s]."),
+
+    ERROR_USUARIO_RESENA_COMPRA_NO_VERIFICADA(
+            "No puede calificar un producto que no ha comprado."),
+    ERROR_TECNICO_RESENA_COMPRA_NO_VERIFICADA(
+            "El cliente id=%s no tiene pedidos con compra exitosa que incluyan el producto id=%s."),
+
+    ERROR_USUARIO_RESENA_DUPLICADA(
+            "Ya publicó una reseña para este producto."),
+    ERROR_TECNICO_RESENA_DUPLICADA(
+            "El cliente id=%s ya tiene la reseña id=%s para el producto id=%s."),
+
+    ERROR_USUARIO_RESENA_NO_PERTENECE_AL_CLIENTE(
+            "Acceso denegado: solo puede eliminar sus propias reseñas."),
+    ERROR_TECNICO_RESENA_NO_PERTENECE_AL_CLIENTE(
+            "La reseña id=%s pertenece al cliente id=%s y no al cliente id=%s."),
+
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_INESPERADO(

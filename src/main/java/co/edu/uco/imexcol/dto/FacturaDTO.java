@@ -40,8 +40,8 @@ public final class FacturaDTO {
     }
 
     public FacturaDTO(final UUID id, final PagoDTO pago, final String numeroFactura,
-                          final LocalDateTime fechaEmision, final double subtotal, final double totalImpuestos,
-                          final double totalFacturado) {
+                      final LocalDateTime fechaEmision, final double subtotal, final double totalImpuestos,
+                      final double totalFacturado) {
         setId(id);
         setPago(pago);
         setNumeroFactura(numeroFactura);

@@ -25,8 +25,8 @@ public final class ResenaEntidadAssembler implements EntidadAssembler<ResenaDomi
         var dominioAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new ResenaDominio());
         return new ResenaEntidad(
                 dominioAEnsamblar.getId(),
-                ProductoEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getProducto()),
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getCliente()),
+                ProductoEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getProducto()),
                 dominioAEnsamblar.getCalificacion(),
                 dominioAEnsamblar.getComentario(),
                 dominioAEnsamblar.getFecha());
@@ -37,8 +37,8 @@ public final class ResenaEntidadAssembler implements EntidadAssembler<ResenaDomi
         var entidadAEnsamblar = UtilObjeto.obtenerValorDefecto(entidad, new ResenaEntidad());
         return new ResenaDominio(
                 entidadAEnsamblar.getId(),
-                ProductoEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getProducto()),
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getCliente()),
+                ProductoEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getProducto()),
                 entidadAEnsamblar.getCalificacion(),
                 entidadAEnsamblar.getComentario(),
                 entidadAEnsamblar.getFecha());

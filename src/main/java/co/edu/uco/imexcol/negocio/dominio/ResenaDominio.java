@@ -1,6 +1,6 @@
 package co.edu.uco.imexcol.negocio.dominio;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.transversal.UtilFecha;
@@ -11,46 +11,38 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 
 public final class ResenaDominio extends Dominio {
 
-    private ProductoDominio producto;
     private ClienteDominio cliente;
+    private ProductoDominio producto;
     private int calificacion;
     private String comentario;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
 
     public ResenaDominio() {
         super(UtilUUID.obtenerValorPorDefecto());
-        setProducto(new ProductoDominio());
         setCliente(new ClienteDominio());
+        setProducto(new ProductoDominio());
         setCalificacion(UtilNumerico.obtenerValorPorDefectoInt());
         setComentario(UtilTexto.VACIO);
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
+        setFecha(UtilFecha.obtenerFechaHoraPorDefecto());
     }
 
     public ResenaDominio(final UUID id) {
         super(id);
-        setProducto(new ProductoDominio());
         setCliente(new ClienteDominio());
+        setProducto(new ProductoDominio());
         setCalificacion(UtilNumerico.obtenerValorPorDefectoInt());
         setComentario(UtilTexto.VACIO);
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
+        setFecha(UtilFecha.obtenerFechaHoraPorDefecto());
     }
 
-    public ResenaDominio(final UUID id, final ProductoDominio producto, final ClienteDominio cliente,
-                         final int calificacion, final String comentario, final LocalDate fecha) {
+    public ResenaDominio(final UUID id, final ClienteDominio cliente, final ProductoDominio producto,
+                         final int calificacion, final String comentario, final LocalDateTime fecha) {
         super(id);
-        setProducto(producto);
         setCliente(cliente);
+        setProducto(producto);
         setCalificacion(calificacion);
         setComentario(comentario);
         setFecha(fecha);
-    }
-
-    public ProductoDominio getProducto() {
-        return producto;
-    }
-
-    public void setProducto(final ProductoDominio producto) {
-        this.producto = UtilObjeto.obtenerValorDefecto(producto, new ProductoDominio());
     }
 
     public ClienteDominio getCliente() {
@@ -59,6 +51,14 @@ public final class ResenaDominio extends Dominio {
 
     public void setCliente(final ClienteDominio cliente) {
         this.cliente = UtilObjeto.obtenerValorDefecto(cliente, new ClienteDominio());
+    }
+
+    public ProductoDominio getProducto() {
+        return producto;
+    }
+
+    public void setProducto(final ProductoDominio producto) {
+        this.producto = UtilObjeto.obtenerValorDefecto(producto, new ProductoDominio());
     }
 
     public int getCalificacion() {
@@ -77,11 +77,11 @@ public final class ResenaDominio extends Dominio {
         this.comentario = UtilTexto.aplicarTrim(comentario);
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(final LocalDate fecha) {
+    public void setFecha(final LocalDateTime fecha) {
         this.fecha = UtilFecha.obtenerValorDefecto(fecha);
     }
 }
