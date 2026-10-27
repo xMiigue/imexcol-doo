@@ -44,6 +44,19 @@ public final class ClienteSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "c.id = ?";
+    public static final String FILTRO_NOMBRE = "c.nombre = ?";
+    public static final String FILTRO_APELLIDO = "c.apellido = ?";
+    public static final String FILTRO_CORREO_ELECTRONICO = "c.correo_electronico = ?";
+    public static final String FILTRO_CONTRASENA = "c.contrasena = ?";
+    public static final String COLUMNA_ID = "cliente_id";
+    public static final String COLUMNA_NOMBRE = "cliente_nombre";
+    public static final String COLUMNA_APELLIDO = "cliente_apellido";
+    public static final String COLUMNA_CORREO_ELECTRONICO = "cliente_correo_electronico";
+    public static final String COLUMNA_CONTRASENA = "cliente_contrasena";
+    public static final String COLUMNA_TELEFONO = "cliente_telefono";
+    public static final String COLUMNA_ESTADO = "cliente_estado";
+
     private ClienteSql() {
         super();
     }

@@ -35,6 +35,13 @@ public final class MetodoPagoSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "m.id = ?";
+    public static final String FILTRO_NOMBRE = "m.nombre = ?";
+    public static final String COLUMNA_ID = "metodo_pago_id";
+    public static final String COLUMNA_NOMBRE = "metodo_pago_nombre";
+    public static final String COLUMNA_DESCRIPCION = "metodo_pago_descripcion";
+    public static final String COLUMNA_ESTADO = "metodo_pago_estado";
+
     private MetodoPagoSql() {
         super();
     }

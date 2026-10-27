@@ -41,6 +41,16 @@ public final class PedidoSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "p.id = ?";
+    public static final String FILTRO_CLIENTE = "p.cliente_id = ?";
+    public static final String FILTRO_ESTADO = "p.estado = ?";
+    public static final String COLUMNA_ID = "pedido_id";
+    public static final String COLUMNA_CLIENTE_ID = "pedido_cliente_id";
+    public static final String COLUMNA_FECHA_PEDIDO = "pedido_fecha_pedido";
+    public static final String COLUMNA_TOTAL = "pedido_total";
+    public static final String COLUMNA_ESTADO = "pedido_estado";
+    public static final String COLUMNA_DIRECCION_ID = "pedido_direccion_id";
+
     private PedidoSql() {
         super();
     }

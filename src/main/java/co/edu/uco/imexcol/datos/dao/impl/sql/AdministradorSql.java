@@ -38,6 +38,16 @@ public final class AdministradorSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "a.id = ?";
+    public static final String FILTRO_NOMBRE_USUARIO = "a.nombre_usuario = ?";
+    public static final String FILTRO_CORREO_ELECTRONICO = "a.correo_electronico = ?";
+    public static final String FILTRO_CONTRASENA = "a.contrasena = ?";
+    public static final String COLUMNA_ID = "administrador_id";
+    public static final String COLUMNA_NOMBRE_USUARIO = "administrador_nombre_usuario";
+    public static final String COLUMNA_CORREO_ELECTRONICO = "administrador_correo_electronico";
+    public static final String COLUMNA_CONTRASENA = "administrador_contrasena";
+    public static final String COLUMNA_ESTADO = "administrador_estado";
+
     private AdministradorSql() {
         super();
     }

@@ -11,6 +11,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.CarritoComprasDAO;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.CarritoComprasMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.CarritoComprasSql;
 import co.edu.uco.imexcol.entidad.CarritoComprasEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -99,7 +100,7 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -115,20 +116,20 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("c.id = ?");
+            condiciones.add(CarritoComprasSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilUUID.esUUIDPorDefecto(filtro.getCliente().getId())) {
-            condiciones.add("c.cliente_id = ?");
+            condiciones.add(CarritoComprasSql.FILTRO_CLIENTE);
             parametros.add(filtro.getCliente().getId());
         }
         if (!UtilTexto.estaVacia(filtro.getEstado())) {
-            condiciones.add("c.estado = ?");
+            condiciones.add(CarritoComprasSql.FILTRO_ESTADO);
             parametros.add(filtro.getEstado());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }

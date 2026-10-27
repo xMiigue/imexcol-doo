@@ -10,6 +10,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.ClienteMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.ClienteSql;
 import co.edu.uco.imexcol.entidad.ClienteEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -103,7 +104,7 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -119,28 +120,28 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("c.id = ?");
+            condiciones.add(ClienteSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilTexto.estaVacia(filtro.getNombre())) {
-            condiciones.add("c.nombre = ?");
+            condiciones.add(ClienteSql.FILTRO_NOMBRE);
             parametros.add(filtro.getNombre());
         }
         if (!UtilTexto.estaVacia(filtro.getApellido())) {
-            condiciones.add("c.apellido = ?");
+            condiciones.add(ClienteSql.FILTRO_APELLIDO);
             parametros.add(filtro.getApellido());
         }
         if (!UtilTexto.estaVacia(filtro.getCorreoElectronico())) {
-            condiciones.add("c.correo_electronico = ?");
+            condiciones.add(ClienteSql.FILTRO_CORREO_ELECTRONICO);
             parametros.add(filtro.getCorreoElectronico());
         }
         if (!UtilTexto.estaVacia(filtro.getContrasena())) {
-            condiciones.add("c.contrasena = ?");
+            condiciones.add(ClienteSql.FILTRO_CONTRASENA);
             parametros.add(filtro.getContrasena());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }

@@ -10,6 +10,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.AdministradorMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.AdministradorSql;
 import co.edu.uco.imexcol.entidad.AdministradorEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -99,7 +100,7 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -115,24 +116,24 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("a.id = ?");
+            condiciones.add(AdministradorSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilTexto.estaVacia(filtro.getNombreUsuario())) {
-            condiciones.add("a.nombre_usuario = ?");
+            condiciones.add(AdministradorSql.FILTRO_NOMBRE_USUARIO);
             parametros.add(filtro.getNombreUsuario());
         }
         if (!UtilTexto.estaVacia(filtro.getCorreoElectronico())) {
-            condiciones.add("a.correo_electronico = ?");
+            condiciones.add(AdministradorSql.FILTRO_CORREO_ELECTRONICO);
             parametros.add(filtro.getCorreoElectronico());
         }
         if (!UtilTexto.estaVacia(filtro.getContrasena())) {
-            condiciones.add("a.contrasena = ?");
+            condiciones.add(AdministradorSql.FILTRO_CONTRASENA);
             parametros.add(filtro.getContrasena());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }

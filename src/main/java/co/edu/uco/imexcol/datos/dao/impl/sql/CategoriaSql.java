@@ -35,6 +35,13 @@ public final class CategoriaSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "c.id = ?";
+    public static final String FILTRO_NOMBRE = "c.nombre = ?";
+    public static final String COLUMNA_ID = "categoria_id";
+    public static final String COLUMNA_NOMBRE = "categoria_nombre";
+    public static final String COLUMNA_DESCRIPCION = "categoria_descripcion";
+    public static final String COLUMNA_ESTADO = "categoria_estado";
+
     private CategoriaSql() {
         super();
     }

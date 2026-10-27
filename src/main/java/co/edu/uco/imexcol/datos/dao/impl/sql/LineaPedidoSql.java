@@ -41,6 +41,16 @@ public final class LineaPedidoSql {
             WHERE id = ?
             """;
 
+    public static final String FILTRO_ID = "l.id = ?";
+    public static final String FILTRO_PEDIDO = "l.pedido_id = ?";
+    public static final String FILTRO_PRODUCTO = "l.producto_id = ?";
+    public static final String COLUMNA_ID = "linea_pedido_id";
+    public static final String COLUMNA_PEDIDO_ID = "linea_pedido_pedido_id";
+    public static final String COLUMNA_PRODUCTO_ID = "linea_pedido_producto_id";
+    public static final String COLUMNA_CANTIDAD = "linea_pedido_cantidad";
+    public static final String COLUMNA_PRECIO_UNITARIO = "linea_pedido_precio_unitario";
+    public static final String COLUMNA_SUBTOTAL = "linea_pedido_subtotal";
+
     private LineaPedidoSql() {
         super();
     }

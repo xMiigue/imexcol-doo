@@ -3,6 +3,7 @@ package co.edu.uco.imexcol.datos.dao.impl.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.ItemCarritoSql;
 import co.edu.uco.imexcol.entidad.CarritoComprasEntidad;
 import co.edu.uco.imexcol.entidad.ItemCarritoEntidad;
 import co.edu.uco.imexcol.entidad.ProductoEntidad;
@@ -19,18 +20,18 @@ public final class ItemCarritoMapper {
     public static ItemCarritoEntidad mapear(final ResultSet resultSet) {
         final var entidad = new ItemCarritoEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("item_carrito_id")));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(ItemCarritoSql.COLUMNA_ID)));
 
             final var carrito = new CarritoComprasEntidad();
-            carrito.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("item_carrito_carrito_id")));
+            carrito.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(ItemCarritoSql.COLUMNA_CARRITO_ID)));
             entidad.setCarrito(carrito);
 
             final var producto = new ProductoEntidad();
-            producto.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("item_carrito_producto_id")));
+            producto.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(ItemCarritoSql.COLUMNA_PRODUCTO_ID)));
             entidad.setProducto(producto);
 
-            entidad.setCantidad(resultSet.getInt("item_carrito_cantidad"));
-            entidad.setPrecioUnitario(resultSet.getDouble("item_carrito_precio_unitario"));
+            entidad.setCantidad(resultSet.getInt(ItemCarritoSql.COLUMNA_CANTIDAD));
+            entidad.setPrecioUnitario(resultSet.getDouble(ItemCarritoSql.COLUMNA_PRECIO_UNITARIO));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

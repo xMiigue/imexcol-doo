@@ -3,6 +3,7 @@ package co.edu.uco.imexcol.datos.dao.impl.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.AdministradorSql;
 import co.edu.uco.imexcol.entidad.AdministradorEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
@@ -17,11 +18,11 @@ public final class AdministradorMapper {
     public static AdministradorEntidad mapear(final ResultSet resultSet) {
         final var entidad = new AdministradorEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("administrador_id")));
-            entidad.setNombreUsuario(resultSet.getString("administrador_nombre_usuario"));
-            entidad.setCorreoElectronico(resultSet.getString("administrador_correo_electronico"));
-            entidad.setContrasena(resultSet.getString("administrador_contrasena"));
-            entidad.setEstado(resultSet.getBoolean("administrador_estado"));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(AdministradorSql.COLUMNA_ID)));
+            entidad.setNombreUsuario(resultSet.getString(AdministradorSql.COLUMNA_NOMBRE_USUARIO));
+            entidad.setCorreoElectronico(resultSet.getString(AdministradorSql.COLUMNA_CORREO_ELECTRONICO));
+            entidad.setContrasena(resultSet.getString(AdministradorSql.COLUMNA_CONTRASENA));
+            entidad.setEstado(resultSet.getBoolean(AdministradorSql.COLUMNA_ESTADO));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

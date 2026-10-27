@@ -10,6 +10,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.MetodoPagoMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.MetodoPagoSql;
 import co.edu.uco.imexcol.entidad.MetodoPagoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -97,7 +98,7 @@ public final class MetodoPagoSqlServerDAO extends ConexionSql implements MetodoP
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -113,16 +114,16 @@ public final class MetodoPagoSqlServerDAO extends ConexionSql implements MetodoP
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("m.id = ?");
+            condiciones.add(MetodoPagoSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilTexto.estaVacia(filtro.getNombre())) {
-            condiciones.add("m.nombre = ?");
+            condiciones.add(MetodoPagoSql.FILTRO_NOMBRE);
             parametros.add(filtro.getNombre());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }

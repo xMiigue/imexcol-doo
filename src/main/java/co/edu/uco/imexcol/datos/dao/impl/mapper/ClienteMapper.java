@@ -3,6 +3,7 @@ package co.edu.uco.imexcol.datos.dao.impl.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClienteSql;
 import co.edu.uco.imexcol.entidad.ClienteEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilUUID;
@@ -17,13 +18,13 @@ public final class ClienteMapper {
     public static ClienteEntidad mapear(final ResultSet resultSet) {
         final var entidad = new ClienteEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("cliente_id")));
-            entidad.setNombre(resultSet.getString("cliente_nombre"));
-            entidad.setApellido(resultSet.getString("cliente_apellido"));
-            entidad.setCorreoElectronico(resultSet.getString("cliente_correo_electronico"));
-            entidad.setContrasena(resultSet.getString("cliente_contrasena"));
-            entidad.setTelefono(resultSet.getString("cliente_telefono"));
-            entidad.setEstado(resultSet.getBoolean("cliente_estado"));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(ClienteSql.COLUMNA_ID)));
+            entidad.setNombre(resultSet.getString(ClienteSql.COLUMNA_NOMBRE));
+            entidad.setApellido(resultSet.getString(ClienteSql.COLUMNA_APELLIDO));
+            entidad.setCorreoElectronico(resultSet.getString(ClienteSql.COLUMNA_CORREO_ELECTRONICO));
+            entidad.setContrasena(resultSet.getString(ClienteSql.COLUMNA_CONTRASENA));
+            entidad.setTelefono(resultSet.getString(ClienteSql.COLUMNA_TELEFONO));
+            entidad.setEstado(resultSet.getBoolean(ClienteSql.COLUMNA_ESTADO));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

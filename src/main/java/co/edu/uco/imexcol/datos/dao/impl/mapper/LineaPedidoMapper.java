@@ -3,6 +3,7 @@ package co.edu.uco.imexcol.datos.dao.impl.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.LineaPedidoSql;
 import co.edu.uco.imexcol.entidad.LineaPedidoEntidad;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.entidad.ProductoEntidad;
@@ -19,19 +20,19 @@ public final class LineaPedidoMapper {
     public static LineaPedidoEntidad mapear(final ResultSet resultSet) {
         final var entidad = new LineaPedidoEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("linea_pedido_id")));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(LineaPedidoSql.COLUMNA_ID)));
 
             final var pedido = new PedidoEntidad();
-            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("linea_pedido_pedido_id")));
+            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(LineaPedidoSql.COLUMNA_PEDIDO_ID)));
             entidad.setPedido(pedido);
 
             final var producto = new ProductoEntidad();
-            producto.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("linea_pedido_producto_id")));
+            producto.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(LineaPedidoSql.COLUMNA_PRODUCTO_ID)));
             entidad.setProducto(producto);
 
-            entidad.setCantidad(resultSet.getInt("linea_pedido_cantidad"));
-            entidad.setPrecioUnitario(resultSet.getDouble("linea_pedido_precio_unitario"));
-            entidad.setSubtotal(resultSet.getDouble("linea_pedido_subtotal"));
+            entidad.setCantidad(resultSet.getInt(LineaPedidoSql.COLUMNA_CANTIDAD));
+            entidad.setPrecioUnitario(resultSet.getDouble(LineaPedidoSql.COLUMNA_PRECIO_UNITARIO));
+            entidad.setSubtotal(resultSet.getDouble(LineaPedidoSql.COLUMNA_SUBTOTAL));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

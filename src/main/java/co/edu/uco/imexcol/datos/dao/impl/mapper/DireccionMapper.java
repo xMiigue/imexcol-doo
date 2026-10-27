@@ -3,6 +3,7 @@ package co.edu.uco.imexcol.datos.dao.impl.mapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.DireccionSql;
 import co.edu.uco.imexcol.entidad.ClienteEntidad;
 import co.edu.uco.imexcol.entidad.DireccionEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -18,18 +19,18 @@ public final class DireccionMapper {
     public static DireccionEntidad mapear(final ResultSet resultSet) {
         final var entidad = new DireccionEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("direccion_id")));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(DireccionSql.COLUMNA_ID)));
 
             final var cliente = new ClienteEntidad();
-            cliente.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("direccion_cliente_id")));
+            cliente.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(DireccionSql.COLUMNA_CLIENTE_ID)));
             entidad.setCliente(cliente);
 
-            entidad.setCalle(resultSet.getString("direccion_calle"));
-            entidad.setCiudad(resultSet.getString("direccion_ciudad"));
-            entidad.setDepartamento(resultSet.getString("direccion_departamento"));
-            entidad.setCodigoPostal(resultSet.getString("direccion_codigo_postal"));
-            entidad.setPais(resultSet.getString("direccion_pais"));
-            entidad.setEsPrincipal(resultSet.getBoolean("direccion_es_principal"));
+            entidad.setCalle(resultSet.getString(DireccionSql.COLUMNA_CALLE));
+            entidad.setCiudad(resultSet.getString(DireccionSql.COLUMNA_CIUDAD));
+            entidad.setDepartamento(resultSet.getString(DireccionSql.COLUMNA_DEPARTAMENTO));
+            entidad.setCodigoPostal(resultSet.getString(DireccionSql.COLUMNA_CODIGO_POSTAL));
+            entidad.setPais(resultSet.getString(DireccionSql.COLUMNA_PAIS));
+            entidad.setEsPrincipal(resultSet.getBoolean(DireccionSql.COLUMNA_ES_PRINCIPAL));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

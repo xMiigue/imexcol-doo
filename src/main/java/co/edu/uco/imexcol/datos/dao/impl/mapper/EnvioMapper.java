@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.EnvioSql;
 import co.edu.uco.imexcol.entidad.EnvioEntidad;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -21,25 +22,25 @@ public final class EnvioMapper {
     public static EnvioEntidad mapear(final ResultSet resultSet) {
         final var entidad = new EnvioEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("envio_id")));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(EnvioSql.COLUMNA_ID)));
 
             final var pedido = new PedidoEntidad();
-            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("envio_pedido_id")));
+            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(EnvioSql.COLUMNA_PEDIDO_ID)));
             entidad.setPedido(pedido);
 
-            final Date fechaEnvioSql = resultSet.getDate("envio_fecha_envio");
+            final Date fechaEnvioSql = resultSet.getDate(EnvioSql.COLUMNA_FECHA_ENVIO);
             entidad.setFechaEnvio(UtilObjeto.esNulo(fechaEnvioSql)
                     ? UtilFecha.obtenerFechaPorDefecto()
                     : fechaEnvioSql.toLocalDate());
 
-            final Date fechaEntregaSql = resultSet.getDate("envio_fecha_entrega");
+            final Date fechaEntregaSql = resultSet.getDate(EnvioSql.COLUMNA_FECHA_ENTREGA);
             entidad.setFechaEntrega(UtilObjeto.esNulo(fechaEntregaSql)
                     ? UtilFecha.obtenerFechaPorDefecto()
                     : fechaEntregaSql.toLocalDate());
 
-            entidad.setTransportadora(resultSet.getString("envio_transportadora"));
-            entidad.setNumeroGuia(resultSet.getString("envio_numero_guia"));
-            entidad.setEstado(resultSet.getString("envio_estado"));
+            entidad.setTransportadora(resultSet.getString(EnvioSql.COLUMNA_TRANSPORTADORA));
+            entidad.setNumeroGuia(resultSet.getString(EnvioSql.COLUMNA_NUMERO_GUIA));
+            entidad.setEstado(resultSet.getString(EnvioSql.COLUMNA_ESTADO));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

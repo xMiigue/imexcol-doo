@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import co.edu.uco.imexcol.datos.dao.impl.sql.PagoSql;
 import co.edu.uco.imexcol.entidad.MetodoPagoEntidad;
 import co.edu.uco.imexcol.entidad.PagoEntidad;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
@@ -22,24 +23,24 @@ public final class PagoMapper {
     public static PagoEntidad mapear(final ResultSet resultSet) {
         final var entidad = new PagoEntidad();
         try {
-            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("pago_id")));
+            entidad.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(PagoSql.COLUMNA_ID)));
 
             final var pedido = new PedidoEntidad();
-            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("pago_pedido_id")));
+            pedido.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(PagoSql.COLUMNA_PEDIDO_ID)));
             entidad.setPedido(pedido);
 
             final var metodoPago = new MetodoPagoEntidad();
-            metodoPago.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString("pago_metodo_pago_id")));
+            metodoPago.setId(UtilUUID.obtenerDesdeTexto(resultSet.getString(PagoSql.COLUMNA_METODO_PAGO_ID)));
             entidad.setMetodoPago(metodoPago);
 
-            entidad.setMonto(resultSet.getDouble("pago_monto"));
+            entidad.setMonto(resultSet.getDouble(PagoSql.COLUMNA_MONTO));
 
-            final Date fechaSql = resultSet.getDate("pago_fecha_pago");
+            final Date fechaSql = resultSet.getDate(PagoSql.COLUMNA_FECHA_PAGO);
             entidad.setFechaPago(UtilObjeto.esNulo(fechaSql)
                     ? UtilFecha.obtenerFechaPorDefecto()
                     : fechaSql.toLocalDate());
 
-            entidad.setEstado(resultSet.getString("pago_estado"));
+            entidad.setEstado(resultSet.getString(PagoSql.COLUMNA_ESTADO));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),

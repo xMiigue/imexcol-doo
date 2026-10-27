@@ -11,6 +11,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.EnvioDAO;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.EnvioMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.EnvioSql;
 import co.edu.uco.imexcol.entidad.EnvioEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -105,7 +106,7 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -121,24 +122,24 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("e.id = ?");
+            condiciones.add(EnvioSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilUUID.esUUIDPorDefecto(filtro.getPedido().getId())) {
-            condiciones.add("e.pedido_id = ?");
+            condiciones.add(EnvioSql.FILTRO_PEDIDO);
             parametros.add(filtro.getPedido().getId());
         }
         if (!UtilTexto.estaVacia(filtro.getNumeroGuia())) {
-            condiciones.add("e.numero_guia = ?");
+            condiciones.add(EnvioSql.FILTRO_NUMERO_GUIA);
             parametros.add(filtro.getNumeroGuia());
         }
         if (!UtilTexto.estaVacia(filtro.getEstado())) {
-            condiciones.add("e.estado = ?");
+            condiciones.add(EnvioSql.FILTRO_ESTADO);
             parametros.add(filtro.getEstado());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }

@@ -12,6 +12,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.PedidoMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.PedidoSql;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -104,7 +105,7 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
 
         try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
             for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
+                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
             }
             return ejecutarConsultaPorFiltro(sentencia);
         } catch (final SQLException excepcion) {
@@ -129,20 +130,20 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("p.id = ?");
+            condiciones.add(PedidoSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilUUID.esUUIDPorDefecto(filtro.getCliente().getId())) {
-            condiciones.add("p.cliente_id = ?");
+            condiciones.add(PedidoSql.FILTRO_CLIENTE);
             parametros.add(filtro.getCliente().getId());
         }
         if (!UtilTexto.estaVacia(filtro.getEstado())) {
-            condiciones.add("p.estado = ?");
+            condiciones.add(PedidoSql.FILTRO_ESTADO);
             parametros.add(filtro.getEstado());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
     }
