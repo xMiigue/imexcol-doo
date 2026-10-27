@@ -153,9 +153,29 @@ public enum MensajesEnum {
             "El carrito id=%s está en estado %s y no puede vaciarse."),
 
     ERROR_USUARIO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
-            "El carrito solo puede marcarse como convertido si tiene al menos un producto."),
+            "El carrito de compras no tiene productos. Agregue al menos uno para poder convertirlo en un pedido."),
     ERROR_TECNICO_CARRITO_COMPRAS_SIN_ITEMS_PARA_CONVERTIR(
             "El carrito id=%s no tiene ítems y no puede pasar a estado %s."),
+
+    ERROR_USUARIO_CARRITO_COMPRAS_NO_ACTIVO(
+            "El carrito de compras no está activo: ya fue convertido en un pedido o fue abandonado."),
+    ERROR_TECNICO_CARRITO_COMPRAS_NO_ACTIVO(
+            "El carrito id=%s está en estado [%s]; se requiere el estado %s."),
+
+    ERROR_USUARIO_DIRECCION_NO_PERTENECE_AL_CLIENTE(
+            "La dirección de entrega seleccionada no pertenece al cliente."),
+    ERROR_TECNICO_DIRECCION_NO_PERTENECE_AL_CLIENTE(
+            "La dirección id=%s pertenece al cliente id=%s y no al cliente id=%s."),
+
+    ERROR_USUARIO_METODO_PAGO_INACTIVO(
+            "El método de pago seleccionado no está activo. Por favor elija otro."),
+    ERROR_TECNICO_METODO_PAGO_INACTIVO(
+            "El método de pago id=%s está inactivo."),
+
+    ERROR_USUARIO_COMPRA_PAGO_RECHAZADO(
+            "El pago fue rechazado por la pasarela de pagos. No se realizó ningún cargo ni se registró el pedido."),
+    ERROR_TECNICO_COMPRA_PAGO_RECHAZADO(
+            "La pasarela de pagos respondió %s para un cobro de %s; se revierte la compra completa."),
 
     ERROR_USUARIO_LINEA_PEDIDO_PRECIO_DIFERENTE_AL_PRODUCTO(
             "El precio de la línea del pedido debe ser igual al precio del producto al momento de la compra."),
@@ -634,6 +654,9 @@ public enum MensajesEnum {
 
     EXITO_PRODUCTO_ELIMINACION(
             "Producto eliminado satisfactoriamente."),
+
+    EXITO_COMPRA_REALIZADA(
+            "Compra realizada satisfactoriamente."),
 
     EXITO_FACTURA_CONSULTA(
             "Facturas consultadas satisfactoriamente."),

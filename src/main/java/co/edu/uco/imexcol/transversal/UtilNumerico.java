@@ -39,6 +39,13 @@ public final class UtilNumerico {
         return BigDecimal.valueOf(valor).setScale(DECIMALES_MONEDA, RoundingMode.HALF_UP).doubleValue();
     }
 
+    public static double multiplicarADosDecimales(final double valor, final int factor) {
+        return BigDecimal.valueOf(valor)
+                .multiply(BigDecimal.valueOf(factor))
+                .setScale(DECIMALES_MONEDA, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
     public static double dividirTruncandoADosDecimales(final double dividendo, final double divisor) {
         return BigDecimal.valueOf(dividendo)
                 .divide(BigDecimal.valueOf(divisor), DECIMALES_MONEDA, RoundingMode.DOWN)
