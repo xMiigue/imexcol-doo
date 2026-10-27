@@ -16,7 +16,9 @@ import co.edu.uco.imexcol.controlador.dto.Respuesta;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolAutenticacionException;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolControladorException;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 @RestControllerAdvice
 public final class ManejadorExcepcionesControlador {
@@ -28,6 +30,12 @@ public final class ManejadorExcepcionesControlador {
             final ImexcolAutenticacionException excepcion) {
         REGISTRO.warn(excepcion.getMensajeTecnico());
         return responderFallida(excepcion.getMensajeUsuario(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({ ImexcolDatosException.class, ImexcolFachadaException.class })
+    public ResponseEntity<Respuesta<Object>> manejarErrorTecnico(final ImexcolException excepcion) {
+        REGISTRO.error(excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
+        return responderFallida(excepcion.getMensajeUsuario(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ImexcolException.class)
