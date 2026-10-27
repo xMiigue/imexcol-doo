@@ -3,9 +3,15 @@ package co.edu.uco.imexcol.transversal;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
 
 public final class UtilConexionSql {
+
+    private static final Logger REGISTRO = LoggerFactory.getLogger(UtilConexionSql.class);
 
     private UtilConexionSql() {
         super();
@@ -107,5 +113,26 @@ public final class UtilConexionSql {
                     MensajesEnum.ERROR_USUARIO_CONEXION_SQL_CERRAR.getContenido(),
                     MensajesEnum.ERROR_TECNICO_CONEXION_SQL_CERRAR.getContenido());
         }
+    }
+
+    public static void revertirTransaccionSinOcultar(final Connection conexion, final Exception excepcionOriginal) {
+        try {
+            revertirTransaccion(conexion);
+        } catch (final ImexcolException excepcionRevertir) {
+            registrarFallaSecundaria(excepcionRevertir);
+            UtilObjeto.obtenerValorDefecto(excepcionOriginal, new Exception()).addSuppressed(excepcionRevertir);
+        }
+    }
+
+    public static void cerrarConexionSinOcultar(final Connection conexion) {
+        try {
+            cerrarConexion(conexion);
+        } catch (final ImexcolException excepcionCerrar) {
+            registrarFallaSecundaria(excepcionCerrar);
+        }
+    }
+
+    private static void registrarFallaSecundaria(final ImexcolException excepcion) {
+        REGISTRO.error(excepcion.getMensajeTecnico(), excepcion.getExcepcionRaiz());
     }
 }

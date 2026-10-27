@@ -33,13 +33,13 @@ public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -54,13 +54,13 @@ public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
             negocio.actualizar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -73,13 +73,13 @@ public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
             negocio.eliminar(id);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -96,13 +96,13 @@ public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 

@@ -33,13 +33,13 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -54,13 +54,13 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
             negocio.actualizar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -73,13 +73,13 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
             negocio.eliminar(id);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -96,13 +96,13 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -118,13 +118,13 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
             fabrica.confirmarTransaccion();
             return autenticado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 

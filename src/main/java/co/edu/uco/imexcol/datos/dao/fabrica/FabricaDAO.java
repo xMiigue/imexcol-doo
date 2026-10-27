@@ -90,4 +90,12 @@ public abstract class FabricaDAO {
     public final void cerrarConexion() {
         UtilConexionSql.cerrarConexion(conexion);
     }
+
+    public final void revertirTransaccionSinOcultar(final Exception excepcionOriginal) {
+        UtilConexionSql.revertirTransaccionSinOcultar(conexion, excepcionOriginal);
+    }
+
+    public final void cerrarConexionSinOcultar() {
+        UtilConexionSql.cerrarConexionSinOcultar(conexion);
+    }
 }

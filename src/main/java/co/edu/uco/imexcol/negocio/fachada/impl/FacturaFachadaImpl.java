@@ -33,13 +33,13 @@ public final class FacturaFachadaImpl implements FacturaFachada {
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -54,13 +54,13 @@ public final class FacturaFachadaImpl implements FacturaFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -77,13 +77,13 @@ public final class FacturaFachadaImpl implements FacturaFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 

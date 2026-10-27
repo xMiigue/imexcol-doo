@@ -33,13 +33,13 @@ public final class ResenaFachadaImpl implements ResenaFachada {
             negocio.registrar(dominio);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -52,13 +52,13 @@ public final class ResenaFachadaImpl implements ResenaFachada {
             negocio.eliminarPorCliente(idResena, idCliente);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -71,13 +71,13 @@ public final class ResenaFachadaImpl implements ResenaFachada {
             negocio.eliminarPorAdministrador(idResena, idAdministrador);
             fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -92,13 +92,13 @@ public final class ResenaFachadaImpl implements ResenaFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
@@ -115,13 +115,13 @@ public final class ResenaFachadaImpl implements ResenaFachada {
             fabrica.confirmarTransaccion();
             return resultado;
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 

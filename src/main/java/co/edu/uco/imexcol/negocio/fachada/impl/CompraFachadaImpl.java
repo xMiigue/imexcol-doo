@@ -33,13 +33,13 @@ public final class CompraFachadaImpl implements CompraFachada {
             fabrica.confirmarTransaccion();
             return ensambladorResultado.ensamblarDTO(resultado);
         } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw excepcion;
         } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
+            fabrica.revertirTransaccionSinOcultar(excepcion);
             throw envolverErrorInesperado(excepcion);
         } finally {
-            fabrica.cerrarConexion();
+            fabrica.cerrarConexionSinOcultar();
         }
     }
 
