@@ -28,11 +28,11 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
     }
 
     @Override
-    public void acceder(final EnvioEntidad entidad) {
+    public void crear(final EnvioEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new EnvioEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getPedido().getId());
             sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));

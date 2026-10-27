@@ -148,7 +148,7 @@ public final class ResenaNegocioImpl implements ResenaNegocio {
     }
 
     private void guardar(final ResenaDominio dominio) {
-        fabrica.obtenerResenaDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerResenaDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void borrar(final UUID idResena) {

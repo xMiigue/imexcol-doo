@@ -26,11 +26,11 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
     }
 
     @Override
-    public void acceder(final ProductoEntidad entidad) {
+    public void crear(final ProductoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ProductoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getCategoria().getId());
             sentencia.setString(3, entidadSegura.getNombre());

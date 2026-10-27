@@ -92,7 +92,7 @@ public final class MetodoPagoNegocioImpl implements MetodoPagoNegocio {
     }
 
     private void guardar(final MetodoPagoDominio dominio) {
-        fabrica.obtenerMetodoPagoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerMetodoPagoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final MetodoPagoDominio dominio) {

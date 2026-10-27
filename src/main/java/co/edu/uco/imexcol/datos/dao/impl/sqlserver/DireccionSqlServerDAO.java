@@ -26,11 +26,11 @@ public final class DireccionSqlServerDAO extends ConexionSql implements Direccio
     }
 
     @Override
-    public void acceder(final DireccionEntidad entidad) {
+    public void crear(final DireccionEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new DireccionEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(DireccionSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(DireccionSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getCliente().getId());
             sentencia.setString(3, entidadSegura.getCalle());

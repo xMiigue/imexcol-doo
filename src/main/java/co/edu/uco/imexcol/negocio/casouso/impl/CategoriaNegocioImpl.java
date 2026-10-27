@@ -98,7 +98,7 @@ public final class CategoriaNegocioImpl implements CategoriaNegocio {
     }
 
     private void guardar(final CategoriaDominio dominio) {
-        fabrica.obtenerCategoriaDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerCategoriaDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final CategoriaDominio dominio) {

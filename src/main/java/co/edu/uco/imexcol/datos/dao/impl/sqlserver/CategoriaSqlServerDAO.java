@@ -26,11 +26,11 @@ public final class CategoriaSqlServerDAO extends ConexionSql implements Categori
     }
 
     @Override
-    public void acceder(final CategoriaEntidad entidad) {
+    public void crear(final CategoriaEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CategoriaEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(CategoriaSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(CategoriaSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setString(2, entidadSegura.getNombre());
             sentencia.setString(3, entidadSegura.getDescripcion());

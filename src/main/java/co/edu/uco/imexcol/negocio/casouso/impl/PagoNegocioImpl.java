@@ -118,7 +118,7 @@ public final class PagoNegocioImpl implements PagoNegocio {
     }
 
     private void guardar(final PagoDominio dominio) {
-        fabrica.obtenerPagoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerPagoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final PagoDominio dominio) {

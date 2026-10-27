@@ -26,11 +26,11 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
     }
 
     @Override
-    public void acceder(final ClienteEntidad entidad) {
+    public void crear(final ClienteEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ClienteEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setString(2, entidadSegura.getNombre());
             sentencia.setString(3, entidadSegura.getApellido());

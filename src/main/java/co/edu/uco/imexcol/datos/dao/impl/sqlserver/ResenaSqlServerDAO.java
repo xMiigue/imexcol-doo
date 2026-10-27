@@ -36,11 +36,11 @@ public final class ResenaSqlServerDAO extends ConexionSql implements ResenaDAO {
     }
 
     @Override
-    public void acceder(final ResenaEntidad entidad) {
+    public void crear(final ResenaEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ResenaEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ResenaSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ResenaSql.CREAR)) {
             sentencia.setObject(POSICION_ID, entidadSegura.getId());
             sentencia.setObject(POSICION_CLIENTE, entidadSegura.getCliente().getId());
             sentencia.setObject(POSICION_PRODUCTO, entidadSegura.getProducto().getId());

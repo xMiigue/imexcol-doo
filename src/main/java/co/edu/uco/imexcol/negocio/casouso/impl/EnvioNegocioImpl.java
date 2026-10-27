@@ -124,7 +124,7 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
     }
 
     private void guardar(final EnvioDominio dominio) {
-        fabrica.obtenerEnvioDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerEnvioDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final EnvioDominio dominio) {

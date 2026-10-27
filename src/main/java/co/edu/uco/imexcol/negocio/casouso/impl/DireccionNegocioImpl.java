@@ -127,7 +127,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     }
 
     private void guardar(final DireccionDominio dominio) {
-        fabrica.obtenerDireccionDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerDireccionDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final DireccionDominio dominio) {

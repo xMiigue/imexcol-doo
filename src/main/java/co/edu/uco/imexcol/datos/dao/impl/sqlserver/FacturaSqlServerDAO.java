@@ -37,11 +37,11 @@ public final class FacturaSqlServerDAO extends ConexionSql implements FacturaDAO
     }
 
     @Override
-    public void acceder(final FacturaEntidad entidad) {
+    public void crear(final FacturaEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new FacturaEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(FacturaSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(FacturaSql.CREAR)) {
             sentencia.setObject(POSICION_ID, entidadSegura.getId());
             sentencia.setObject(POSICION_PAGO, entidadSegura.getPago().getId());
             sentencia.setString(POSICION_NUMERO_FACTURA, entidadSegura.getNumeroFactura());

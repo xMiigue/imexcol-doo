@@ -146,7 +146,7 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
     }
 
     private void guardar(final AdministradorDominio dominio) {
-        fabrica.obtenerAdministradorDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerAdministradorDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final AdministradorDominio dominio) {

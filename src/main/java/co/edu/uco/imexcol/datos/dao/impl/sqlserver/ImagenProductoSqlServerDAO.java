@@ -37,11 +37,11 @@ public final class ImagenProductoSqlServerDAO extends ConexionSql implements Ima
     }
 
     @Override
-    public void acceder(final ImagenProductoEntidad entidad) {
+    public void crear(final ImagenProductoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ImagenProductoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ImagenProductoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ImagenProductoSql.CREAR)) {
             sentencia.setObject(POSICION_ID, entidadSegura.getId());
             sentencia.setObject(POSICION_PRODUCTO, entidadSegura.getProducto().getId());
             sentencia.setString(POSICION_FOTO, entidadSegura.getFoto());

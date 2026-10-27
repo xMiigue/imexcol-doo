@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.ResenaEntidad;
 
 public interface ResenaDAO
-        extends AccederDAO<ResenaEntidad>,
+        extends CrearDAO<ResenaEntidad>,
                 RecuperarDAO<ResenaEntidad, UUID>,
                 EliminarDAO<UUID> {
 }

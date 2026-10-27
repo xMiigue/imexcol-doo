@@ -26,11 +26,11 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
     }
 
     @Override
-    public void acceder(final AdministradorEntidad entidad) {
+    public void crear(final AdministradorEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new AdministradorEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setString(2, entidadSegura.getNombreUsuario());
             sentencia.setString(3, entidadSegura.getCorreoElectronico());

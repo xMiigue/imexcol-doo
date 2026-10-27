@@ -126,7 +126,7 @@ public final class LineaPedidoNegocioImpl implements LineaPedidoNegocio {
     }
 
     private void guardar(final LineaPedidoDominio dominio) {
-        fabrica.obtenerLineaPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerLineaPedidoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final LineaPedidoDominio dominio) {

@@ -221,6 +221,6 @@ public final class FacturaNegocioImpl implements FacturaNegocio {
     }
 
     private void guardar(final FacturaDominio factura) {
-        fabrica.obtenerFacturaDAO().acceder(ensamblador.ensamblarEntidad(factura));
+        fabrica.obtenerFacturaDAO().crear(ensamblador.ensamblarEntidad(factura));
     }
 }

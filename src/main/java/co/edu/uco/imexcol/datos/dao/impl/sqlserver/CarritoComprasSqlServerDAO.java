@@ -28,11 +28,11 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
     }
 
     @Override
-    public void acceder(final CarritoComprasEntidad entidad) {
+    public void crear(final CarritoComprasEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CarritoComprasEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(CarritoComprasSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(CarritoComprasSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getCliente().getId());
             sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaCreacion())));

@@ -112,7 +112,7 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
     }
 
     private void guardar(final ProductoDominio dominio) {
-        fabrica.obtenerProductoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerProductoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final ProductoDominio dominio) {

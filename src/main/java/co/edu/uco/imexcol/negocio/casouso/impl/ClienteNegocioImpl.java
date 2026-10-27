@@ -155,7 +155,7 @@ public final class ClienteNegocioImpl implements ClienteNegocio {
     }
 
     private void guardar(final ClienteDominio dominio) {
-        fabrica.obtenerClienteDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerClienteDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final ClienteDominio dominio) {

@@ -29,11 +29,11 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
     }
 
     @Override
-    public void acceder(final PedidoEntidad entidad) {
+    public void crear(final PedidoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PedidoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(PedidoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(PedidoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getCliente().getId());
             sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));

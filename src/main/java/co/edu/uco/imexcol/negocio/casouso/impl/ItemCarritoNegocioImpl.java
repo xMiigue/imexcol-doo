@@ -103,7 +103,7 @@ public final class ItemCarritoNegocioImpl implements ItemCarritoNegocio {
     }
 
     private void guardar(final ItemCarritoDominio dominio) {
-        fabrica.obtenerItemCarritoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerItemCarritoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final ItemCarritoDominio dominio) {

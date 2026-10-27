@@ -25,11 +25,11 @@ public final class LineaPedidoSqlServerDAO extends ConexionSql implements LineaP
     }
 
     @Override
-    public void acceder(final LineaPedidoEntidad entidad) {
+    public void crear(final LineaPedidoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new LineaPedidoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(LineaPedidoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(LineaPedidoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getPedido().getId());
             sentencia.setObject(3, entidadSegura.getProducto().getId());

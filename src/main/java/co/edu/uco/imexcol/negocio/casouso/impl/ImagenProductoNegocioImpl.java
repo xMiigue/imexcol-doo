@@ -141,7 +141,7 @@ public final class ImagenProductoNegocioImpl implements ImagenProductoNegocio {
     }
 
     private void guardar(final ImagenProductoDominio dominio) {
-        fabrica.obtenerImagenProductoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerImagenProductoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final ImagenProductoDominio dominio) {

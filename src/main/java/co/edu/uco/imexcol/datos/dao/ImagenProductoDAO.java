@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.ImagenProductoEntidad;
 
 public interface ImagenProductoDAO
-        extends AccederDAO<ImagenProductoEntidad>,
+        extends CrearDAO<ImagenProductoEntidad>,
                 RecuperarDAO<ImagenProductoEntidad, UUID>,
                 ActualizarDAO<ImagenProductoEntidad>,
                 EliminarDAO<UUID> {

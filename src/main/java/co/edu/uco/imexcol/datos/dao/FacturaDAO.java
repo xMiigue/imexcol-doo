@@ -5,6 +5,6 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.FacturaEntidad;
 
 public interface FacturaDAO
-        extends AccederDAO<FacturaEntidad>,
+        extends CrearDAO<FacturaEntidad>,
                 RecuperarDAO<FacturaEntidad, UUID> {
 }

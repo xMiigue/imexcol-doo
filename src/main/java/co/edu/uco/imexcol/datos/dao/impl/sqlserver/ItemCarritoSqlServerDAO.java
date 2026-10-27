@@ -25,11 +25,11 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
     }
 
     @Override
-    public void acceder(final ItemCarritoEntidad entidad) {
+    public void crear(final ItemCarritoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ItemCarritoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getCarrito().getId());
             sentencia.setObject(3, entidadSegura.getProducto().getId());

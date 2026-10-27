@@ -128,7 +128,7 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     }
 
     private void guardar(final PedidoDominio dominio) {
-        fabrica.obtenerPedidoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerPedidoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 
     private void modificar(final PedidoDominio dominio) {

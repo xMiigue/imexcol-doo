@@ -150,6 +150,6 @@ public final class EventoRastreoNegocioImpl implements EventoRastreoNegocio {
     }
 
     private void guardar(final EventoRastreoDominio dominio) {
-        fabrica.obtenerEventoRastreoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+        fabrica.obtenerEventoRastreoDAO().crear(ensamblador.ensamblarEntidad(dominio));
     }
 }

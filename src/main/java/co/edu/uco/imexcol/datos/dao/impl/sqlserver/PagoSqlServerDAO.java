@@ -28,11 +28,11 @@ public final class PagoSqlServerDAO extends ConexionSql implements PagoDAO {
     }
 
     @Override
-    public void acceder(final PagoEntidad entidad) {
+    public void crear(final PagoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PagoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(PagoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(PagoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setObject(2, entidadSegura.getPedido().getId());
             sentencia.setObject(3, entidadSegura.getMetodoPago().getId());

@@ -36,11 +36,11 @@ public final class EventoRastreoSqlServerDAO extends ConexionSql implements Even
     }
 
     @Override
-    public void acceder(final EventoRastreoEntidad entidad) {
+    public void crear(final EventoRastreoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new EventoRastreoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(EventoRastreoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(EventoRastreoSql.CREAR)) {
             sentencia.setObject(POSICION_ID, entidadSegura.getId());
             sentencia.setObject(POSICION_ENVIO, entidadSegura.getEnvio().getId());
             sentencia.setString(POSICION_ESTADO_LOGISTICO, entidadSegura.getEstadoLogistico());

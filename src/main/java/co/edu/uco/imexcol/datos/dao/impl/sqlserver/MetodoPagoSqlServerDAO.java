@@ -26,11 +26,11 @@ public final class MetodoPagoSqlServerDAO extends ConexionSql implements MetodoP
     }
 
     @Override
-    public void acceder(final MetodoPagoEntidad entidad) {
+    public void crear(final MetodoPagoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new MetodoPagoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(MetodoPagoSql.ACCEDER)) {
+        try (var sentencia = obtenerConexion().prepareStatement(MetodoPagoSql.CREAR)) {
             sentencia.setObject(1, entidadSegura.getId());
             sentencia.setString(2, entidadSegura.getNombre());
             sentencia.setString(3, entidadSegura.getDescripcion());
