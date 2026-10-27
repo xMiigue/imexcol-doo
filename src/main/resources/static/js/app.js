@@ -711,13 +711,18 @@ function ocultarResultadoCompra() {
 async function cargarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (!tbody || !estado.usuario) return;
-    tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const datos = await peticionApi(`${API.pedidos}?idCliente=${estado.usuario.datos.id}`);
+        const idCliente = estado.usuario.datos.id;
+        const [datos, direcciones] = await Promise.all([
+            peticionApi(`${API.pedidos}?idCliente=${idCliente}`),
+            peticionApi(`${API.direcciones}?idCliente=${idCliente}`).catch(() => ({ datos: [] }))
+        ]);
         estado.pedidosCliente = datos.datos || [];
+        estado.direccionesCliente = direcciones.datos || [];
         renderizarMisPedidos();
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
     document.getElementById('panel-detalle-pedido').classList.add('oculto');
 }
@@ -725,7 +730,7 @@ async function cargarMisPedidos() {
 function renderizarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (estado.pedidosCliente.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
         return;
     }
     const ordenados = estado.pedidosCliente.slice().sort((a, b) =>
@@ -735,6 +740,7 @@ function renderizarMisPedidos() {
         <tr>
             <td>${escapar(idCortoPedido(p.id))}</td>
             <td>${escapar(formatoFecha(p.fechaPedido))}</td>
+            <td>${escapar(textoDireccionPedido(p))}</td>
             <td class="celda-num">${formatoMoneda(p.total)}</td>
             <td>${etiquetaPedidoEstado(p.estado)}</td>
             <td class="celda-acciones">
@@ -744,6 +750,12 @@ function renderizarMisPedidos() {
             </td>
         </tr>
     `).join('');
+}
+
+function textoDireccionPedido(pedido) {
+    const idDireccion = pedido.direccion && pedido.direccion.id;
+    const direccion = estado.direccionesCliente.find(d => String(d.id) === String(idDireccion));
+    return direccion ? `${direccion.calle}, ${direccion.ciudad}` : '—';
 }
 
 function etiquetaPedidoEstado(estadoTexto) {

@@ -16,6 +16,7 @@ public final class PedidoEntidad {
     private LocalDate fechaPedido;
     private double total;
     private String estado;
+    private DireccionEntidad direccion;
 
     public PedidoEntidad() {
         setId(UtilUUID.obtenerValorPorDefecto());
@@ -23,6 +24,7 @@ public final class PedidoEntidad {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionEntidad());
     }
 
     public PedidoEntidad(final UUID id) {
@@ -31,15 +33,18 @@ public final class PedidoEntidad {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionEntidad());
     }
 
     public PedidoEntidad(final UUID id, final ClienteEntidad cliente, final LocalDate fechaPedido,
-                         final double total, final String estado) {
+                         final double total, final String estado,
+                         final DireccionEntidad direccion) {
         setId(id);
         setCliente(cliente);
         setFechaPedido(fechaPedido);
         setTotal(total);
         setEstado(estado);
+        setDireccion(direccion);
     }
 
     public UUID getId() {
@@ -80,5 +85,13 @@ public final class PedidoEntidad {
 
     public void setEstado(final String estado) {
         this.estado = UtilTexto.aplicarTrim(estado);
+    }
+
+    public DireccionEntidad getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(final DireccionEntidad direccion) {
+        this.direccion = UtilObjeto.obtenerValorDefecto(direccion, new DireccionEntidad());
     }
 }

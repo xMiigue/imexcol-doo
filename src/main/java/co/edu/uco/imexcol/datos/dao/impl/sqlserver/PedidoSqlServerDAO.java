@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -38,6 +39,7 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
             sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
             sentencia.setDouble(4, entidadSegura.getTotal());
             sentencia.setString(5, entidadSegura.getEstado());
+            asignarDireccion(sentencia, 6, entidadSegura.getDireccion().getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -57,7 +59,8 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
             sentencia.setDate(2, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
             sentencia.setDouble(3, entidadSegura.getTotal());
             sentencia.setString(4, entidadSegura.getEstado());
-            sentencia.setObject(5, entidadSegura.getId());
+            asignarDireccion(sentencia, 5, entidadSegura.getDireccion().getId());
+            sentencia.setObject(6, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -109,6 +112,15 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
                     MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
         } catch (final Exception excepcion) {
             throw envolverErrorInesperado(excepcion);
+        }
+    }
+
+    private static void asignarDireccion(final PreparedStatement sentencia, final int posicion,
+            final UUID idDireccion) throws SQLException {
+        if (UtilUUID.esUUIDPorDefecto(idDireccion)) {
+            sentencia.setNull(posicion, Types.VARCHAR);
+        } else {
+            sentencia.setObject(posicion, idDireccion);
         }
     }
 

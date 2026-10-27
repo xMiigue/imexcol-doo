@@ -15,6 +15,7 @@ public final class PedidoDominio extends Dominio {
     private LocalDate fechaPedido;
     private double total;
     private String estado;
+    private DireccionDominio direccion;
 
     public PedidoDominio() {
         super(UtilUUID.obtenerValorPorDefecto());
@@ -22,6 +23,7 @@ public final class PedidoDominio extends Dominio {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionDominio());
     }
 
     public PedidoDominio(final UUID id) {
@@ -30,15 +32,18 @@ public final class PedidoDominio extends Dominio {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionDominio());
     }
 
     public PedidoDominio(final UUID id, final ClienteDominio cliente, final LocalDate fechaPedido,
-                         final double total, final String estado) {
+                         final double total, final String estado,
+                         final DireccionDominio direccion) {
         super(id);
         setCliente(cliente);
         setFechaPedido(fechaPedido);
         setTotal(total);
         setEstado(estado);
+        setDireccion(direccion);
     }
 
     public ClienteDominio getCliente() {
@@ -71,5 +76,13 @@ public final class PedidoDominio extends Dominio {
 
     public void setEstado(final String estado) {
         this.estado = UtilTexto.aplicarTrim(estado);
+    }
+
+    public DireccionDominio getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(final DireccionDominio direccion) {
+        this.direccion = UtilObjeto.obtenerValorDefecto(direccion, new DireccionDominio());
     }
 }

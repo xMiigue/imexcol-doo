@@ -8,9 +8,10 @@ public final class PedidoSql {
                 cliente_id,
                 fecha_pedido,
                 total,
-                estado
+                estado,
+                direccion_id
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             """;
 
     public static final String CONSULTAR_POR_FILTRO = """
@@ -19,7 +20,8 @@ public final class PedidoSql {
                 p.cliente_id    AS pedido_cliente_id,
                 p.fecha_pedido  AS pedido_fecha_pedido,
                 p.total         AS pedido_total,
-                p.estado        AS pedido_estado
+                p.estado        AS pedido_estado,
+                p.direccion_id  AS pedido_direccion_id
             FROM imex_pedido AS p
             """;
 
@@ -29,7 +31,8 @@ public final class PedidoSql {
                 cliente_id   = ?,
                 fecha_pedido = ?,
                 total        = ?,
-                estado       = ?
+                estado       = ?,
+                direccion_id = ?
             WHERE id = ?
             """;
 

@@ -28,7 +28,8 @@ public final class PedidoDTOAssembler implements DTOAssembler<PedidoDominio, Ped
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getCliente()),
                 dtoAEnsamblar.getFechaPedido(),
                 dtoAEnsamblar.getTotal(),
-                dtoAEnsamblar.getEstado());
+                dtoAEnsamblar.getEstado(),
+                DireccionDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getDireccion()));
     }
 
     @Override
@@ -39,7 +40,8 @@ public final class PedidoDTOAssembler implements DTOAssembler<PedidoDominio, Ped
                 ClienteDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getCliente()),
                 dominioAEnsamblar.getFechaPedido(),
                 dominioAEnsamblar.getTotal(),
-                dominioAEnsamblar.getEstado());
+                dominioAEnsamblar.getEstado(),
+                DireccionDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getDireccion()));
     }
 
     @Override

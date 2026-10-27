@@ -7,12 +7,15 @@ import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.PedidoEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.PedidoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionPerteneceAlCliente;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsPositivo;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarEstadoPedidoEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
+import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.negocio.dominio.PedidoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
@@ -45,6 +48,7 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PedidoDominio());
         validarDatosComunes(dominioSeguro);
         asegurarClienteExista(dominioSeguro);
+        asegurarDireccionDelCliente(dominioSeguro);
         asegurarTotalNoNegativo(dominioSeguro);
         asegurarEstadoValido(dominioSeguro);
         asignarNuevoIdentificador(dominioSeguro);
@@ -57,6 +61,8 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
         validarDatosComunes(dominioSeguro);
         asegurarPedidoExista(dominioSeguro.getId());
         asegurarClienteExista(dominioSeguro);
+        conservarDireccionRegistrada(dominioSeguro);
+        asegurarDireccionDelCliente(dominioSeguro);
         asegurarTotalNoNegativo(dominioSeguro);
         asegurarEstadoValido(dominioSeguro);
         modificar(dominioSeguro);
@@ -83,6 +89,25 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
 
     private void asegurarClienteExista(final PedidoDominio dominio) {
         ValidarClienteExistePorId.ejecutarValidacion(dominio.getCliente().getId(), fabrica);
+    }
+
+    private void conservarDireccionRegistrada(final PedidoDominio dominio) {
+        if (!tieneDireccion(dominio)) {
+            final var pedidoRegistrado = fabrica.obtenerPedidoDAO().consultarPorId(dominio.getId());
+            dominio.setDireccion(new DireccionDominio(pedidoRegistrado.getDireccion().getId()));
+        }
+    }
+
+    private void asegurarDireccionDelCliente(final PedidoDominio dominio) {
+        if (tieneDireccion(dominio)) {
+            ValidarDireccionExistePorId.ejecutarValidacion(dominio.getDireccion().getId(), fabrica);
+            ValidarDireccionPerteneceAlCliente.ejecutarValidacion(dominio.getDireccion().getId(),
+                    dominio.getCliente().getId(), fabrica);
+        }
+    }
+
+    private static boolean tieneDireccion(final PedidoDominio dominio) {
+        return !UtilUUID.esUUIDPorDefecto(dominio.getDireccion().getId());
     }
 
     private void asegurarTotalNoNegativo(final PedidoDominio dominio) {

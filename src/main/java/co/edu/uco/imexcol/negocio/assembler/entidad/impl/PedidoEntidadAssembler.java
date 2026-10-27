@@ -28,7 +28,8 @@ public final class PedidoEntidadAssembler implements EntidadAssembler<PedidoDomi
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getCliente()),
                 dominioAEnsamblar.getFechaPedido(),
                 dominioAEnsamblar.getTotal(),
-                dominioAEnsamblar.getEstado());
+                dominioAEnsamblar.getEstado(),
+                DireccionEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getDireccion()));
     }
 
     @Override
@@ -39,7 +40,8 @@ public final class PedidoEntidadAssembler implements EntidadAssembler<PedidoDomi
                 ClienteEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getCliente()),
                 entidadAEnsamblar.getFechaPedido(),
                 entidadAEnsamblar.getTotal(),
-                entidadAEnsamblar.getEstado());
+                entidadAEnsamblar.getEstado(),
+                DireccionEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getDireccion()));
     }
 
     @Override

@@ -25,6 +25,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarMetodoPago
 import co.edu.uco.imexcol.negocio.casouso.validador.producto.ValidarProductoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.CarritoComprasDominio;
 import co.edu.uco.imexcol.negocio.dominio.ClienteDominio;
+import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.negocio.dominio.FacturaDominio;
 import co.edu.uco.imexcol.negocio.dominio.ItemCarritoDominio;
 import co.edu.uco.imexcol.negocio.dominio.LineaPedidoDominio;
@@ -170,6 +171,7 @@ public final class CompraNegocioImpl implements CompraNegocio {
             final double total) {
         final var pedido = new PedidoDominio();
         pedido.setCliente(new ClienteDominio(solicitud.getIdCliente()));
+        pedido.setDireccion(new DireccionDominio(solicitud.getIdDireccion()));
         pedido.setFechaPedido(UtilFecha.obtenerFechaActual());
         pedido.setTotal(total);
         pedido.setEstado(EstadoPedidoEnum.PENDIENTE.getValor());

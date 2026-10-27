@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import co.edu.uco.imexcol.entidad.ClienteEntidad;
+import co.edu.uco.imexcol.entidad.DireccionEntidad;
 import co.edu.uco.imexcol.entidad.PedidoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilFecha;
@@ -34,6 +35,8 @@ public final class PedidoMapper {
 
             entidad.setTotal(resultSet.getDouble("pedido_total"));
             entidad.setEstado(resultSet.getString("pedido_estado"));
+            entidad.setDireccion(new DireccionEntidad(
+                    UtilUUID.obtenerDesdeTexto(resultSet.getString("pedido_direccion_id"))));
         } catch (final SQLException excepcion) {
             throw ImexcolDatosException.crear(excepcion,
                     MensajesEnum.ERROR_USUARIO_MAPPER_GENERICO.getContenido(),
