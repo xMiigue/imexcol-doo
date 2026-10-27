@@ -39,6 +39,6 @@ public final class UtilUUID {
     }
 
     public static boolean esUUIDPorDefecto(final UUID id) {
-        return obtenerValorPorDefecto().equals(id);
+        return obtenerValorPorDefecto().equals(obtenerValorDefecto(id));
     }
 }

@@ -22,6 +22,7 @@ import co.edu.uco.imexcol.dto.ResenaDTO;
 import co.edu.uco.imexcol.negocio.fachada.ResenaFachada;
 import co.edu.uco.imexcol.negocio.fachada.impl.ResenaFachadaImpl;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
+import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
 @CrossOrigin
@@ -56,7 +57,7 @@ public final class ResenaControlador {
         final var filtros = new ResenaDTO(UtilUUID.obtenerValorDefecto(id));
 
         final var resultados = fachada.consultar(filtros);
-        if (resultados.isEmpty()) {
+        if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
             final var respuestaNoEncontrado = Respuesta.<ResenaDTO>crearFallida();
             respuestaNoEncontrado.agregarMensaje(MensajesEnum.ERROR_USUARIO_RESENA_NO_ENCONTRADA.getContenido());
             return new ResponseEntity<>(respuestaNoEncontrado, HttpStatus.NOT_FOUND);

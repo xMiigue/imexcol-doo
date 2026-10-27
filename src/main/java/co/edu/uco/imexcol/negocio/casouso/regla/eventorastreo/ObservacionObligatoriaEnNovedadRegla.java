@@ -25,8 +25,8 @@ public final class ObservacionObligatoriaEnNovedadRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
-        final var estadoLogistico = (String) datos[POSICION_ESTADO_LOGISTICO];
-        final var observacion = (String) datos[POSICION_OBSERVACION];
+        final var estadoLogistico = UtilTexto.aplicarTrim((String) datos[POSICION_ESTADO_LOGISTICO]);
+        final var observacion = UtilTexto.aplicarTrim((String) datos[POSICION_OBSERVACION]);
 
         if (EstadoEventoRastreoEnum.NOVEDAD.esIgualA(estadoLogistico) && UtilTexto.estaVacia(observacion)) {
             throw ImexcolNegocioException.crear(

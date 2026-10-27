@@ -27,7 +27,7 @@ public final class FechaNoEsValorPorDefectoRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
-        final var fecha = (LocalDate) datos[POSICION_FECHA];
+        final var fecha = UtilFecha.obtenerValorDefecto((LocalDate) datos[POSICION_FECHA]);
         final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
 
         if (UtilFecha.esFechaPorDefecto(fecha)) {

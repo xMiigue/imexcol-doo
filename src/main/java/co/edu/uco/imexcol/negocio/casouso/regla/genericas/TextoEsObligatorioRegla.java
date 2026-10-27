@@ -24,7 +24,7 @@ public final class TextoEsObligatorioRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
-        final var texto = (String) datos[POSICION_TEXTO];
+        final var texto = UtilTexto.obtenerValorDefecto((String) datos[POSICION_TEXTO]);
         final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
 
         if (UtilTexto.estaVacia(texto)) {

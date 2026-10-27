@@ -27,7 +27,7 @@ public final class IdNoEsValorPorDefectoRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
-        final var id = (UUID) datos[POSICION_ID];
+        final var id = UtilUUID.obtenerValorDefecto((UUID) datos[POSICION_ID]);
         final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
 
         if (UtilUUID.esUUIDPorDefecto(id)) {

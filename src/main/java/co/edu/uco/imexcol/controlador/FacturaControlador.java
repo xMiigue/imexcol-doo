@@ -22,6 +22,7 @@ import co.edu.uco.imexcol.negocio.fachada.FacturaFachada;
 import co.edu.uco.imexcol.negocio.fachada.impl.FacturaFachadaImpl;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
 @CrossOrigin
@@ -60,7 +61,7 @@ public final class FacturaControlador {
         final var filtros = new FacturaDTO(UtilUUID.obtenerValorDefecto(id));
 
         final var resultados = fachada.consultar(filtros);
-        if (resultados.isEmpty()) {
+        if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
             final var respuestaNoEncontrado = Respuesta.<FacturaDTO>crearFallida();
             respuestaNoEncontrado.agregarMensaje(MensajesEnum.ERROR_USUARIO_FACTURA_NO_ENCONTRADA.getContenido());
             return new ResponseEntity<>(respuestaNoEncontrado, HttpStatus.NOT_FOUND);

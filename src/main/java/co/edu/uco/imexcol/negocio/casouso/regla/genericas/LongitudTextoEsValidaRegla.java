@@ -27,7 +27,7 @@ public final class LongitudTextoEsValidaRegla implements Regla {
     @Override
     public void ejecutar(final Object... datos) {
         UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
-        final var texto = (String) datos[POSICION_TEXTO];
+        final var texto = UtilTexto.obtenerValorDefecto((String) datos[POSICION_TEXTO]);
         final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
         final var longitudMinima = UtilNumerico.obtenerValorDefecto((Integer) datos[POSICION_LONGITUD_MINIMA]);
         final var longitudMaxima = UtilNumerico.obtenerValorDefecto((Integer) datos[POSICION_LONGITUD_MAXIMA]);
