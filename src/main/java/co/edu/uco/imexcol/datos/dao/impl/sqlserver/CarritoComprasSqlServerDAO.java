@@ -24,6 +24,16 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class CarritoComprasSqlServerDAO extends ConexionSql implements CarritoComprasDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_CLIENTE = 2;
+    private static final int POSICION_FECHA_CREACION = 3;
+    private static final int POSICION_ESTADO = 4;
+    private static final int POSICION_ACTUALIZAR_CLIENTE = 1;
+    private static final int POSICION_ACTUALIZAR_FECHA_CREACION = 2;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 3;
+    private static final int POSICION_ACTUALIZAR_ID = 4;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public CarritoComprasSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -34,10 +44,10 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CarritoComprasEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(CarritoComprasSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCliente().getId());
-            sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaCreacion())));
-            sentencia.setString(4, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setDate(POSICION_FECHA_CREACION, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaCreacion())));
+            sentencia.setString(POSICION_ESTADO, entidadSegura.getEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -53,10 +63,10 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new CarritoComprasEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(CarritoComprasSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCliente().getId());
-            sentencia.setDate(2, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaCreacion())));
-            sentencia.setString(3, entidadSegura.getEstado());
-            sentencia.setObject(4, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setDate(POSICION_ACTUALIZAR_FECHA_CREACION, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaCreacion())));
+            sentencia.setString(POSICION_ACTUALIZAR_ESTADO, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -71,7 +81,7 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(CarritoComprasSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

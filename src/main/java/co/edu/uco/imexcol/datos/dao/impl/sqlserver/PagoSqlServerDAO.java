@@ -24,6 +24,20 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class PagoSqlServerDAO extends ConexionSql implements PagoDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_PEDIDO = 2;
+    private static final int POSICION_METODO_PAGO = 3;
+    private static final int POSICION_MONTO = 4;
+    private static final int POSICION_FECHA_PAGO = 5;
+    private static final int POSICION_ESTADO = 6;
+    private static final int POSICION_ACTUALIZAR_PEDIDO = 1;
+    private static final int POSICION_ACTUALIZAR_METODO_PAGO = 2;
+    private static final int POSICION_ACTUALIZAR_MONTO = 3;
+    private static final int POSICION_ACTUALIZAR_FECHA_PAGO = 4;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 5;
+    private static final int POSICION_ACTUALIZAR_ID = 6;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public PagoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -34,12 +48,12 @@ public final class PagoSqlServerDAO extends ConexionSql implements PagoDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PagoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(PagoSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getPedido().getId());
-            sentencia.setObject(3, entidadSegura.getMetodoPago().getId());
-            sentencia.setDouble(4, entidadSegura.getMonto());
-            sentencia.setDate(5, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPago())));
-            sentencia.setString(6, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setObject(POSICION_METODO_PAGO, entidadSegura.getMetodoPago().getId());
+            sentencia.setDouble(POSICION_MONTO, entidadSegura.getMonto());
+            sentencia.setDate(POSICION_FECHA_PAGO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPago())));
+            sentencia.setString(POSICION_ESTADO, entidadSegura.getEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -55,12 +69,12 @@ public final class PagoSqlServerDAO extends ConexionSql implements PagoDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PagoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(PagoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getPedido().getId());
-            sentencia.setObject(2, entidadSegura.getMetodoPago().getId());
-            sentencia.setDouble(3, entidadSegura.getMonto());
-            sentencia.setDate(4, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPago())));
-            sentencia.setString(5, entidadSegura.getEstado());
-            sentencia.setObject(6, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_METODO_PAGO, entidadSegura.getMetodoPago().getId());
+            sentencia.setDouble(POSICION_ACTUALIZAR_MONTO, entidadSegura.getMonto());
+            sentencia.setDate(POSICION_ACTUALIZAR_FECHA_PAGO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPago())));
+            sentencia.setString(POSICION_ACTUALIZAR_ESTADO, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -75,7 +89,7 @@ public final class PagoSqlServerDAO extends ConexionSql implements PagoDAO {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(PagoSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

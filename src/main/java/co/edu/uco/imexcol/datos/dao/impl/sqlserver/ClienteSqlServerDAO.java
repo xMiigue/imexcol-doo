@@ -22,6 +22,22 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_NOMBRE = 2;
+    private static final int POSICION_APELLIDO = 3;
+    private static final int POSICION_CORREO_ELECTRONICO = 4;
+    private static final int POSICION_CONTRASENA = 5;
+    private static final int POSICION_TELEFONO = 6;
+    private static final int POSICION_ESTADO = 7;
+    private static final int POSICION_ACTUALIZAR_NOMBRE = 1;
+    private static final int POSICION_ACTUALIZAR_APELLIDO = 2;
+    private static final int POSICION_ACTUALIZAR_CORREO_ELECTRONICO = 3;
+    private static final int POSICION_ACTUALIZAR_CONTRASENA = 4;
+    private static final int POSICION_ACTUALIZAR_TELEFONO = 5;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 6;
+    private static final int POSICION_ACTUALIZAR_ID = 7;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public ClienteSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -32,13 +48,13 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ClienteEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setString(2, entidadSegura.getNombre());
-            sentencia.setString(3, entidadSegura.getApellido());
-            sentencia.setString(4, entidadSegura.getCorreoElectronico());
-            sentencia.setString(5, entidadSegura.getContrasena());
-            sentencia.setString(6, entidadSegura.getTelefono());
-            sentencia.setBoolean(7, entidadSegura.isEstado());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setString(POSICION_NOMBRE, entidadSegura.getNombre());
+            sentencia.setString(POSICION_APELLIDO, entidadSegura.getApellido());
+            sentencia.setString(POSICION_CORREO_ELECTRONICO, entidadSegura.getCorreoElectronico());
+            sentencia.setString(POSICION_CONTRASENA, entidadSegura.getContrasena());
+            sentencia.setString(POSICION_TELEFONO, entidadSegura.getTelefono());
+            sentencia.setBoolean(POSICION_ESTADO, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -54,13 +70,13 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ClienteEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ACTUALIZAR)) {
-            sentencia.setString(1, entidadSegura.getNombre());
-            sentencia.setString(2, entidadSegura.getApellido());
-            sentencia.setString(3, entidadSegura.getCorreoElectronico());
-            sentencia.setString(4, entidadSegura.getContrasena());
-            sentencia.setString(5, entidadSegura.getTelefono());
-            sentencia.setBoolean(6, entidadSegura.isEstado());
-            sentencia.setObject(7, entidadSegura.getId());
+            sentencia.setString(POSICION_ACTUALIZAR_NOMBRE, entidadSegura.getNombre());
+            sentencia.setString(POSICION_ACTUALIZAR_APELLIDO, entidadSegura.getApellido());
+            sentencia.setString(POSICION_ACTUALIZAR_CORREO_ELECTRONICO, entidadSegura.getCorreoElectronico());
+            sentencia.setString(POSICION_ACTUALIZAR_CONTRASENA, entidadSegura.getContrasena());
+            sentencia.setString(POSICION_ACTUALIZAR_TELEFONO, entidadSegura.getTelefono());
+            sentencia.setBoolean(POSICION_ACTUALIZAR_ESTADO, entidadSegura.isEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -75,7 +91,7 @@ public final class ClienteSqlServerDAO extends ConexionSql implements ClienteDAO
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(ClienteSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

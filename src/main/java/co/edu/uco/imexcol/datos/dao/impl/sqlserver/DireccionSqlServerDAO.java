@@ -22,6 +22,24 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class DireccionSqlServerDAO extends ConexionSql implements DireccionDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_CLIENTE = 2;
+    private static final int POSICION_CALLE = 3;
+    private static final int POSICION_CIUDAD = 4;
+    private static final int POSICION_DEPARTAMENTO = 5;
+    private static final int POSICION_CODIGO_POSTAL = 6;
+    private static final int POSICION_PAIS = 7;
+    private static final int POSICION_ES_PRINCIPAL = 8;
+    private static final int POSICION_ACTUALIZAR_CLIENTE = 1;
+    private static final int POSICION_ACTUALIZAR_CALLE = 2;
+    private static final int POSICION_ACTUALIZAR_CIUDAD = 3;
+    private static final int POSICION_ACTUALIZAR_DEPARTAMENTO = 4;
+    private static final int POSICION_ACTUALIZAR_CODIGO_POSTAL = 5;
+    private static final int POSICION_ACTUALIZAR_PAIS = 6;
+    private static final int POSICION_ACTUALIZAR_ES_PRINCIPAL = 7;
+    private static final int POSICION_ACTUALIZAR_ID = 8;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public DireccionSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -32,14 +50,14 @@ public final class DireccionSqlServerDAO extends ConexionSql implements Direccio
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new DireccionEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(DireccionSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCliente().getId());
-            sentencia.setString(3, entidadSegura.getCalle());
-            sentencia.setString(4, entidadSegura.getCiudad());
-            sentencia.setString(5, entidadSegura.getDepartamento());
-            sentencia.setString(6, entidadSegura.getCodigoPostal());
-            sentencia.setString(7, entidadSegura.getPais());
-            sentencia.setBoolean(8, entidadSegura.isEsPrincipal());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setString(POSICION_CALLE, entidadSegura.getCalle());
+            sentencia.setString(POSICION_CIUDAD, entidadSegura.getCiudad());
+            sentencia.setString(POSICION_DEPARTAMENTO, entidadSegura.getDepartamento());
+            sentencia.setString(POSICION_CODIGO_POSTAL, entidadSegura.getCodigoPostal());
+            sentencia.setString(POSICION_PAIS, entidadSegura.getPais());
+            sentencia.setBoolean(POSICION_ES_PRINCIPAL, entidadSegura.isEsPrincipal());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -55,14 +73,14 @@ public final class DireccionSqlServerDAO extends ConexionSql implements Direccio
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new DireccionEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(DireccionSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCliente().getId());
-            sentencia.setString(2, entidadSegura.getCalle());
-            sentencia.setString(3, entidadSegura.getCiudad());
-            sentencia.setString(4, entidadSegura.getDepartamento());
-            sentencia.setString(5, entidadSegura.getCodigoPostal());
-            sentencia.setString(6, entidadSegura.getPais());
-            sentencia.setBoolean(7, entidadSegura.isEsPrincipal());
-            sentencia.setObject(8, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setString(POSICION_ACTUALIZAR_CALLE, entidadSegura.getCalle());
+            sentencia.setString(POSICION_ACTUALIZAR_CIUDAD, entidadSegura.getCiudad());
+            sentencia.setString(POSICION_ACTUALIZAR_DEPARTAMENTO, entidadSegura.getDepartamento());
+            sentencia.setString(POSICION_ACTUALIZAR_CODIGO_POSTAL, entidadSegura.getCodigoPostal());
+            sentencia.setString(POSICION_ACTUALIZAR_PAIS, entidadSegura.getPais());
+            sentencia.setBoolean(POSICION_ACTUALIZAR_ES_PRINCIPAL, entidadSegura.isEsPrincipal());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -77,7 +95,7 @@ public final class DireccionSqlServerDAO extends ConexionSql implements Direccio
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(DireccionSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

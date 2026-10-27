@@ -21,6 +21,20 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class LineaPedidoSqlServerDAO extends ConexionSql implements LineaPedidoDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_PEDIDO = 2;
+    private static final int POSICION_PRODUCTO = 3;
+    private static final int POSICION_CANTIDAD = 4;
+    private static final int POSICION_PRECIO_UNITARIO = 5;
+    private static final int POSICION_SUBTOTAL = 6;
+    private static final int POSICION_ACTUALIZAR_PEDIDO = 1;
+    private static final int POSICION_ACTUALIZAR_PRODUCTO = 2;
+    private static final int POSICION_ACTUALIZAR_CANTIDAD = 3;
+    private static final int POSICION_ACTUALIZAR_PRECIO_UNITARIO = 4;
+    private static final int POSICION_ACTUALIZAR_SUBTOTAL = 5;
+    private static final int POSICION_ACTUALIZAR_ID = 6;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public LineaPedidoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -31,12 +45,12 @@ public final class LineaPedidoSqlServerDAO extends ConexionSql implements LineaP
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new LineaPedidoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(LineaPedidoSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getPedido().getId());
-            sentencia.setObject(3, entidadSegura.getProducto().getId());
-            sentencia.setInt(4, entidadSegura.getCantidad());
-            sentencia.setDouble(5, entidadSegura.getPrecioUnitario());
-            sentencia.setDouble(6, entidadSegura.getSubtotal());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setObject(POSICION_PRODUCTO, entidadSegura.getProducto().getId());
+            sentencia.setInt(POSICION_CANTIDAD, entidadSegura.getCantidad());
+            sentencia.setDouble(POSICION_PRECIO_UNITARIO, entidadSegura.getPrecioUnitario());
+            sentencia.setDouble(POSICION_SUBTOTAL, entidadSegura.getSubtotal());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -52,12 +66,12 @@ public final class LineaPedidoSqlServerDAO extends ConexionSql implements LineaP
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new LineaPedidoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(LineaPedidoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getPedido().getId());
-            sentencia.setObject(2, entidadSegura.getProducto().getId());
-            sentencia.setInt(3, entidadSegura.getCantidad());
-            sentencia.setDouble(4, entidadSegura.getPrecioUnitario());
-            sentencia.setDouble(5, entidadSegura.getSubtotal());
-            sentencia.setObject(6, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_PRODUCTO, entidadSegura.getProducto().getId());
+            sentencia.setInt(POSICION_ACTUALIZAR_CANTIDAD, entidadSegura.getCantidad());
+            sentencia.setDouble(POSICION_ACTUALIZAR_PRECIO_UNITARIO, entidadSegura.getPrecioUnitario());
+            sentencia.setDouble(POSICION_ACTUALIZAR_SUBTOTAL, entidadSegura.getSubtotal());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -72,7 +86,7 @@ public final class LineaPedidoSqlServerDAO extends ConexionSql implements LineaP
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(LineaPedidoSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

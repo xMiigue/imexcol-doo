@@ -26,6 +26,22 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_PEDIDO = 2;
+    private static final int POSICION_FECHA_ENVIO = 3;
+    private static final int POSICION_FECHA_ENTREGA = 4;
+    private static final int POSICION_TRANSPORTADORA = 5;
+    private static final int POSICION_NUMERO_GUIA = 6;
+    private static final int POSICION_ESTADO = 7;
+    private static final int POSICION_ACTUALIZAR_PEDIDO = 1;
+    private static final int POSICION_ACTUALIZAR_FECHA_ENVIO = 2;
+    private static final int POSICION_ACTUALIZAR_FECHA_ENTREGA = 3;
+    private static final int POSICION_ACTUALIZAR_TRANSPORTADORA = 4;
+    private static final int POSICION_ACTUALIZAR_NUMERO_GUIA = 5;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 6;
+    private static final int POSICION_ACTUALIZAR_ID = 7;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public EnvioSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -36,13 +52,13 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new EnvioEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getPedido().getId());
-            sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
-            asignarFechaEntrega(sentencia, 4, entidadSegura.getFechaEntrega());
-            sentencia.setString(5, entidadSegura.getTransportadora());
-            sentencia.setString(6, entidadSegura.getNumeroGuia());
-            sentencia.setString(7, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setDate(POSICION_FECHA_ENVIO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
+            asignarFechaEntrega(sentencia, POSICION_FECHA_ENTREGA, entidadSegura.getFechaEntrega());
+            sentencia.setString(POSICION_TRANSPORTADORA, entidadSegura.getTransportadora());
+            sentencia.setString(POSICION_NUMERO_GUIA, entidadSegura.getNumeroGuia());
+            sentencia.setString(POSICION_ESTADO, entidadSegura.getEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -58,13 +74,13 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new EnvioEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getPedido().getId());
-            sentencia.setDate(2, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
-            asignarFechaEntrega(sentencia, 3, entidadSegura.getFechaEntrega());
-            sentencia.setString(4, entidadSegura.getTransportadora());
-            sentencia.setString(5, entidadSegura.getNumeroGuia());
-            sentencia.setString(6, entidadSegura.getEstado());
-            sentencia.setObject(7, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_PEDIDO, entidadSegura.getPedido().getId());
+            sentencia.setDate(POSICION_ACTUALIZAR_FECHA_ENVIO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaEnvio())));
+            asignarFechaEntrega(sentencia, POSICION_ACTUALIZAR_FECHA_ENTREGA, entidadSegura.getFechaEntrega());
+            sentencia.setString(POSICION_ACTUALIZAR_TRANSPORTADORA, entidadSegura.getTransportadora());
+            sentencia.setString(POSICION_ACTUALIZAR_NUMERO_GUIA, entidadSegura.getNumeroGuia());
+            sentencia.setString(POSICION_ACTUALIZAR_ESTADO, entidadSegura.getEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -79,7 +95,7 @@ public final class EnvioSqlServerDAO extends ConexionSql implements EnvioDAO {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(EnvioSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,

@@ -25,6 +25,20 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_CLIENTE = 2;
+    private static final int POSICION_FECHA_PEDIDO = 3;
+    private static final int POSICION_TOTAL = 4;
+    private static final int POSICION_ESTADO = 5;
+    private static final int POSICION_DIRECCION = 6;
+    private static final int POSICION_ACTUALIZAR_CLIENTE = 1;
+    private static final int POSICION_ACTUALIZAR_FECHA_PEDIDO = 2;
+    private static final int POSICION_ACTUALIZAR_TOTAL = 3;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 4;
+    private static final int POSICION_ACTUALIZAR_DIRECCION = 5;
+    private static final int POSICION_ACTUALIZAR_ID = 6;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public PedidoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -35,12 +49,12 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PedidoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(PedidoSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCliente().getId());
-            sentencia.setDate(3, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
-            sentencia.setDouble(4, entidadSegura.getTotal());
-            sentencia.setString(5, entidadSegura.getEstado());
-            asignarDireccion(sentencia, 6, entidadSegura.getDireccion().getId());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setDate(POSICION_FECHA_PEDIDO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
+            sentencia.setDouble(POSICION_TOTAL, entidadSegura.getTotal());
+            sentencia.setString(POSICION_ESTADO, entidadSegura.getEstado());
+            asignarDireccion(sentencia, POSICION_DIRECCION, entidadSegura.getDireccion().getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -56,12 +70,12 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new PedidoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(PedidoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCliente().getId());
-            sentencia.setDate(2, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
-            sentencia.setDouble(3, entidadSegura.getTotal());
-            sentencia.setString(4, entidadSegura.getEstado());
-            asignarDireccion(sentencia, 5, entidadSegura.getDireccion().getId());
-            sentencia.setObject(6, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_CLIENTE, entidadSegura.getCliente().getId());
+            sentencia.setDate(POSICION_ACTUALIZAR_FECHA_PEDIDO, Date.valueOf(UtilFecha.obtenerValorDefecto(entidadSegura.getFechaPedido())));
+            sentencia.setDouble(POSICION_ACTUALIZAR_TOTAL, entidadSegura.getTotal());
+            sentencia.setString(POSICION_ACTUALIZAR_ESTADO, entidadSegura.getEstado());
+            asignarDireccion(sentencia, POSICION_ACTUALIZAR_DIRECCION, entidadSegura.getDireccion().getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -76,7 +90,7 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(PedidoSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
@@ -119,7 +133,7 @@ public final class PedidoSqlServerDAO extends ConexionSql implements PedidoDAO {
     private static void asignarDireccion(final PreparedStatement sentencia, final int posicion,
             final UUID idDireccion) throws SQLException {
         if (UtilUUID.esUUIDPorDefecto(idDireccion)) {
-            sentencia.setNull(posicion, Types.VARCHAR);
+            sentencia.setNull(posicion, Types.CHAR);
         } else {
             sentencia.setObject(posicion, idDireccion);
         }

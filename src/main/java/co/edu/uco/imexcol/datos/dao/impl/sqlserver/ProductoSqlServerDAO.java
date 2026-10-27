@@ -22,6 +22,24 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class ProductoSqlServerDAO extends ConexionSql implements ProductoDAO {
 
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_CATEGORIA = 2;
+    private static final int POSICION_NOMBRE = 3;
+    private static final int POSICION_DESCRIPCION = 4;
+    private static final int POSICION_PRECIO = 5;
+    private static final int POSICION_STOCK = 6;
+    private static final int POSICION_IMAGEN_URL = 7;
+    private static final int POSICION_ESTADO = 8;
+    private static final int POSICION_ACTUALIZAR_CATEGORIA = 1;
+    private static final int POSICION_ACTUALIZAR_NOMBRE = 2;
+    private static final int POSICION_ACTUALIZAR_DESCRIPCION = 3;
+    private static final int POSICION_ACTUALIZAR_PRECIO = 4;
+    private static final int POSICION_ACTUALIZAR_STOCK = 5;
+    private static final int POSICION_ACTUALIZAR_IMAGEN_URL = 6;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 7;
+    private static final int POSICION_ACTUALIZAR_ID = 8;
+    private static final int POSICION_ID_ELIMINAR = 1;
+
     public ProductoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
@@ -32,14 +50,14 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ProductoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.CREAR)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCategoria().getId());
-            sentencia.setString(3, entidadSegura.getNombre());
-            sentencia.setString(4, entidadSegura.getDescripcion());
-            sentencia.setDouble(5, entidadSegura.getPrecio());
-            sentencia.setInt(6, entidadSegura.getStock());
-            sentencia.setString(7, entidadSegura.getImagenUrl());
-            sentencia.setBoolean(8, entidadSegura.isEstado());
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_CATEGORIA, entidadSegura.getCategoria().getId());
+            sentencia.setString(POSICION_NOMBRE, entidadSegura.getNombre());
+            sentencia.setString(POSICION_DESCRIPCION, entidadSegura.getDescripcion());
+            sentencia.setDouble(POSICION_PRECIO, entidadSegura.getPrecio());
+            sentencia.setInt(POSICION_STOCK, entidadSegura.getStock());
+            sentencia.setString(POSICION_IMAGEN_URL, entidadSegura.getImagenUrl());
+            sentencia.setBoolean(POSICION_ESTADO, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -55,14 +73,14 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ProductoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCategoria().getId());
-            sentencia.setString(2, entidadSegura.getNombre());
-            sentencia.setString(3, entidadSegura.getDescripcion());
-            sentencia.setDouble(4, entidadSegura.getPrecio());
-            sentencia.setInt(5, entidadSegura.getStock());
-            sentencia.setString(6, entidadSegura.getImagenUrl());
-            sentencia.setBoolean(7, entidadSegura.isEstado());
-            sentencia.setObject(8, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_CATEGORIA, entidadSegura.getCategoria().getId());
+            sentencia.setString(POSICION_ACTUALIZAR_NOMBRE, entidadSegura.getNombre());
+            sentencia.setString(POSICION_ACTUALIZAR_DESCRIPCION, entidadSegura.getDescripcion());
+            sentencia.setDouble(POSICION_ACTUALIZAR_PRECIO, entidadSegura.getPrecio());
+            sentencia.setInt(POSICION_ACTUALIZAR_STOCK, entidadSegura.getStock());
+            sentencia.setString(POSICION_ACTUALIZAR_IMAGEN_URL, entidadSegura.getImagenUrl());
+            sentencia.setBoolean(POSICION_ACTUALIZAR_ESTADO, entidadSegura.isEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -77,7 +95,7 @@ public final class ProductoSqlServerDAO extends ConexionSql implements ProductoD
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(ProductoSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
