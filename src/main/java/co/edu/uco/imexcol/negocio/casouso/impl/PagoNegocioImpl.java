@@ -10,10 +10,14 @@ import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsVa
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarNumeroEsMayorACero;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
+import co.edu.uco.imexcol.negocio.casouso.validador.metodopago.ValidarMetodoPagoExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.pago.ValidarEstadoPagoEsValido;
+import co.edu.uco.imexcol.negocio.casouso.validador.pago.ValidarPagoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
 import co.edu.uco.imexcol.negocio.dominio.PagoDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class PagoNegocioImpl implements PagoNegocio {
@@ -36,22 +40,30 @@ public final class PagoNegocioImpl implements PagoNegocio {
     public void registrar(final PagoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PagoDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerPagoDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarPedidoExista(dominioSeguro);
+        asegurarMetodoPagoExista(dominioSeguro);
+        asegurarMontoMayorACero(dominioSeguro);
+        asegurarEstadoValido(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final PagoDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new PagoDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "pago");
         validarDatosComunes(dominioSeguro);
-        fabrica.obtenerPagoDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarPagoExista(dominioSeguro.getId());
+        asegurarPedidoExista(dominioSeguro);
+        asegurarMetodoPagoExista(dominioSeguro);
+        asegurarMontoMayorACero(dominioSeguro);
+        asegurarEstadoValido(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "pago");
-        fabrica.obtenerPagoDAO().eliminar(id);
+        asegurarPagoExista(id);
+        borrar(id);
     }
 
     @Override
@@ -68,10 +80,43 @@ public final class PagoNegocioImpl implements PagoNegocio {
         ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getMetodoPago().getId(),
                 "método de pago asociado al pago");
 
-        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getMonto(), "monto del pago");
         ValidarFechaNoEsValorPorDefecto.ejecutarValidacion(dominio.getFechaPago(), "fecha del pago");
+    }
 
+    private void asegurarPedidoExista(final PagoDominio dominio) {
+        ValidarPedidoExistePorId.ejecutarValidacion(dominio.getPedido().getId(), fabrica);
+    }
+
+    private void asegurarMetodoPagoExista(final PagoDominio dominio) {
+        ValidarMetodoPagoExistePorId.ejecutarValidacion(dominio.getMetodoPago().getId(), fabrica);
+    }
+
+    private void asegurarMontoMayorACero(final PagoDominio dominio) {
+        ValidarNumeroEsMayorACero.ejecutarValidacion(dominio.getMonto(), "monto del pago");
+    }
+
+    private void asegurarEstadoValido(final PagoDominio dominio) {
         ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getEstado(), "estado del pago");
         ValidarEstadoPagoEsValido.ejecutarValidacion(dominio.getEstado());
+    }
+
+    private void asegurarPagoExista(final UUID id) {
+        ValidarPagoExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final PagoDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final PagoDominio dominio) {
+        fabrica.obtenerPagoDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final PagoDominio dominio) {
+        fabrica.obtenerPagoDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerPagoDAO().eliminar(id);
     }
 }

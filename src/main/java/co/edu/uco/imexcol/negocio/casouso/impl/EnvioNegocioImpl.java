@@ -6,15 +6,20 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.EnvioEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.EnvioNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEnvioExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.envio.ValidarEstadoEnvioEsValido;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarFechaNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoEstaPagado;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.pedido.ValidarPedidoNoTieneEnvioActivo;
 import co.edu.uco.imexcol.negocio.dominio.EnvioDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
 import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class EnvioNegocioImpl implements EnvioNegocio {
@@ -38,23 +43,27 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new EnvioDominio());
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        fabrica.obtenerEnvioDAO().acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarPedidoExista(dominioSeguro);
+        asegurarPedidoEstePagado(dominioSeguro);
+        asegurarPedidoNoTengaOtroEnvioActivo(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final EnvioDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new EnvioDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "envío");
         validarDatosComunes(dominioSeguro);
         validarCoherenciaFechas(dominioSeguro);
-        fabrica.obtenerEnvioDAO().actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarEnvioExista(dominioSeguro.getId());
+        asegurarPedidoExista(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "envío");
-        fabrica.obtenerEnvioDAO().eliminar(id);
+        asegurarEnvioExista(id);
+        borrar(id);
     }
 
     @Override
@@ -94,5 +103,37 @@ public final class EnvioNegocioImpl implements EnvioNegocio {
                     MensajesEnum.ERROR_TECNICO_ENVIO_FECHA_ENTREGA_ANTERIOR_A_FECHA_ENVIO.getContenido()
                             .formatted(dominio.getFechaEntrega(), dominio.getFechaEnvio()));
         }
+    }
+
+    private void asegurarPedidoExista(final EnvioDominio dominio) {
+        ValidarPedidoExistePorId.ejecutarValidacion(dominio.getPedido().getId(), fabrica);
+    }
+
+    private void asegurarPedidoEstePagado(final EnvioDominio dominio) {
+        ValidarPedidoEstaPagado.ejecutarValidacion(dominio.getPedido().getId(), fabrica);
+    }
+
+    private void asegurarPedidoNoTengaOtroEnvioActivo(final EnvioDominio dominio) {
+        ValidarPedidoNoTieneEnvioActivo.ejecutarValidacion(dominio.getPedido().getId(), dominio.getId(), fabrica);
+    }
+
+    private void asegurarEnvioExista(final UUID id) {
+        ValidarEnvioExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final EnvioDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void guardar(final EnvioDominio dominio) {
+        fabrica.obtenerEnvioDAO().acceder(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final EnvioDominio dominio) {
+        fabrica.obtenerEnvioDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerEnvioDAO().eliminar(id);
     }
 }

@@ -172,6 +172,16 @@ public enum MensajesEnum {
     ERROR_TECNICO_LINEA_PEDIDO_PEDIDO_NO_ENTREGADO(
             "La línea id=%s pertenece al pedido id=%s en estado %s; se requiere el estado %s."),
 
+    ERROR_USUARIO_PEDIDO_NO_PAGADO(
+            "El pedido aún no tiene un pago aprobado, por lo que no puede despacharse."),
+    ERROR_TECNICO_PEDIDO_NO_PAGADO(
+            "El pedido id=%s no tiene ningún pago en estado %s."),
+
+    ERROR_USUARIO_PEDIDO_CON_ENVIO_ACTIVO(
+            "El pedido ya tiene un envío activo. No es posible registrar otro."),
+    ERROR_TECNICO_PEDIDO_CON_ENVIO_ACTIVO(
+            "El pedido id=%s ya tiene el envío id=%s en estado %s."),
+
     ERROR_USUARIO_CONEXION_SQL_NULA(
             "Se ha presentado un problema con la conexión a la base de datos. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_CONEXION_SQL_NULA(
