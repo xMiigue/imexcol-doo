@@ -626,7 +626,7 @@ public enum MensajesEnum {
             "El pago id=%s ya está asociado a la factura id=%s."),
 
     ERROR_USUARIO_PEDIDO_CON_FACTURA(
-            "El pedido ya tiene una factura emitida."),
+            "El pedido ya tiene una factura emitida, por lo que no puede volver a facturarse ni eliminarse."),
     ERROR_TECNICO_PEDIDO_CON_FACTURA(
             "El pedido id=%s ya está asociado a la factura id=%s."),
 
