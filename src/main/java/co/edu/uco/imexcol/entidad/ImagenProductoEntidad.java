@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.entidad;
 
 import java.util.UUID;
 
-import co.edu.uco.imexcol.transversal.UtilBooleano;
+import co.edu.uco.imexcol.transversal.UtilNumerico;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
@@ -11,33 +11,29 @@ public final class ImagenProductoEntidad {
 
     private UUID id;
     private ProductoEntidad producto;
-    private String url;
-    private String descripcion;
-    private boolean esPrincipal;
+    private String foto;
+    private int ordenVisualizacion;
 
     public ImagenProductoEntidad() {
         setId(UtilUUID.obtenerValorPorDefecto());
         setProducto(new ProductoEntidad());
-        setUrl(UtilTexto.VACIO);
-        setDescripcion(UtilTexto.VACIO);
-        setEsPrincipal(UtilBooleano.obtenerValorPorDefecto());
+        setFoto(UtilTexto.VACIO);
+        setOrdenVisualizacion(UtilNumerico.obtenerValorPorDefectoInt());
     }
 
     public ImagenProductoEntidad(final UUID id) {
         setId(id);
         setProducto(new ProductoEntidad());
-        setUrl(UtilTexto.VACIO);
-        setDescripcion(UtilTexto.VACIO);
-        setEsPrincipal(UtilBooleano.obtenerValorPorDefecto());
+        setFoto(UtilTexto.VACIO);
+        setOrdenVisualizacion(UtilNumerico.obtenerValorPorDefectoInt());
     }
 
-    public ImagenProductoEntidad(final UUID id, final ProductoEntidad producto, final String url,
-                                 final String descripcion, final boolean esPrincipal) {
+    public ImagenProductoEntidad(final UUID id, final ProductoEntidad producto, final String foto,
+                                 final int ordenVisualizacion) {
         setId(id);
         setProducto(producto);
-        setUrl(url);
-        setDescripcion(descripcion);
-        setEsPrincipal(esPrincipal);
+        setFoto(foto);
+        setOrdenVisualizacion(ordenVisualizacion);
     }
 
     public UUID getId() {
@@ -56,27 +52,19 @@ public final class ImagenProductoEntidad {
         this.producto = UtilObjeto.obtenerValorDefecto(producto, new ProductoEntidad());
     }
 
-    public String getUrl() {
-        return url;
+    public String getFoto() {
+        return foto;
     }
 
-    public void setUrl(final String url) {
-        this.url = UtilTexto.aplicarTrim(url);
+    public void setFoto(final String foto) {
+        this.foto = UtilTexto.aplicarTrim(foto);
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public int getOrdenVisualizacion() {
+        return ordenVisualizacion;
     }
 
-    public void setDescripcion(final String descripcion) {
-        this.descripcion = UtilTexto.aplicarTrim(descripcion);
-    }
-
-    public boolean isEsPrincipal() {
-        return esPrincipal;
-    }
-
-    public void setEsPrincipal(final boolean esPrincipal) {
-        this.esPrincipal = esPrincipal;
+    public void setOrdenVisualizacion(final int ordenVisualizacion) {
+        this.ordenVisualizacion = ordenVisualizacion;
     }
 }

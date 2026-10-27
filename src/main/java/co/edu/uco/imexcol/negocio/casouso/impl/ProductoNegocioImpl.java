@@ -58,6 +58,7 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
     public void eliminar(final UUID id) {
         asegurarProductoExista(id);
         asegurarProductoNoTengaPedidosAsociados(id);
+        borrarImagenes(id);
         borrar(id);
     }
 
@@ -107,6 +108,10 @@ public final class ProductoNegocioImpl implements ProductoNegocio {
 
     private void modificar(final ProductoDominio dominio) {
         fabrica.obtenerProductoDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrarImagenes(final UUID id) {
+        fabrica.obtenerImagenProductoDAO().eliminarPorProducto(id);
     }
 
     private void borrar(final UUID id) {

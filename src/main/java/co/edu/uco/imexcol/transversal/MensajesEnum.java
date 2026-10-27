@@ -734,6 +734,53 @@ public enum MensajesEnum {
     ERROR_TECNICO_RESENA_NO_PERTENECE_AL_CLIENTE(
             "La reseña id=%s pertenece al cliente id=%s y no al cliente id=%s."),
 
+    EXITO_IMAGEN_PRODUCTO_CONSULTA(
+            "Imágenes del producto consultadas satisfactoriamente."),
+
+    EXITO_IMAGEN_PRODUCTO_REGISTRO(
+            "Imagen agregada al producto satisfactoriamente."),
+
+    EXITO_IMAGEN_PRODUCTO_ACTUALIZACION(
+            "Imagen del producto modificada satisfactoriamente."),
+
+    EXITO_IMAGEN_PRODUCTO_ELIMINACION(
+            "Imagen del producto eliminada satisfactoriamente."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_NO_ENCONTRADA(
+            "La imagen solicitada no se encuentra registrada."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_NO_ENCONTRADA(
+            "No existe un registro de imagen de producto con id=%s."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_EXTENSION_NO_PERMITIDA(
+            "El formato del archivo no es permitido. Use una de estas extensiones: %s."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_EXTENSION_NO_PERMITIDA(
+            "La foto [%s] no termina en una extensión permitida [%s]."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_ORDEN_FUERA_DE_RANGO(
+            "El orden de visualización debe estar entre %s y %s."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_ORDEN_FUERA_DE_RANGO(
+            "ordenVisualizacion=%s está fuera del rango permitido [%s, %s]."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_ORDEN_OCUPADO(
+            "El orden de visualización ya está ocupado por otra imagen del producto."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_ORDEN_OCUPADO(
+            "El producto id=%s ya tiene la imagen id=%s con ordenVisualizacion=%s."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_FOTO_DUPLICADA(
+            "Ya existe una imagen registrada con esa ruta."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_FOTO_DUPLICADA(
+            "La foto [%s] ya está registrada en la imagen id=%s."),
+
+    ERROR_USUARIO_IMAGEN_PRODUCTO_NO_PERTENECE_AL_PRODUCTO(
+            "La imagen no pertenece al producto indicado."),
+    ERROR_TECNICO_IMAGEN_PRODUCTO_NO_PERTENECE_AL_PRODUCTO(
+            "La imagen id=%s pertenece al producto id=%s y no al producto id=%s."),
+
+    ERROR_USUARIO_PRODUCTO_DEBE_CONSERVAR_IMAGEN(
+            "No se puede eliminar la imagen porque el producto debe conservar al menos una."),
+    ERROR_TECNICO_PRODUCTO_DEBE_CONSERVAR_IMAGEN(
+            "El producto id=%s tiene %s imagen(es); el mínimo que debe conservar es %s."),
+
     ERROR_USUARIO_INESPERADO(
             "Se ha presentado un problema INESPERADO tratando de llevar a cabo la operación deseada. Por favor intente de nuevo y si el problema persiste contacte al administrador del sistema."),
     ERROR_TECNICO_INESPERADO(

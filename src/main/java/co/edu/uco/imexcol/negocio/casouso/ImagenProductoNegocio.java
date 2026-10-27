@@ -11,7 +11,7 @@ public interface ImagenProductoNegocio {
 
     void actualizar(ImagenProductoDominio dominio);
 
-    void eliminar(UUID id);
+    void eliminar(UUID idProducto, UUID idImagen);
 
-    List<ImagenProductoDominio> consultar(ImagenProductoDominio filtros);
+    List<ImagenProductoDominio> consultarPorProducto(UUID idProducto);
 }

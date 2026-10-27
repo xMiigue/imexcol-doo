@@ -3,9 +3,9 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.dto.ImagenProductoDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.ImagenProductoDTOAssembler;
-import co.edu.uco.imexcol.negocio.casouso.ImagenProductoNegocio;
 import co.edu.uco.imexcol.negocio.casouso.impl.ImagenProductoNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.ImagenProductoFachada;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -15,63 +15,92 @@ import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 public final class ImagenProductoFachadaImpl implements ImagenProductoFachada {
 
-    private final ImagenProductoNegocio negocio;
     private final ImagenProductoDTOAssembler ensamblador;
 
     public ImagenProductoFachadaImpl() {
         super();
-        this.negocio = new ImagenProductoNegocioImpl();
         this.ensamblador = ImagenProductoDTOAssembler.obtenerInstancia();
     }
 
     @Override
     public void registrar(final ImagenProductoDTO dto) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ImagenProductoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new ImagenProductoNegocioImpl(fabrica);
             negocio.registrar(dominio);
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
     public void actualizar(final ImagenProductoDTO dto) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
+            fabrica.iniciarTransaccion();
             final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new ImagenProductoDTO());
             final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
+            final var negocio = new ImagenProductoNegocioImpl(fabrica);
             negocio.actualizar(dominio);
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
-    public void eliminar(final UUID id) {
+    public void eliminar(final UUID idProducto, final UUID idImagen) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
-            negocio.eliminar(id);
+            fabrica.iniciarTransaccion();
+            final var negocio = new ImagenProductoNegocioImpl(fabrica);
+            negocio.eliminar(idProducto, idImagen);
+            fabrica.confirmarTransaccion();
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 
     @Override
-    public List<ImagenProductoDTO> consultar(final ImagenProductoDTO filtros) {
+    public List<ImagenProductoDTO> consultarPorProducto(final UUID idProducto) {
+        final var fabrica = FabricaDAO.obtenerFabrica();
         try {
-            final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new ImagenProductoDTO());
-            final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var dominios = negocio.consultar(dominioFiltro);
-            return ensamblador.ensamblarDTO(dominios);
+            fabrica.iniciarTransaccion();
+            final var negocio = new ImagenProductoNegocioImpl(fabrica);
+            final var dominios = negocio.consultarPorProducto(idProducto);
+            final var resultado = ensamblador.ensamblarDTO(dominios);
+            fabrica.confirmarTransaccion();
+            return resultado;
         } catch (final ImexcolException excepcion) {
+            fabrica.revertirTransaccion();
             throw excepcion;
         } catch (final Exception excepcion) {
+            fabrica.revertirTransaccion();
             throw envolverErrorInesperado(excepcion);
+        } finally {
+            fabrica.cerrarConexion();
         }
     }
 

@@ -272,6 +272,25 @@ BEGIN
 END;
 
 -- ------------------------------------------------------------
+-- Tabla: imex_imagen_producto (FK -> imex_producto)
+-- ------------------------------------------------------------
+IF OBJECT_ID(N'dbo.imex_imagen_producto', N'U') IS NULL
+BEGIN
+    CREATE TABLE dbo.imex_imagen_producto (
+        id                  UNIQUEIDENTIFIER NOT NULL,
+        producto_id         UNIQUEIDENTIFIER NOT NULL,
+        foto                NVARCHAR(255)    NOT NULL,
+        orden_visualizacion INT              NOT NULL,
+        CONSTRAINT pk_imex_imagen_producto PRIMARY KEY (id),
+        CONSTRAINT fk_imex_imagen_producto_producto
+            FOREIGN KEY (producto_id) REFERENCES dbo.imex_producto (id),
+        CONSTRAINT uq_imex_imagen_producto_foto UNIQUE (foto),
+        CONSTRAINT uq_imex_imagen_producto_orden UNIQUE (producto_id, orden_visualizacion),
+        CONSTRAINT chk_imex_imagen_producto_orden CHECK (orden_visualizacion BETWEEN 1 AND 20)
+    );
+END;
+
+-- ------------------------------------------------------------
 -- Tabla: imex_resena (FK -> imex_cliente, imex_producto)
 -- ------------------------------------------------------------
 IF OBJECT_ID(N'dbo.imex_resena', N'U') IS NULL
