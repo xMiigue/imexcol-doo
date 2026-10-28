@@ -2,6 +2,7 @@ package co.edu.uco.imexcol.transversal;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 public final class UtilFecha {
@@ -9,6 +10,7 @@ public final class UtilFecha {
     private static final int ANIO_POR_DEFECTO = 1;
     private static final int MES_POR_DEFECTO = 1;
     private static final int DIA_POR_DEFECTO = 1;
+    private static final ZoneId ZONA_HORARIA = ZoneId.systemDefault();
 
     private UtilFecha() {
         super();
@@ -23,7 +25,7 @@ public final class UtilFecha {
     }
 
     public static LocalDate obtenerFechaActual() {
-        return LocalDate.now();
+        return LocalDate.now(ZONA_HORARIA);
     }
 
     public static boolean esFechaPorDefecto(final LocalDate fecha) {
@@ -63,7 +65,7 @@ public final class UtilFecha {
     }
 
     public static LocalDateTime obtenerFechaHoraActual() {
-        return truncarASegundos(LocalDateTime.now());
+        return truncarASegundos(LocalDateTime.now(ZONA_HORARIA));
     }
 
     public static LocalDateTime truncarASegundos(final LocalDateTime valor) {
