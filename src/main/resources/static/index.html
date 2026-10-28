@@ -217,8 +217,10 @@
                         <p class="seccion-subtitulo">Productos disponibles en nuestro inventario.</p>
                     </header>
                     <div class="catalogo-filtros">
+                        <label for="catalogo-buscar" class="solo-lector-pantalla">Buscar producto</label>
                         <input type="text" id="catalogo-buscar" class="catalogo-input"
                                placeholder="Buscar producto..." autocomplete="off">
+                        <label for="catalogo-filtro-categoria" class="solo-lector-pantalla">Filtrar por categoría</label>
                         <select id="catalogo-filtro-categoria" class="catalogo-select">
                             <option value="">Todas las categorías</option>
                         </select>
@@ -283,7 +285,7 @@
                     <p class="seccion-subtitulo">Confirma tus datos para procesar el pedido.</p>
                 </header>
 
-                <div id="checkout-resultado" class="checkout-resultado oculto" role="status" aria-live="polite">
+                <div id="checkout-resultado" class="checkout-resultado oculto" aria-live="polite">
                     <p id="checkout-resultado-mensaje"></p>
                     <button id="btn-ver-mis-pedidos" type="button" class="boton boton-secundario oculto">
                         Ver mis pedidos
