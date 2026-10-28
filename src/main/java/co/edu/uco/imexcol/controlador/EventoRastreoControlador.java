@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,6 @@ import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/envios/{idEnvio}/eventos-rastreo")
 public final class EventoRastreoControlador {

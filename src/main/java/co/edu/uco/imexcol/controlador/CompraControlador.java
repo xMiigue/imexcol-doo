@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +16,6 @@ import co.edu.uco.imexcol.negocio.fachada.CompraFachada;
 import co.edu.uco.imexcol.negocio.fachada.impl.CompraFachadaImpl;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/compras")
 public final class CompraControlador {

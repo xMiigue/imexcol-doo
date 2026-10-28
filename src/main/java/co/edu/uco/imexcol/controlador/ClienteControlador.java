@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +24,6 @@ import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/clientes")
 public final class ClienteControlador {
