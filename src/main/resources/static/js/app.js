@@ -47,6 +47,10 @@ function mostrarNotificacion(mensaje, tipo) {
     }, 4500);
 }
 
+function notificarErrorInesperado(error) {
+    mostrarNotificacion(error.message || 'Ocurrió un error inesperado.', 'error');
+}
+
 function extraerMensaje(respuesta, predeterminado) {
     if (respuesta && Array.isArray(respuesta.mensajes) && respuesta.mensajes.length > 0) {
         return respuesta.mensajes.join(' ');
@@ -136,17 +140,17 @@ function cambiarVista(vista) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (vista === 'mis-pedidos') {
-        cargarMisPedidos();
+        cargarMisPedidos().catch(notificarErrorInesperado);
     } else if (vista === 'mis-direcciones') {
-        cargarMisDirecciones();
+        cargarMisDirecciones().catch(notificarErrorInesperado);
     } else if (vista === 'admin-pedidos') {
-        cargarPedidosAdmin();
+        cargarPedidosAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-clientes') {
-        cargarClientesAdmin();
+        cargarClientesAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-pagos') {
-        cargarPagosAdmin();
+        cargarPagosAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-envios') {
-        cargarEnviosAdmin();
+        cargarEnviosAdmin().catch(notificarErrorInesperado);
     }
 }
 
@@ -404,7 +408,7 @@ function irACheckout() {
         return;
     }
     cambiarVista('checkout');
-    prepararCheckout();
+    prepararCheckout().catch(notificarErrorInesperado);
 }
 
 function calcularTotalCarrito() {
@@ -670,21 +674,18 @@ async function obtenerCarritoActivoServidor() {
 
 async function reemplazarItemsCarritoServidor(idCarrito) {
     const respuesta = await peticionApi(`${API.itemsCarrito}?idCarrito=${idCarrito}`);
-    for (const itemGuardado of (respuesta.datos || [])) {
-        await peticionApi(`${API.itemsCarrito}/${itemGuardado.id}`, { method: 'DELETE' });
-    }
-    for (const item of estado.carrito) {
-        await peticionApi(API.itemsCarrito, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                carrito: { id: idCarrito },
-                producto: { id: item.producto.id },
-                cantidad: item.cantidad,
-                precioUnitario: item.producto.precio
-            })
-        });
-    }
+    await Promise.all((respuesta.datos || []).map(itemGuardado =>
+        peticionApi(`${API.itemsCarrito}/${itemGuardado.id}`, { method: 'DELETE' })));
+    await Promise.all(estado.carrito.map(item => peticionApi(API.itemsCarrito, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            carrito: { id: idCarrito },
+            producto: { id: item.producto.id },
+            cantidad: item.cantidad,
+            precioUnitario: item.producto.precio
+        })
+    })));
 }
 
 function finalizarCompraExitosa(resultado) {
@@ -754,7 +755,7 @@ function renderizarMisPedidos() {
 }
 
 function textoDireccionPedido(pedido) {
-    const idDireccion = pedido.direccion && pedido.direccion.id;
+    const idDireccion = pedido.direccion?.id;
     const direccion = estado.direccionesCliente.find(d => String(d.id) === String(idDireccion));
     return direccion ? `${direccion.calle}, ${direccion.ciudad}` : '—';
 }
@@ -832,7 +833,7 @@ function manejarAccionPedido(evento) {
     const boton = evento.target.closest('[data-accion-pedido]');
     if (!boton) return;
     if (boton.dataset.accionPedido === 'ver-detalle') {
-        verDetallePedido(boton.dataset.id, boton.dataset.fecha);
+        verDetallePedido(boton.dataset.id, boton.dataset.fecha).catch(notificarErrorInesperado);
     }
 }
 
@@ -1066,12 +1067,12 @@ async function cambiarEstadoPedido(selector) {
 function manejarAccionAdminPedido(evento) {
     const selector = evento.target.closest('select[data-accion-admin-pedido="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoPedido(selector);
+        cambiarEstadoPedido(selector).catch(notificarErrorInesperado);
         return;
     }
     const boton = evento.target.closest('button[data-accion-admin-pedido="ver-lineas"]');
     if (boton && evento.type === 'click') {
-        verLineasPedidoAdmin(boton.dataset.id, boton.dataset.fecha);
+        verLineasPedidoAdmin(boton.dataset.id, boton.dataset.fecha).catch(notificarErrorInesperado);
     }
 }
 
@@ -1285,7 +1286,7 @@ function reiniciarAnimacion(elemento, claseAnimacion) {
 }
 
 function forzarRecalculoDeEstilos(elemento) {
-    void elemento.offsetWidth;
+    return elemento.offsetWidth;
 }
 
 function manejarClickCarrusel(evento) {
@@ -1715,7 +1716,7 @@ async function cambiarEstadoPago(selector) {
 function manejarAccionAdminPago(evento) {
     const selector = evento.target.closest('select[data-accion-admin-pago="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoPago(selector);
+        cambiarEstadoPago(selector).catch(notificarErrorInesperado);
     }
 }
 
@@ -1809,7 +1810,7 @@ async function cambiarEstadoEnvio(selector) {
 function manejarAccionAdminEnvio(evento) {
     const selector = evento.target.closest('select[data-accion-admin-envio="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoEnvio(selector);
+        cambiarEstadoEnvio(selector).catch(notificarErrorInesperado);
     }
 }
 
@@ -1909,7 +1910,7 @@ function manejarAccionFila(evento) {
             estado: boton.dataset.estado
         });
     } else if (accion === 'eliminar-categoria') {
-        eliminarCategoria(boton.dataset.id, boton.dataset.nombre);
+        eliminarCategoria(boton.dataset.id, boton.dataset.nombre).catch(notificarErrorInesperado);
     } else if (accion === 'editar-producto') {
         entrarModoEdicionProducto({
             id: boton.dataset.id,
@@ -1922,7 +1923,7 @@ function manejarAccionFila(evento) {
             estado: boton.dataset.estado
         });
     } else if (accion === 'eliminar-producto') {
-        eliminarProducto(boton.dataset.id, boton.dataset.nombre);
+        eliminarProducto(boton.dataset.id, boton.dataset.nombre).catch(notificarErrorInesperado);
     } else if (accion === 'editar-direccion') {
         entrarModoEdicionDireccion({
             id: boton.dataset.id,
@@ -1934,7 +1935,7 @@ function manejarAccionFila(evento) {
             esPrincipal: boton.dataset.esPrincipal
         });
     } else if (accion === 'eliminar-direccion') {
-        eliminarDireccionPropia(boton.dataset.id, boton.dataset.etiqueta);
+        eliminarDireccionPropia(boton.dataset.id, boton.dataset.etiqueta).catch(notificarErrorInesperado);
     }
 }
 
@@ -1954,8 +1955,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('form-producto').addEventListener('submit', guardarProducto);
     document.getElementById('pro-boton-cancelar').addEventListener('click', salirModoEdicionProducto);
     document.getElementById('btn-recargar-productos').addEventListener('click', () => {
-        cargarProductos();
-        cargarOpcionesCategoria();
+        cargarProductos().catch(notificarErrorInesperado);
+        cargarOpcionesCategoria().catch(notificarErrorInesperado);
     });
     document.getElementById('tabla-productos-body').addEventListener('click', manejarAccionFila);
 
