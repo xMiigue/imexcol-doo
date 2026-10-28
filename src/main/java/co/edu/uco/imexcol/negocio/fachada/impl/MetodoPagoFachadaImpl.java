@@ -3,15 +3,10 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.dto.MetodoPagoDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.MetodoPagoDTOAssembler;
 import co.edu.uco.imexcol.negocio.casouso.impl.MetodoPagoNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.MetodoPagoFachada;
-import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolFachadaException;
 
 public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
 
@@ -24,91 +19,24 @@ public final class MetodoPagoFachadaImpl implements MetodoPagoFachada {
 
     @Override
     public void registrar(final MetodoPagoDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica();
-        try {
-            fabrica.iniciarTransaccion();
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new MetodoPagoDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new MetodoPagoNegocioImpl(fabrica);
-            negocio.registrar(dominio);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexionSinOcultar();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica ->
+                new MetodoPagoNegocioImpl(fabrica).registrar(ensamblador.ensamblarDominio(dto)));
     }
 
     @Override
     public void actualizar(final MetodoPagoDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica();
-        try {
-            fabrica.iniciarTransaccion();
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new MetodoPagoDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new MetodoPagoNegocioImpl(fabrica);
-            negocio.actualizar(dominio);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexionSinOcultar();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica ->
+                new MetodoPagoNegocioImpl(fabrica).actualizar(ensamblador.ensamblarDominio(dto)));
     }
 
     @Override
     public void eliminar(final UUID id) {
-        final var fabrica = FabricaDAO.obtenerFabrica();
-        try {
-            fabrica.iniciarTransaccion();
-            final var negocio = new MetodoPagoNegocioImpl(fabrica);
-            negocio.eliminar(id);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexionSinOcultar();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica -> new MetodoPagoNegocioImpl(fabrica).eliminar(id));
     }
 
     @Override
     public List<MetodoPagoDTO> consultar(final MetodoPagoDTO filtros) {
-        final var fabrica = FabricaDAO.obtenerFabrica();
-        try {
-            fabrica.iniciarTransaccion();
-            final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new MetodoPagoDTO());
-            final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var negocio = new MetodoPagoNegocioImpl(fabrica);
-            final var dominios = negocio.consultar(dominioFiltro);
-            final var resultado = ensamblador.ensamblarDTO(dominios);
-            fabrica.confirmarTransaccion();
-            return resultado;
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccionSinOcultar(excepcion);
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexionSinOcultar();
-        }
-    }
-
-    private static ImexcolFachadaException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolFachadaException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_FACHADA_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_FACHADA_OPERACION_INESPERADA.getContenido());
+        return EjecutorTransaccionFachada.ejecutarConResultado(fabrica -> ensamblador.ensamblarDTO(
+                new MetodoPagoNegocioImpl(fabrica).consultar(ensamblador.ensamblarDominio(filtros))));
     }
 }
