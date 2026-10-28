@@ -38,12 +38,12 @@ public final class PedidoNegocioImpl implements PedidoNegocio {
     private final PedidoEntidadAssembler ensamblador;
 
     public PedidoNegocioImpl(final FabricaDAO fabrica) {
-        super();
         if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
+        super();
         this.fabrica = fabrica;
         this.ensamblador = PedidoEntidadAssembler.obtenerInstancia();
     }

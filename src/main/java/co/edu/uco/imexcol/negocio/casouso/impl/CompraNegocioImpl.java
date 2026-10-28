@@ -63,12 +63,12 @@ public final class CompraNegocioImpl implements CompraNegocio {
     private final FacturaNegocio facturaNegocio;
 
     public CompraNegocioImpl(final FabricaDAO fabrica) {
-        super();
         if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
+        super();
         this.fabrica = fabrica;
         this.pasarela = PasarelaPagosSimulada.obtenerInstancia();
         this.carritoNegocio = new CarritoComprasNegocioImpl(fabrica);

@@ -29,12 +29,12 @@ public final class MetodoPagoNegocioImpl implements MetodoPagoNegocio {
     private final MetodoPagoEntidadAssembler ensamblador;
 
     public MetodoPagoNegocioImpl(final FabricaDAO fabrica) {
-        super();
         if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
+        super();
         this.fabrica = fabrica;
         this.ensamblador = MetodoPagoEntidadAssembler.obtenerInstancia();
     }

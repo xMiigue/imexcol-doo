@@ -37,12 +37,12 @@ public final class ResenaNegocioImpl implements ResenaNegocio {
     private final ResenaEntidadAssembler ensamblador;
 
     public ResenaNegocioImpl(final FabricaDAO fabrica) {
-        super();
         if (UtilObjeto.esNulo(fabrica)) {
             throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
                     MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
+        super();
         this.fabrica = fabrica;
         this.ensamblador = ResenaEntidadAssembler.obtenerInstancia();
     }
