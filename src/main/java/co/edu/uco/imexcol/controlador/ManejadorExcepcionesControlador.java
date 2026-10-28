@@ -46,16 +46,15 @@ public final class ManejadorExcepcionesControlador {
 
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Respuesta<Object>> manejarRecursoNoEncontrado(final NoResourceFoundException excepcion) {
-        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_RECURSO_NO_ENCONTRADO.getContenido()
-                .formatted(excepcion.getHttpMethod(), excepcion.getResourcePath()));
+        registrarAdvertencia(MensajesEnum.ERROR_TECNICO_RECURSO_NO_ENCONTRADO,
+                excepcion.getHttpMethod(), excepcion.getResourcePath());
         return responderFallida(MensajesEnum.ERROR_USUARIO_RECURSO_NO_ENCONTRADO.getContenido(),
                 HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({ HttpMessageNotReadableException.class, MethodArgumentTypeMismatchException.class })
     public ResponseEntity<Respuesta<Object>> manejarSolicitudInvalida(final Exception excepcion) {
-        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA.getContenido()
-                .formatted(excepcion.getMessage()));
+        registrarAdvertencia(MensajesEnum.ERROR_TECNICO_SOLICITUD_INVALIDA, excepcion.getMessage());
         return responderFallida(MensajesEnum.ERROR_USUARIO_SOLICITUD_INVALIDA.getContenido(),
                 HttpStatus.BAD_REQUEST);
     }
@@ -63,8 +62,8 @@ public final class ManejadorExcepcionesControlador {
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<Respuesta<Object>> manejarMetodoNoSoportado(
             final HttpRequestMethodNotSupportedException excepcion) {
-        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_METODO_NO_SOPORTADO.getContenido()
-                .formatted(excepcion.getMethod(), excepcion.getSupportedHttpMethods()));
+        registrarAdvertencia(MensajesEnum.ERROR_TECNICO_METODO_NO_SOPORTADO,
+                excepcion.getMethod(), excepcion.getSupportedHttpMethods());
         return responderFallida(MensajesEnum.ERROR_USUARIO_METODO_NO_SOPORTADO.getContenido(),
                 HttpStatus.METHOD_NOT_ALLOWED);
     }
@@ -72,8 +71,8 @@ public final class ManejadorExcepcionesControlador {
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ResponseEntity<Respuesta<Object>> manejarTipoContenidoNoSoportado(
             final HttpMediaTypeNotSupportedException excepcion) {
-        REGISTRO.warn(MensajesEnum.ERROR_TECNICO_TIPO_CONTENIDO_NO_SOPORTADO.getContenido()
-                .formatted(excepcion.getContentType(), excepcion.getSupportedMediaTypes()));
+        registrarAdvertencia(MensajesEnum.ERROR_TECNICO_TIPO_CONTENIDO_NO_SOPORTADO,
+                excepcion.getContentType(), excepcion.getSupportedMediaTypes());
         return responderFallida(MensajesEnum.ERROR_USUARIO_TIPO_CONTENIDO_NO_SOPORTADO.getContenido(),
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
@@ -85,6 +84,12 @@ public final class ManejadorExcepcionesControlador {
                 MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido());
         REGISTRO.error(excepcionControlador.getMensajeTecnico(), excepcionControlador.getExcepcionRaiz());
         return responderFallida(excepcionControlador.getMensajeUsuario(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private static void registrarAdvertencia(final MensajesEnum plantilla, final Object... argumentos) {
+        if (REGISTRO.isWarnEnabled()) {
+            REGISTRO.warn(plantilla.getContenido().formatted(argumentos));
+        }
     }
 
     private static ResponseEntity<Respuesta<Object>> responderFallida(final String mensaje,

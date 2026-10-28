@@ -23,8 +23,7 @@ public class ImexcolException extends RuntimeException {
     }
 
     private static String obtenerMensajeTecnicoSeguro(final String mensajeTecnico, final String mensajeUsuario) {
-        return UtilTexto.estaVacia(mensajeTecnico) ? UtilTexto.aplicarTrim(mensajeUsuario)
-                : UtilTexto.aplicarTrim(mensajeTecnico);
+        return UtilTexto.aplicarTrim(UtilTexto.estaVacia(mensajeTecnico) ? mensajeUsuario : mensajeTecnico);
     }
 
     public Capa getCapa() {
