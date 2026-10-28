@@ -1,7 +1,6 @@
 package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import co.edu.uco.imexcol.transversal.UtilConexionSql;
 import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class ResenaSqlServerDAO extends ConexionSql implements ResenaDAO {
 
@@ -88,18 +86,7 @@ public final class ResenaSqlServerDAO extends ConexionSql implements ResenaDAO {
         final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new ResenaEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
-
-        try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
-            for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
-            }
-            return ejecutarConsultaPorFiltro(sentencia);
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
+        return consultarConParametros(consulta, parametros, ResenaMapper::mapear);
     }
 
     private String construirConsultaPorFiltro(final ResenaEntidad filtro, final List<Object> parametros) {
@@ -129,31 +116,5 @@ public final class ResenaSqlServerDAO extends ConexionSql implements ResenaDAO {
             consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.append(ResenaSql.ORDENAMIENTO).toString();
-    }
-
-    private List<ResenaEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<ResenaEntidad>();
-        try (var resultSet = sentencia.executeQuery()) {
-            while (resultSet.next()) {
-                resultados.add(ResenaMapper.mapear(resultSet));
-            }
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
-        return resultados;
-    }
-
-    private static ImexcolDatosException envolverErrorDao(final Exception excepcion,
-            final MensajesEnum usuarioMsg, final MensajesEnum tecnicoMsg) {
-        return ImexcolDatosException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido());
-    }
-
-    private static ImexcolDatosException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolDatosException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_DAO_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido());
     }
 }

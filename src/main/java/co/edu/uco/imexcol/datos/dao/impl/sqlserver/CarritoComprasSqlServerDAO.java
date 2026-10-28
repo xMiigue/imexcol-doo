@@ -2,7 +2,6 @@ package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +19,6 @@ import co.edu.uco.imexcol.transversal.UtilFecha;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public final class CarritoComprasSqlServerDAO extends ConexionSql implements CarritoComprasDAO {
 
@@ -107,18 +105,7 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
         final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new CarritoComprasEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
-
-        try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
-            for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + ClausulasSql.PRIMERA_POSICION_PARAMETRO, parametros.get(indice));
-            }
-            return ejecutarConsultaPorFiltro(sentencia);
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
+        return consultarConParametros(consulta, parametros, CarritoComprasMapper::mapear);
     }
 
     private String construirConsultaPorFiltro(final CarritoComprasEntidad filtro, final List<Object> parametros) {
@@ -142,31 +129,5 @@ public final class CarritoComprasSqlServerDAO extends ConexionSql implements Car
             consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
-    }
-
-    private List<CarritoComprasEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<CarritoComprasEntidad>();
-        try (var resultSet = sentencia.executeQuery()) {
-            while (resultSet.next()) {
-                resultados.add(CarritoComprasMapper.mapear(resultSet));
-            }
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
-        return resultados;
-    }
-
-    private static ImexcolDatosException envolverErrorDao(final Exception excepcion,
-            final MensajesEnum usuarioMsg, final MensajesEnum tecnicoMsg) {
-        return ImexcolDatosException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido());
-    }
-
-    private static ImexcolDatosException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolDatosException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_DAO_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido());
     }
 }
