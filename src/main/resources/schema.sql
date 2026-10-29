@@ -231,7 +231,9 @@ BEGIN
     );
 END;
 
-IF OBJECT_ID(N'dbo.imex_resena', N'U') IS NULL
+DECLARE @tabla_resena NVARCHAR(128) = N'dbo.imex_resena';
+
+IF OBJECT_ID(@tabla_resena, N'U') IS NULL
 BEGIN
     CREATE TABLE dbo.imex_resena (
         id           UNIQUEIDENTIFIER NOT NULL,
@@ -294,7 +296,7 @@ END;
 
 IF NOT EXISTS (
     SELECT 1 FROM sys.indexes
-    WHERE name = 'ix_imex_resena_producto_id' AND object_id = OBJECT_ID(N'dbo.imex_resena')
+    WHERE name = 'ix_imex_resena_producto_id' AND object_id = OBJECT_ID(@tabla_resena)
 )
 BEGIN
     CREATE INDEX ix_imex_resena_producto_id ON dbo.imex_resena (producto_id);
@@ -302,7 +304,7 @@ END;
 
 IF NOT EXISTS (
     SELECT 1 FROM sys.indexes
-    WHERE name = 'ix_imex_resena_fecha' AND object_id = OBJECT_ID(N'dbo.imex_resena')
+    WHERE name = 'ix_imex_resena_fecha' AND object_id = OBJECT_ID(@tabla_resena)
 )
 BEGIN
     CREATE INDEX ix_imex_resena_fecha ON dbo.imex_resena (fecha);

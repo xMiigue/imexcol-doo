@@ -71,10 +71,6 @@ button {
     color: var(--color-dorado);
 }
 
-.oculto {
-    display: none !important;
-}
-
 .solo-lector-pantalla {
     position: absolute;
     width: 1px;
@@ -1540,4 +1536,8 @@ button {
     .campo-fila {
         grid-template-columns: 1fr;
     }
+}
+
+.oculto {
+    display: none;
 }
