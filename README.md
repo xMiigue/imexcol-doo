@@ -408,7 +408,7 @@ La documentación de diseño está en la carpeta `docs/`:
 
 | Documento | Contenido |
 |---|---|
-| `MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` | Modelo de dominio anémico y enriquecido, caracterización (C-), políticas (P-) y muestreo de datos (M-) por entidad |
+| `MuestreoDatosModeloDominio_Imexcol_Oct29.xlsx` | Modelo de dominio anémico y enriquecido, caracterización (C-), políticas (P-) y muestreo de datos (M-) por entidad |
 | `DocumentacionClases_Imexcol.xlsx` | Diagrama de clases: atributos, relaciones y métodos |
 | `MER_Imexcol_II_2026.xlsx` | Modelo entidad-relación: tablas, columnas, tipos y llaves |
 | `ModeloDominioEnriquecido_Guia_Clase.xlsx` | Ejemplo de referencia de la clase |

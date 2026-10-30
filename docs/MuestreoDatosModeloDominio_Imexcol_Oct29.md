@@ -1,6 +1,6 @@
-# MuestreoDatosModeloDominio_Imexcol_Sep20
+# MuestreoDatosModeloDominio_Imexcol_Oct29
 
-Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
+Fuente: `MuestreoDatosModeloDominio_Imexcol_Oct29.xlsx` · 67 hojas
 
 ## Índice de hojas
 
@@ -77,16 +77,16 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 
 ## Hoja: Modelo de dominio
 
-![Modelo de dominio](img/MuestreoDatosModeloDominio_Imexcol_Sep20__Modelo_de_dominio__image2.png)
+![Modelo de dominio](img/MuestreoDatosModeloDominio_Imexcol_Oct29__Modelo_de_dominio__image2.png)
 
-![Modelo de dominio](img/MuestreoDatosModeloDominio_Imexcol_Sep20__Modelo_de_dominio__image1.png)
+![Modelo de dominio](img/MuestreoDatosModeloDominio_Imexcol_Oct29__Modelo_de_dominio__image1.png)
 
 
 ---
 
 ## Hoja: Modelo de dominio anémico
 
-![Modelo de dominio anémico](img/MuestreoDatosModeloDominio_Imexcol_Sep20__Modelo_de_dominio_an_mico__image3.png)
+![Modelo de dominio anémico](img/MuestreoDatosModeloDominio_Imexcol_Oct29__Modelo_de_dominio_an_mico__image3.png)
 
 
 ---
@@ -586,7 +586,7 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Nombre | ImagenProducto |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | Descripción | Objeto de dominio que representa a cada uno de los recursos visuales o fotografías asociadas a un producto para su exhibición. |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| Nombre atributo | Descripción atributo | Identificador del objeto de dominio | Tipo de dato | Obligatorio | Longitud minima(si aplica longitud maxima(si aplica) | Longitud maxima(si aplica longitud maxima(si aplica) | Precisión (si aplica) | Redondeo(si aplica) | Rango inicial(si aplica) | Rango final (si aplica) | Formato(Si aplica) | Reglas especiales(si aplica) | Dato calculado | Aplica ajuste del dato(si aplica) | Carácter de ajuste(si aplica) | Quitar espacios en blanco al inicio(si aplica) | Quitar espacios en blanco al fin(si aplica) | Dato sensible(si aplica) | Valor por defecto(si aplica) | Auto generado | #REF! | #REF! | #REF! | #REF! |
+| Nombre atributo | Descripción atributo | Identificador del objeto de dominio | Tipo de dato | Obligatorio | Longitud minima(si aplica longitud maxima(si aplica) | Longitud maxima(si aplica longitud maxima(si aplica) | Precisión (si aplica) | Redondeo(si aplica) | Rango inicial(si aplica) | Rango final (si aplica) | Formato(Si aplica) | Reglas especiales(si aplica) | Dato calculado | Aplica ajuste del dato(si aplica) | Carácter de ajuste(si aplica) | Quitar espacios en blanco al inicio(si aplica) | Quitar espacios en blanco al fin(si aplica) | Dato sensible(si aplica) | Valor por defecto(si aplica) | Auto generado | Agregar imagen | Modificar imagen | Eliminar imagen | Consultar imágenes |
 | idimagen | Representa el identificador único de cada imagen generado automáticamente por el sistema. | Si | Alfanumerico | Si | 1 | 20 |  |  |  |  |  |  | No | No |  | Si | Si | No |  | Si | Requerido | No requerido |  |  |
 | idproducto | Representa el objeto de dominio Producto al cual pertenece esta imagen. | No | <Producto> | Si |  |  |  |  |  |  |  | Debe corresponder a un producto existente en el catálogo | No |  |  |  |  | No |  | No | No requerido | No requerido |  |  |
 | foto | Representa la ruta web o enlace donde está alojada la fotografía del artículo | No | Texto | Si | 5 | 500 |  |  |  |  | URL / Minúsculas | Debe ser una ruta válida terminada en extensión de imagen (ej. .jpg, .png, .webp) | No | No |  | Si | Si | No |  | No | Norequerido | No requerido |  |  |
@@ -953,7 +953,7 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Nombre | Pedido |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | Descripción | Objeto de dominio que representa la sesión temporal donde un cliente agrupa los productos que tiene intención de adquirir antes de formalizar la transacción. |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| Nombre atributo | Descripción atributo | Identificador del objeto de dominio | Tipo de dato | Obligatorio | Longitud minima(si aplica longitud maxima(si aplica) | Longitud maxima(si aplica longitud maxima(si aplica) | Precisión (si aplica) | Redondeo(si aplica) | Rango inicial(si aplica) | Rango final (si aplica) | Formato(Si aplica) | Reglas especiales(si aplica) | Dato calculado | Aplica ajuste del dato(si aplica) | Carácter de ajuste(si aplica) | Quitar espacios en blanco al inicio(si aplica) | Quitar espacios en blanco al fin(si aplica) | Dato sensible(si aplica) | Valor por defecto(si aplica) | Auto generado | #REF! | #REF! | #REF! | #REF! |
+| Nombre atributo | Descripción atributo | Identificador del objeto de dominio | Tipo de dato | Obligatorio | Longitud minima(si aplica longitud maxima(si aplica) | Longitud maxima(si aplica longitud maxima(si aplica) | Precisión (si aplica) | Redondeo(si aplica) | Rango inicial(si aplica) | Rango final (si aplica) | Formato(Si aplica) | Reglas especiales(si aplica) | Dato calculado | Aplica ajuste del dato(si aplica) | Carácter de ajuste(si aplica) | Quitar espacios en blanco al inicio(si aplica) | Quitar espacios en blanco al fin(si aplica) | Dato sensible(si aplica) | Valor por defecto(si aplica) | Auto generado | Crear pedido (Checkout) | Actualizar estado del pedido | Cancelar pedido | Consultar pedidos (Tracking) |
 | id | Identificador único universal (UUID) del pedido. | Si | Alfanumerico | Si | 1 |  |  |  |  |  | Mayusculas | El formato suele incluir año y prefijo (Ej: PED-2026-001) | No | No |  | Si | Si | No |  | Si | Requerido | No requerido |  |  |
 | cliente | Referencia al cliente que realizó el pedido. | No | <Cliente> | Si |  |  |  |  |  |  |  | El cliente debe existir y estar activo en el sistema | No |  |  |  |  | No |  | No | No requerido | No requerido |  |  |
 | fechaPedido | Fecha en que se generó el pedido (LocalDate). | No | Fecha | Si |  |  |  |  |  |  |  | La dirección de entrega debe pertenecer al cliente que realiza el pedido | No |  |  |  |  | No |  | No | Norequerido | No requerido |  |  |
@@ -966,11 +966,10 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 |  |  | Parámettro | Tipo de dato | Descripci | Tipo de Dato | Descripción | Política | Descripción | Detalle | ¿Qué hago? |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | Crear pedido (Checkout) | El usuario finaliza su compra, procesa el pago y genera la orden de despacho | pedidoNuevo | Pedido | Contiene la información base del nuevo pedido a registrar. | Logico | Retorna verdadero si el pedido se creó exitosamente. | PED-POL-01 | Asegurar que los datos requeridos sean válidos a nivel de tipo, formato, longitud y obligatoriedad. | Generar excepción indicando qué campo no cumple con el formato o es obligatorio. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 |  |  |  |  |  |  |  | PED-POL-02 | El total del pedido no puede ser negativo | Generar excepción indicando que el carrito no es válido o está vacío. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  | #REF! | #REF! | Generar excepción indicando inconsistencia en el valor total calculado a cobrar. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | Actualizar estado del pedido | Cambiar la fase en la que se encuentra la orden (ej. de "Pagado" a "Enviado" o "Entregado") para el seguimiento logístico. | pedidoModificado | Pedido | Contiene la información del pedido con el nuevo estado actualizado. | Logico | Retorna verdadero si el estado del pedido se actualizó correctamente. | PED-POL-03 | El idPedido a modificar debe existir previamente en el sistema. | Generar excepción indicando que el pedido a actualizar no existe en la base de datos. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  | PED-POL-04 | El estado del pedido debe ser uno de los valores válidos definidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado). El administrador puede actualizar el estado del pedido | Generar excepción indicando que el cambio de estado logístico es inválido y va en reversa. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| Cancelar pedido | Anular la compra antes de que el paquete sea entregado a la transportadora, procesando un reembolso. | idPedido | alfanumerico | Identificador exacto del pedido que el cliente o administrador desea cancelar. | Logico | Retorna verdadero si el pedido fue cancelado exitosamente. | PED-POL-05 | El idPedido a eliminar debe existir previamente en el sistema. | Generar excepción indicando que el pedido a cancelar no se encuentra registrado. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-|  |  |  |  |  |  |  | 0 | 0 | Generar excepción indicando que no se puede cancelar un pedido que ya fue despachado físicamente. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  | PED-POL-04 | El estado del pedido debe ser uno de los valores válidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado) y solo avanza en orden, un paso a la vez: Pendiente → Confirmado → Preparando → Enviado → Entregado, sin retroceder. Solo se puede cancelar si está Pendiente o Confirmado. El administrador puede actualizar el estado del pedido. | Generar excepción indicando que el cambio de estado no es válido porque salta un paso, va en reversa o el pedido ya no se puede cancelar. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| Cancelar pedido | Anular la compra antes de que el pedido entre en preparación, procesando un reembolso. | idPedido | alfanumerico | Identificador exacto del pedido que el cliente o administrador desea cancelar. | Logico | Retorna verdadero si el pedido fue cancelado exitosamente. | PED-POL-05 | El idPedido a eliminar debe existir previamente en el sistema. | Generar excepción indicando que el pedido a cancelar no se encuentra registrado. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  | PED-POL-04 | El estado del pedido debe ser uno de los valores válidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado) y solo avanza en orden, un paso a la vez: Pendiente → Confirmado → Preparando → Enviado → Entregado, sin retroceder. Solo se puede cancelar si está Pendiente o Confirmado. El administrador puede actualizar el estado del pedido. | Generar excepción indicando que el pedido solo se puede cancelar si está Pendiente o Confirmado. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 | Consultar pedidos (Tracking) | Listar las órdenes realizadas en el pasado para revisar garantías, volver a comprar o hacer auditoría. | filtros | Texto | Parámetros opcionales para filtrar o buscar el historial de pedidos. | Lista<Pedido> | Retorna una colección con los objetos de los pedidos encontrados. | PED-POL-06 | El cliente solo puede ver sus propios pedidos; el administrador tiene acceso al historial global. | Generar excepción indicando acceso denegado por intentar visualizar pedidos de otro usuario. | Detener operación |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 
 
@@ -988,8 +987,8 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 | Cliente | Crear pedido (Checkout) | El usuario finaliza su compra, procesa el pago y genera la orden de despacho | Pedido | idCarrito, idcliente, idDireccion, fechaCreacion, totalCompra | Pantalla final de pago (Checkout) con el resumen monetario y destino de entrega. | PED-POL-01 | Asegurar que los datos requeridos sean válidos a nivel de tipo, formato, longitud y obligatoriedad. | Pasarela de pagos | Pedido generado | Riesgo de "Timeout" (tiempo de espera agotado) si la pasarela de pagos externa tarda mucho en responder y el usuario recarga la página. |
 |  |  |  |  |  |  | PED-POL-02 | El total del pedido no puede ser negativo |  |  |  |
 | Administrador / Sistema | Actualizar estado del pedido | Cambiar la fase en la que se encuentra la orden (ej. de "Pagado" a "Enviado" o "Entregado") para el seguimiento logístico. | Pedido | idPedido, estadoLogsitico | Panel de control de despachos o actualización automática vía Webhook de la transportadora. | PED-POL-03 | El idPedido a modificar debe existir previamente en el sistema. | API Transportadora (Servientrega / Coordinadora) | Estado logístico de pedido actualizado | Si se marca como "Entregado" por error, el cliente no podrá abrir reclamos fácilmente si su paquete nunca llegó. |
-|  |  |  |  |  |  | PED-POL-04 | El estado del pedido debe ser uno de los valores válidos definidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado). El administrador puede actualizar el estado del pedido |  |  |  |
-| Cliente / Administrador | Cancelar pedido | Anular la compra antes de que el paquete sea entregado a la transportadora, procesando un reembolso. | Pedido | idPedido, estadoLogsitico | Botón de "Cancelar compra" en el historial de pedidos o en el panel de soporte. | PED-POL-05 | El idPedido a eliminar debe existir previamente en el sistema. | Pasarela de Pagos (API de Reembolsos) | Pedido cancelado | Si el pedido ya fue entregado a la transportadora externa, cancelar el pedido en el sistema no detendrá físicamente la entrega del paquete |
+|  |  |  |  |  |  | PED-POL-04 | El estado del pedido debe ser uno de los valores válidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado) y solo avanza en orden, un paso a la vez: Pendiente → Confirmado → Preparando → Enviado → Entregado, sin retroceder. Solo se puede cancelar si está Pendiente o Confirmado. El administrador puede actualizar el estado del pedido. |  |  |  |
+| Cliente / Administrador | Cancelar pedido | Anular la compra antes de que el pedido entre en preparación, procesando un reembolso. | Pedido | idPedido, estadoLogsitico | Botón de "Cancelar compra" en el historial de pedidos o en el panel de soporte. | PED-POL-05 | El idPedido a eliminar debe existir previamente en el sistema. | Pasarela de Pagos (API de Reembolsos) | Pedido cancelado | Mitigado: el sistema solo permite cancelar pedidos en estado Pendiente o Confirmado, antes de su preparación. |
 | Cliente / Administrador | Consultar pedidos (Tracking) | Listar las órdenes realizadas en el pasado para revisar garantías, volver a comprar o hacer auditoría. | Pedido | idPedido, idCarrito, idcliente, idDireccion, fechacreacion, estadoLogsitico, totalCompra | Vista de "Mis Pedidos" en el perfil del cliente o general de ventas para el administrador. | PED-POL-06 | El cliente solo puede ver sus propios pedidos; el administrador tiene acceso al historial global. | Base de datos | Pedidos consultados | N/A |
 
 
@@ -1007,7 +1006,7 @@ Fuente: `c92f3fb9-MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` · 67 hojas
 | PED-POL-01 | Asegurar que los datos requeridos sean válidos a nivel de tipo, formato, longitud y obligatoriedad. |  |  |
 | PED-POL-02 | El total del pedido no puede ser negativo |  |  |
 | PED-POL-03 | El idPedido a modificar debe existir previamente en el sistema. |  |  |
-| PED-POL-04 | El estado del pedido debe ser uno de los valores válidos definidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado). El administrador puede actualizar el estado del pedido |  |  |
+| PED-POL-04 | El estado del pedido debe ser uno de los valores válidos (Pendiente, Confirmado, Preparando, Enviado, Entregado, Cancelado) y solo avanza en orden, un paso a la vez: Pendiente → Confirmado → Preparando → Enviado → Entregado, sin retroceder. Solo se puede cancelar si está Pendiente o Confirmado. El administrador puede actualizar el estado del pedido. |  |  |
 | PED-POL-05 | El idPedido a eliminar debe existir previamente en el sistema. |  |  |
 | PED-POL-06 | El cliente solo puede ver sus propios pedidos; el administrador tiene acceso al historial global. |  |  |
 
