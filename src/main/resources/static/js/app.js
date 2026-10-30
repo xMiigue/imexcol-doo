@@ -1029,7 +1029,7 @@ function renderizarPedidosAdmin(pedidos, mapaClientes) {
                 <td class="celda-acciones">
                     <button class="boton-fila" data-accion-admin-pedido="ver-lineas"
                             data-id="${escapar(p.id)}"
-                            data-fecha="${escapar(p.fechaPedido)}">Ver líneas</button>
+                            data-fecha="${escapar(p.fechaPedido)}">Ver detalle</button>
                 </td>
             </tr>
         `;
