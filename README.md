@@ -247,6 +247,12 @@ Los casos de uso se leen como una secuencia de reglas. Por ejemplo, eliminar una
 asegurar que la categoría exista  →  asegurar que no tenga productos  →  eliminar
 ```
 
+O modificar una dirección (DIR-POL-08): si la dirección tiene pedidos en curso (Pendiente, Confirmado, Preparando o Enviado), queda bloqueada hasta que se entreguen o cancelen, para que el pedido no cambie de destino.
+
+```
+asegurar que la dirección exista  →  asegurar que no tenga pedidos en curso  →  asegurar que no esté duplicada  →  modificar
+```
+
 Reglas genéricas reutilizables (`regla/genericas`): texto obligatorio, longitud válida, número positivo, número mayor a cero, número en rango, estado válido, id y fecha distintos del valor por defecto.
 
 Ninguna regla devuelve un objeto de resultado ni `null`: cuando la política no se cumple, lanza una excepción con un mensaje del catálogo `MensajesEnum`.
@@ -408,7 +414,7 @@ La documentación de diseño está en la carpeta `docs/`:
 
 | Documento | Contenido |
 |---|---|
-| `MuestreoDatosModeloDominio_Imexcol_Oct29.xlsx` | Modelo de dominio anémico y enriquecido, caracterización (C-), políticas (P-) y muestreo de datos (M-) por entidad |
+| `MuestreoDatosModeloDominio_Imexcol_Sep20.xlsx` | Modelo de dominio anémico y enriquecido, caracterización (C-), políticas (P-) y muestreo de datos (M-) por entidad |
 | `DocumentacionClases_Imexcol.xlsx` | Diagrama de clases: atributos, relaciones y métodos |
 | `MER_Imexcol_II_2026.xlsx` | Modelo entidad-relación: tablas, columnas, tipos y llaves |
 | `ModeloDominioEnriquecido_Guia_Clase.xlsx` | Ejemplo de referencia de la clase |

@@ -10,6 +10,7 @@ import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExiste
 import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionExistePorId;
 import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoEstaDuplicadaParaCliente;
 import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoTienePedidosAsociados;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoTienePedidosEnCurso;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
@@ -68,6 +69,7 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
         validarDatosComunes(dominioSeguro);
         asegurarDireccionExista(dominioSeguro.getId());
+        asegurarDireccionNoTengaPedidosEnCurso(dominioSeguro.getId());
         asegurarClienteExista(dominioSeguro);
         asegurarDireccionNoEsteDuplicada(dominioSeguro);
         modificar(dominioSeguro);
@@ -134,6 +136,10 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
 
     private void modificar(final DireccionDominio dominio) {
         fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void asegurarDireccionNoTengaPedidosEnCurso(final UUID id) {
+        ValidarDireccionNoTienePedidosEnCurso.ejecutarValidacion(id, fabrica);
     }
 
     private void asegurarDireccionNoTengaPedidos(final UUID id) {

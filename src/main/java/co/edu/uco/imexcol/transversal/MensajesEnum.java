@@ -649,6 +649,10 @@ public enum MensajesEnum {
             "No es posible eliminar la dirección porque está asociada a uno o más pedidos."),
     ERROR_TECNICO_DIRECCION_CON_PEDIDOS(
             "La dirección id=%s está asociada a %s pedido(s) y no puede eliminarse."),
+    ERROR_USUARIO_DIRECCION_CON_PEDIDOS_EN_CURSO(
+            "La dirección está bloqueada temporalmente porque tiene pedidos en curso. Podrá modificarla cuando sean entregados o cancelados."),
+    ERROR_TECNICO_DIRECCION_CON_PEDIDOS_EN_CURSO(
+            "La dirección id=%s tiene %s pedido(s) en curso y no puede modificarse."),
 
     ERROR_USUARIO_PEDIDO_TRANSICION_ESTADO_INVALIDA(
             "El pedido no puede pasar de %s a %s. Los pedidos avanzan en orden (PENDIENTE, CONFIRMADO, PREPARANDO, ENVIADO, ENTREGADO) y solo se pueden cancelar si están PENDIENTE o CONFIRMADO."),

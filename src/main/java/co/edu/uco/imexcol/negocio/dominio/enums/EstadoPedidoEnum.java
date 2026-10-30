@@ -41,6 +41,10 @@ public enum EstadoPedidoEnum {
         return cancelable;
     }
 
+    public boolean estaEnCurso() {
+        return ENTREGADO != this && CANCELADO != this;
+    }
+
     public boolean permiteTransicionA(final EstadoPedidoEnum destino) {
         return this == destino || esSiguienteEnElFlujo(destino) || esCancelacionPermitida(destino);
     }
@@ -65,6 +69,11 @@ public enum EstadoPedidoEnum {
     public static boolean representaCompraExitosa(final String estado) {
         return Arrays.stream(values())
                 .anyMatch(valorEnum -> valorEnum.esCompraExitosa() && valorEnum.esIgualA(estado));
+    }
+
+    public static boolean representaPedidoEnCurso(final String estado) {
+        return Arrays.stream(values())
+                .anyMatch(valorEnum -> valorEnum.estaEnCurso() && valorEnum.esIgualA(estado));
     }
 
     public static String[] obtenerValoresPermitidos() {
