@@ -1,6 +1,6 @@
 package co.edu.uco.imexcol.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.transversal.UtilFecha;
@@ -12,35 +12,35 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 public final class ResenaDTO {
 
     private UUID id;
-    private ProductoDTO producto;
     private ClienteDTO cliente;
+    private ProductoDTO producto;
     private int calificacion;
     private String comentario;
-    private LocalDate fecha;
+    private LocalDateTime fecha;
 
     public ResenaDTO() {
         setId(UtilUUID.obtenerValorPorDefecto());
-        setProducto(new ProductoDTO());
         setCliente(new ClienteDTO());
+        setProducto(new ProductoDTO());
         setCalificacion(UtilNumerico.obtenerValorPorDefectoInt());
         setComentario(UtilTexto.VACIO);
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
+        setFecha(UtilFecha.obtenerFechaHoraPorDefecto());
     }
 
     public ResenaDTO(final UUID id) {
         setId(id);
-        setProducto(new ProductoDTO());
         setCliente(new ClienteDTO());
+        setProducto(new ProductoDTO());
         setCalificacion(UtilNumerico.obtenerValorPorDefectoInt());
         setComentario(UtilTexto.VACIO);
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
+        setFecha(UtilFecha.obtenerFechaHoraPorDefecto());
     }
 
-    public ResenaDTO(final UUID id, final ProductoDTO producto, final ClienteDTO cliente, final int calificacion,
-                     final String comentario, final LocalDate fecha) {
+    public ResenaDTO(final UUID id, final ClienteDTO cliente, final ProductoDTO producto,
+                     final int calificacion, final String comentario, final LocalDateTime fecha) {
         setId(id);
-        setProducto(producto);
         setCliente(cliente);
+        setProducto(producto);
         setCalificacion(calificacion);
         setComentario(comentario);
         setFecha(fecha);
@@ -54,20 +54,20 @@ public final class ResenaDTO {
         this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
-    public ProductoDTO getProducto() {
-        return producto;
-    }
-
-    public void setProducto(final ProductoDTO producto) {
-        this.producto = UtilObjeto.obtenerValorDefecto(producto, new ProductoDTO());
-    }
-
     public ClienteDTO getCliente() {
         return cliente;
     }
 
     public void setCliente(final ClienteDTO cliente) {
         this.cliente = UtilObjeto.obtenerValorDefecto(cliente, new ClienteDTO());
+    }
+
+    public ProductoDTO getProducto() {
+        return producto;
+    }
+
+    public void setProducto(final ProductoDTO producto) {
+        this.producto = UtilObjeto.obtenerValorDefecto(producto, new ProductoDTO());
     }
 
     public int getCalificacion() {
@@ -86,11 +86,11 @@ public final class ResenaDTO {
         this.comentario = UtilTexto.aplicarTrim(comentario);
     }
 
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(final LocalDate fecha) {
+    public void setFecha(final LocalDateTime fecha) {
         this.fecha = UtilFecha.obtenerValorDefecto(fecha);
     }
 }

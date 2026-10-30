@@ -17,6 +17,6 @@ public final class ValidarLongitudTextoEsValida implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        LongitudTextoEsValidaRegla.ejecutarRegla(datos);
+        LongitudTextoEsValidaRegla.obtenerInstancia().ejecutar(datos);
     }
 }

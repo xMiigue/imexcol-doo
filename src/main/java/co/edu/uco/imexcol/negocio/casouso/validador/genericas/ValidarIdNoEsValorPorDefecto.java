@@ -17,6 +17,6 @@ public final class ValidarIdNoEsValorPorDefecto implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        IdNoEsValorPorDefectoRegla.ejecutarRegla(datos);
+        IdNoEsValorPorDefectoRegla.obtenerInstancia().ejecutar(datos);
     }
 }

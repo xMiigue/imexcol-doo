@@ -1,7 +1,6 @@
 package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,32 +9,44 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.ItemCarritoMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.ItemCarritoSql;
 import co.edu.uco.imexcol.entidad.ItemCarritoEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCarritoDAO {
+
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_CARRITO = 2;
+    private static final int POSICION_PRODUCTO = 3;
+    private static final int POSICION_CANTIDAD = 4;
+    private static final int POSICION_PRECIO_UNITARIO = 5;
+    private static final int POSICION_ACTUALIZAR_CARRITO = 1;
+    private static final int POSICION_ACTUALIZAR_PRODUCTO = 2;
+    private static final int POSICION_ACTUALIZAR_CANTIDAD = 3;
+    private static final int POSICION_ACTUALIZAR_PRECIO_UNITARIO = 4;
+    private static final int POSICION_ACTUALIZAR_ID = 5;
+    private static final int POSICION_ID_ELIMINAR = 1;
+    private static final int POSICION_ID_CARRITO_ELIMINAR = 1;
 
     public ItemCarritoSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
 
     @Override
-    public void acceder(final ItemCarritoEntidad entidad) {
+    public void crear(final ItemCarritoEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ItemCarritoEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ACCEDER)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setObject(2, entidadSegura.getCarrito().getId());
-            sentencia.setObject(3, entidadSegura.getProducto().getId());
-            sentencia.setInt(4, entidadSegura.getCantidad());
-            sentencia.setDouble(5, entidadSegura.getPrecioUnitario());
+        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.CREAR)) {
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setObject(POSICION_CARRITO, entidadSegura.getCarrito().getId());
+            sentencia.setObject(POSICION_PRODUCTO, entidadSegura.getProducto().getId());
+            sentencia.setInt(POSICION_CANTIDAD, entidadSegura.getCantidad());
+            sentencia.setDouble(POSICION_PRECIO_UNITARIO, entidadSegura.getPrecioUnitario());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -51,11 +62,11 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new ItemCarritoEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ACTUALIZAR)) {
-            sentencia.setObject(1, entidadSegura.getCarrito().getId());
-            sentencia.setObject(2, entidadSegura.getProducto().getId());
-            sentencia.setInt(3, entidadSegura.getCantidad());
-            sentencia.setDouble(4, entidadSegura.getPrecioUnitario());
-            sentencia.setObject(5, entidadSegura.getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_CARRITO, entidadSegura.getCarrito().getId());
+            sentencia.setObject(POSICION_ACTUALIZAR_PRODUCTO, entidadSegura.getProducto().getId());
+            sentencia.setInt(POSICION_ACTUALIZAR_CANTIDAD, entidadSegura.getCantidad());
+            sentencia.setDouble(POSICION_ACTUALIZAR_PRECIO_UNITARIO, entidadSegura.getPrecioUnitario());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -70,7 +81,22 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
+            sentencia.executeUpdate();
+        } catch (final SQLException excepcion) {
+            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
+                    MensajesEnum.ERROR_TECNICO_DAO_ELIMINAR_GENERICO);
+        } catch (final Exception excepcion) {
+            throw envolverErrorInesperado(excepcion);
+        }
+    }
+
+    @Override
+    public void eliminarPorCarrito(final UUID idCarrito) {
+        UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
+
+        try (var sentencia = obtenerConexion().prepareStatement(ItemCarritoSql.ELIMINAR_POR_CARRITO)) {
+            sentencia.setObject(POSICION_ID_CARRITO_ELIMINAR, UtilUUID.obtenerValorDefecto(idCarrito));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
@@ -96,18 +122,7 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
         final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new ItemCarritoEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
-
-        try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
-            for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
-            }
-            return ejecutarConsultaPorFiltro(sentencia);
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
+        return consultarConParametros(consulta, parametros, ItemCarritoMapper::mapear);
     }
 
     private String construirConsultaPorFiltro(final ItemCarritoEntidad filtro, final List<Object> parametros) {
@@ -115,48 +130,21 @@ public final class ItemCarritoSqlServerDAO extends ConexionSql implements ItemCa
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("i.id = ?");
+            condiciones.add(ItemCarritoSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilUUID.esUUIDPorDefecto(filtro.getCarrito().getId())) {
-            condiciones.add("i.carrito_id = ?");
+            condiciones.add(ItemCarritoSql.FILTRO_CARRITO);
             parametros.add(filtro.getCarrito().getId());
         }
         if (!UtilUUID.esUUIDPorDefecto(filtro.getProducto().getId())) {
-            condiciones.add("i.producto_id = ?");
+            condiciones.add(ItemCarritoSql.FILTRO_PRODUCTO);
             parametros.add(filtro.getProducto().getId());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
-    }
-
-    private List<ItemCarritoEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<ItemCarritoEntidad>();
-        try (var resultSet = sentencia.executeQuery()) {
-            while (resultSet.next()) {
-                resultados.add(ItemCarritoMapper.mapear(resultSet));
-            }
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
-        return resultados;
-    }
-
-    private static ImexcolException envolverErrorDao(final Exception excepcion,
-            final MensajesEnum usuarioMsg, final MensajesEnum tecnicoMsg) {
-        return ImexcolException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido(), Lugar.DATOS);
-    }
-
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_DAO_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido(),
-                Lugar.DATOS);
     }
 }

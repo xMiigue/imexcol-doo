@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class ItemCarritoSql {
 
-    public static final String ACCEDER = """
+    public static final String CREAR = """
             INSERT INTO imex_item_carrito (
                 id,
                 carrito_id,
@@ -37,6 +37,20 @@ public final class ItemCarritoSql {
             DELETE FROM imex_item_carrito
             WHERE id = ?
             """;
+
+    public static final String ELIMINAR_POR_CARRITO = """
+            DELETE FROM imex_item_carrito
+            WHERE carrito_id = ?
+            """;
+
+    public static final String FILTRO_ID = "i.id = ?";
+    public static final String FILTRO_CARRITO = "i.carrito_id = ?";
+    public static final String FILTRO_PRODUCTO = "i.producto_id = ?";
+    public static final String COLUMNA_ID = "item_carrito_id";
+    public static final String COLUMNA_CARRITO_ID = "item_carrito_carrito_id";
+    public static final String COLUMNA_PRODUCTO_ID = "item_carrito_producto_id";
+    public static final String COLUMNA_CANTIDAD = "item_carrito_cantidad";
+    public static final String COLUMNA_PRECIO_UNITARIO = "item_carrito_precio_unitario";
 
     private ItemCarritoSql() {
         super();

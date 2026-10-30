@@ -1,6 +1,11 @@
 package co.edu.uco.imexcol.transversal;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public final class UtilNumerico {
+
+    private static final int DECIMALES_MONEDA = 2;
 
     private UtilNumerico() {
         super();
@@ -28,5 +33,43 @@ public final class UtilNumerico {
 
     public static long obtenerValorDefecto(final Long valor) {
         return UtilObjeto.obtenerValorDefecto(valor, obtenerValorPorDefectoLong());
+    }
+
+    public static double convertirADouble(final Number valor) {
+        return UtilObjeto.<Number>obtenerValorDefecto(valor, obtenerValorPorDefectoDouble()).doubleValue();
+    }
+
+    public static double redondearADosDecimales(final double valor) {
+        return BigDecimal.valueOf(valor).setScale(DECIMALES_MONEDA, RoundingMode.HALF_UP).doubleValue();
+    }
+
+    public static double multiplicarADosDecimales(final double valor, final int factor) {
+        return BigDecimal.valueOf(valor)
+                .multiply(BigDecimal.valueOf(factor))
+                .setScale(DECIMALES_MONEDA, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
+    public static double dividirTruncandoADosDecimales(final double dividendo, final double divisor) {
+        return BigDecimal.valueOf(dividendo)
+                .divide(BigDecimal.valueOf(divisor), DECIMALES_MONEDA, RoundingMode.DOWN)
+                .doubleValue();
+    }
+
+    public static boolean esMayorACero(final double valor) {
+        return Double.compare(valor, obtenerValorPorDefectoDouble()) > 0;
+    }
+
+    public static boolean esNegativo(final double valor) {
+        return Double.compare(valor, obtenerValorPorDefectoDouble()) < 0;
+    }
+
+    public static boolean estaEnRango(final double valor, final double minimo, final double maximo) {
+        return Double.compare(valor, minimo) >= 0 && Double.compare(valor, maximo) <= 0;
+    }
+
+    public static boolean sonIgualesConDosDecimales(final double primerValor, final double segundoValor) {
+        return BigDecimal.valueOf(redondearADosDecimales(primerValor))
+                .compareTo(BigDecimal.valueOf(redondearADosDecimales(segundoValor))) == 0;
     }
 }

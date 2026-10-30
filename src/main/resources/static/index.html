@@ -8,7 +8,6 @@
 </head>
 <body>
 
-    <!-- ============ HEADER DINÁMICO (oculto hasta autenticarse) ============ -->
     <header id="header" class="header oculto">
         <div class="contenedor header-contenido">
             <div class="header-logo">
@@ -40,12 +39,10 @@
         </div>
     </header>
 
-    <!-- ============ NOTIFICACIÓN GLOBAL ============ -->
     <div id="notificacion" class="notificacion oculto"></div>
 
     <main>
 
-        <!-- ============ VISTA: BIENVENIDA ============ -->
         <section id="vista-bienvenida" class="vista auth-pagina">
             <div class="auth-tarjeta">
                 <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
@@ -66,7 +63,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: LOGIN CLIENTE ============ -->
         <section id="vista-login-cliente" class="vista auth-pagina oculto">
             <div class="auth-tarjeta">
                 <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
@@ -99,7 +95,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: REGISTRO CLIENTE ============ -->
         <section id="vista-registro-cliente" class="vista auth-pagina oculto">
             <div class="auth-tarjeta auth-tarjeta-ancha">
                 <span class="auth-etiqueta">Cliente</span>
@@ -152,7 +147,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: LOGIN ADMINISTRADOR ============ -->
         <section id="vista-login-administrador" class="vista auth-pagina oculto">
             <div class="auth-tarjeta">
                 <img src="img/Imexcol_logo.png" alt="Imexcol" class="auth-logo">
@@ -182,7 +176,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: TIENDA (CLIENTE AUTENTICADO) ============ -->
         <section id="vista-tienda" class="vista oculto">
             <div class="hero">
                 <div class="contenedor hero-contenido">
@@ -224,8 +217,10 @@
                         <p class="seccion-subtitulo">Productos disponibles en nuestro inventario.</p>
                     </header>
                     <div class="catalogo-filtros">
+                        <label for="catalogo-buscar" class="solo-lector-pantalla">Buscar producto</label>
                         <input type="text" id="catalogo-buscar" class="catalogo-input"
                                placeholder="Buscar producto..." autocomplete="off">
+                        <label for="catalogo-filtro-categoria" class="solo-lector-pantalla">Filtrar por categoría</label>
                         <select id="catalogo-filtro-categoria" class="catalogo-select">
                             <option value="">Todas las categorías</option>
                         </select>
@@ -237,7 +232,6 @@
             </section>
         </section>
 
-        <!-- ============ VISTA: CARRITO (CLIENTE) ============ -->
         <section id="vista-carrito" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -283,7 +277,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: CHECKOUT (CLIENTE) ============ -->
         <section id="vista-checkout" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -291,6 +284,13 @@
                     <h2 class="seccion-titulo">Checkout</h2>
                     <p class="seccion-subtitulo">Confirma tus datos para procesar el pedido.</p>
                 </header>
+
+                <div id="checkout-resultado" class="checkout-resultado oculto" aria-live="polite">
+                    <p id="checkout-resultado-mensaje"></p>
+                    <button id="btn-ver-mis-pedidos" type="button" class="boton boton-secundario oculto">
+                        Ver mis pedidos
+                    </button>
+                </div>
 
                 <div class="checkout-grilla">
 
@@ -376,7 +376,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: MIS PEDIDOS (CLIENTE) ============ -->
         <section id="vista-mis-pedidos" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -395,13 +394,14 @@
                                 <tr>
                                     <th>Pedido</th>
                                     <th>Fecha</th>
+                                    <th>Dirección</th>
                                     <th class="celda-num">Total</th>
                                     <th>Estado</th>
                                     <th class="celda-acciones">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tabla-mis-pedidos-body">
-                                <tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>
+                                <tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -431,7 +431,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: PEDIDOS (ADMIN) ============ -->
         <section id="vista-admin-pedidos" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -464,7 +463,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: PAGOS (ADMIN) ============ -->
         <section id="vista-admin-pagos" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -496,7 +494,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: ENVÍOS (ADMIN) ============ -->
         <section id="vista-admin-envios" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -567,7 +564,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: CLIENTES (ADMIN) ============ -->
         <section id="vista-admin-clientes" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -599,7 +595,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: MIS DIRECCIONES (CLIENTE) ============ -->
         <section id="vista-mis-direcciones" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -684,7 +679,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: CATEGORÍAS (ADMIN) ============ -->
         <section id="vista-categorias" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -745,7 +739,6 @@
             </div>
         </section>
 
-        <!-- ============ VISTA: PRODUCTOS (ADMIN) ============ -->
         <section id="vista-productos" class="vista oculto">
             <div class="contenedor seccion-admin">
                 <header class="admin-cabecera">
@@ -831,7 +824,6 @@
 
     </main>
 
-    <!-- ============ FOOTER ============ -->
     <footer class="footer">
         <div class="contenedor footer-contenido">
             <span class="footer-marca">IMEXCOL COMERCIALIZADORA</span>

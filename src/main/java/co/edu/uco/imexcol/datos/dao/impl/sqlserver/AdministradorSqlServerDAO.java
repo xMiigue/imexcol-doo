@@ -1,7 +1,6 @@
 package co.edu.uco.imexcol.datos.dao.impl.sqlserver;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
 import co.edu.uco.imexcol.datos.dao.ConexionSql;
 import co.edu.uco.imexcol.datos.dao.impl.mapper.AdministradorMapper;
+import co.edu.uco.imexcol.datos.dao.impl.sql.ClausulasSql;
 import co.edu.uco.imexcol.datos.dao.impl.sql.AdministradorSql;
 import co.edu.uco.imexcol.entidad.AdministradorEntidad;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
@@ -17,26 +17,36 @@ import co.edu.uco.imexcol.transversal.UtilConexionSql;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class AdministradorSqlServerDAO extends ConexionSql implements AdministradorDAO {
+
+    private static final int POSICION_ID = 1;
+    private static final int POSICION_NOMBRE_USUARIO = 2;
+    private static final int POSICION_CORREO_ELECTRONICO = 3;
+    private static final int POSICION_CONTRASENA = 4;
+    private static final int POSICION_ESTADO = 5;
+    private static final int POSICION_ACTUALIZAR_NOMBRE_USUARIO = 1;
+    private static final int POSICION_ACTUALIZAR_CORREO_ELECTRONICO = 2;
+    private static final int POSICION_ACTUALIZAR_CONTRASENA = 3;
+    private static final int POSICION_ACTUALIZAR_ESTADO = 4;
+    private static final int POSICION_ACTUALIZAR_ID = 5;
+    private static final int POSICION_ID_ELIMINAR = 1;
 
     public AdministradorSqlServerDAO(final Connection conexion) {
         super(conexion);
     }
 
     @Override
-    public void acceder(final AdministradorEntidad entidad) {
+    public void crear(final AdministradorEntidad entidad) {
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new AdministradorEntidad());
 
-        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ACCEDER)) {
-            sentencia.setObject(1, entidadSegura.getId());
-            sentencia.setString(2, entidadSegura.getNombreUsuario());
-            sentencia.setString(3, entidadSegura.getCorreoElectronico());
-            sentencia.setString(4, entidadSegura.getContrasena());
-            sentencia.setBoolean(5, entidadSegura.isEstado());
+        try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.CREAR)) {
+            sentencia.setObject(POSICION_ID, entidadSegura.getId());
+            sentencia.setString(POSICION_NOMBRE_USUARIO, entidadSegura.getNombreUsuario());
+            sentencia.setString(POSICION_CORREO_ELECTRONICO, entidadSegura.getCorreoElectronico());
+            sentencia.setString(POSICION_CONTRASENA, entidadSegura.getContrasena());
+            sentencia.setBoolean(POSICION_ESTADO, entidadSegura.isEstado());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CREAR_GENERICO,
@@ -52,11 +62,11 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         final var entidadSegura = UtilObjeto.obtenerValorDefecto(entidad, new AdministradorEntidad());
 
         try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ACTUALIZAR)) {
-            sentencia.setString(1, entidadSegura.getNombreUsuario());
-            sentencia.setString(2, entidadSegura.getCorreoElectronico());
-            sentencia.setString(3, entidadSegura.getContrasena());
-            sentencia.setBoolean(4, entidadSegura.isEstado());
-            sentencia.setObject(5, entidadSegura.getId());
+            sentencia.setString(POSICION_ACTUALIZAR_NOMBRE_USUARIO, entidadSegura.getNombreUsuario());
+            sentencia.setString(POSICION_ACTUALIZAR_CORREO_ELECTRONICO, entidadSegura.getCorreoElectronico());
+            sentencia.setString(POSICION_ACTUALIZAR_CONTRASENA, entidadSegura.getContrasena());
+            sentencia.setBoolean(POSICION_ACTUALIZAR_ESTADO, entidadSegura.isEstado());
+            sentencia.setObject(POSICION_ACTUALIZAR_ID, entidadSegura.getId());
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_MODIFICAR_GENERICO,
@@ -71,7 +81,7 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         UtilConexionSql.asegurarTransaccionIniciada(obtenerConexion());
 
         try (var sentencia = obtenerConexion().prepareStatement(AdministradorSql.ELIMINAR)) {
-            sentencia.setObject(1, UtilUUID.obtenerValorDefecto(id));
+            sentencia.setObject(POSICION_ID_ELIMINAR, UtilUUID.obtenerValorDefecto(id));
             sentencia.executeUpdate();
         } catch (final SQLException excepcion) {
             throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_ELIMINAR_GENERICO,
@@ -97,18 +107,7 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         final var entidadFiltro = UtilObjeto.obtenerValorDefecto(filtro, new AdministradorEntidad());
         final var parametros = new ArrayList<Object>();
         final var consulta = construirConsultaPorFiltro(entidadFiltro, parametros);
-
-        try (var sentencia = obtenerConexion().prepareStatement(consulta)) {
-            for (int indice = 0; indice < parametros.size(); indice++) {
-                sentencia.setObject(indice + 1, parametros.get(indice));
-            }
-            return ejecutarConsultaPorFiltro(sentencia);
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
+        return consultarConParametros(consulta, parametros, AdministradorMapper::mapear);
     }
 
     private String construirConsultaPorFiltro(final AdministradorEntidad filtro, final List<Object> parametros) {
@@ -116,52 +115,25 @@ public final class AdministradorSqlServerDAO extends ConexionSql implements Admi
         final var condiciones = new ArrayList<String>();
 
         if (!UtilUUID.esUUIDPorDefecto(filtro.getId())) {
-            condiciones.add("a.id = ?");
+            condiciones.add(AdministradorSql.FILTRO_ID);
             parametros.add(filtro.getId());
         }
         if (!UtilTexto.estaVacia(filtro.getNombreUsuario())) {
-            condiciones.add("a.nombre_usuario = ?");
+            condiciones.add(AdministradorSql.FILTRO_NOMBRE_USUARIO);
             parametros.add(filtro.getNombreUsuario());
         }
         if (!UtilTexto.estaVacia(filtro.getCorreoElectronico())) {
-            condiciones.add("a.correo_electronico = ?");
+            condiciones.add(AdministradorSql.FILTRO_CORREO_ELECTRONICO);
             parametros.add(filtro.getCorreoElectronico());
         }
         if (!UtilTexto.estaVacia(filtro.getContrasena())) {
-            condiciones.add("a.contrasena = ?");
+            condiciones.add(AdministradorSql.FILTRO_CONTRASENA);
             parametros.add(filtro.getContrasena());
         }
 
         if (!condiciones.isEmpty()) {
-            consulta.append(" WHERE ").append(String.join(" AND ", condiciones));
+            consulta.append(ClausulasSql.DONDE).append(String.join(ClausulasSql.Y, condiciones));
         }
         return consulta.toString();
-    }
-
-    private List<AdministradorEntidad> ejecutarConsultaPorFiltro(final PreparedStatement sentencia) {
-        final var resultados = new ArrayList<AdministradorEntidad>();
-        try (var resultSet = sentencia.executeQuery()) {
-            while (resultSet.next()) {
-                resultados.add(AdministradorMapper.mapear(resultSet));
-            }
-        } catch (final SQLException excepcion) {
-            throw envolverErrorDao(excepcion, MensajesEnum.ERROR_USUARIO_DAO_CONSULTAR_GENERICO,
-                    MensajesEnum.ERROR_TECNICO_DAO_CONSULTAR_GENERICO);
-        } catch (final Exception excepcion) {
-            throw envolverErrorInesperado(excepcion);
-        }
-        return resultados;
-    }
-
-    private static ImexcolException envolverErrorDao(final Exception excepcion,
-            final MensajesEnum usuarioMsg, final MensajesEnum tecnicoMsg) {
-        return ImexcolException.crear(excepcion, usuarioMsg.getContenido(), tecnicoMsg.getContenido(), Lugar.DATOS);
-    }
-
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_DAO_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_DAO_OPERACION_INESPERADA.getContenido(),
-                Lugar.DATOS);
     }
 }

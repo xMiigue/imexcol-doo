@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.DireccionEntidad;
 
 public interface DireccionDAO
-        extends AccederDAO<DireccionEntidad>,
+        extends CrearDAO<DireccionEntidad>,
                 RecuperarDAO<DireccionEntidad, UUID>,
                 ActualizarDAO<DireccionEntidad>,
                 EliminarDAO<UUID> {

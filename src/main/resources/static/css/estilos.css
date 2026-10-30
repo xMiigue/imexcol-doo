@@ -1,8 +1,3 @@
-/* ============================================================
-   Imexcol Comercializadora — Estética premium minimalista
-   Paleta: Negro #1a1a1a · Dorado #c8a84e · Blanco · Gris claro
-   ============================================================ */
-
 :root {
     --color-negro: #1a1a1a;
     --color-negro-suave: #2d2d2d;
@@ -76,11 +71,18 @@ button {
     color: var(--color-dorado);
 }
 
-.oculto {
-    display: none !important;
+.solo-lector-pantalla {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-/* ============ HEADER ============ */
 .header {
     position: sticky;
     top: 0;
@@ -172,7 +174,6 @@ button {
     transform: scaleX(1);
 }
 
-/* ============ HERO ============ */
 .hero {
     background: linear-gradient(180deg, var(--color-blanco) 0%, var(--color-gris-claro) 100%);
     padding: 48px 0 96px;
@@ -244,7 +245,6 @@ button {
     50%      { transform: translateY(-12px); }
 }
 
-/* ============ SECCIONES ============ */
 .seccion {
     padding: 100px 0;
 }
@@ -283,7 +283,6 @@ button {
     font-size: 16px;
 }
 
-/* ============ CARRUSEL DESTACADOS (slot machine) ============ */
 .carrusel-destacados {
     width: 100%;
     overflow: hidden;
@@ -300,8 +299,10 @@ button {
     will-change: transform;
 }
 
-.carrusel-pista.animando {
-    animation: carrusel-slot 20s linear infinite;
+@media (prefers-reduced-motion: no-preference) {
+    .carrusel-pista.animando {
+        animation: carrusel-slot 20s linear infinite;
+    }
 }
 
 @keyframes carrusel-slot {
@@ -386,7 +387,6 @@ button {
     color: var(--color-negro);
 }
 
-/* ============ FILTROS DEL CATÁLOGO ============ */
 .catalogo-filtros {
     display: flex;
     gap: 16px;
@@ -424,9 +424,10 @@ button {
     box-shadow: 0 0 0 3px rgba(200, 168, 78, 0.18);
 }
 
-/* Resaltado breve al hacer click en el carrusel */
-.tarjeta-producto.resaltado {
-    animation: resaltar-producto 1500ms ease-out;
+@media (prefers-reduced-motion: no-preference) {
+    .tarjeta-producto.resaltado {
+        animation: resaltar-producto 1500ms ease-out;
+    }
 }
 
 @keyframes resaltar-producto {
@@ -435,7 +436,6 @@ button {
     100% { box-shadow: 0 0 0 0 rgba(200, 168, 78, 0); transform: translateY(0); }
 }
 
-/* ============ GRILLA CATÁLOGO (productos desde API) ============ */
 .grilla-catalogo {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -552,7 +552,6 @@ button {
     font-style: italic;
 }
 
-/* ============ SECCIÓN ADMIN ============ */
 .seccion-admin {
     padding: 80px 32px 100px;
 }
@@ -597,7 +596,6 @@ button {
     letter-spacing: -0.005em;
 }
 
-/* ============ FORMULARIO ============ */
 .formulario {
     padding: 28px;
     display: flex;
@@ -672,7 +670,6 @@ button {
     gap: 16px;
 }
 
-/* ============ BOTONES ============ */
 .acciones {
     display: flex;
     gap: 10px;
@@ -762,7 +759,6 @@ button {
     border-color: var(--color-error);
 }
 
-/* ============ TABLA ============ */
 .tabla-contenedor {
     overflow-x: auto;
 }
@@ -819,11 +815,14 @@ button {
 .celda-vacia {
     text-align: center;
     color: var(--color-gris-texto);
-    padding: 36px 22px !important;
+    padding: 36px 22px;
     font-style: italic;
 }
 
-/* ============ ETIQUETAS DE ESTADO ============ */
+.tabla td.celda-vacia {
+    padding: 36px 22px;
+}
+
 .etiqueta {
     display: inline-block;
     padding: 4px 12px;
@@ -844,7 +843,6 @@ button {
     color: var(--color-gris-texto);
 }
 
-/* Estados de pedido */
 .etiqueta-pendiente {
     background-color: #FFF3CD;
     color: #856404;
@@ -881,7 +879,6 @@ button {
     border: 1px solid #F5C6CB;
 }
 
-/* ============ NOTIFICACIÓN ============ */
 .notificacion {
     position: fixed;
     top: 96px;
@@ -895,7 +892,12 @@ button {
     min-width: 280px;
     max-width: 420px;
     box-shadow: var(--sombra-media);
-    animation: deslizar 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .notificacion {
+        animation: deslizar 240ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
 }
 
 @keyframes deslizar {
@@ -915,7 +917,6 @@ button {
     border-color: rgba(220, 38, 38, 0.25);
 }
 
-/* ============ AUTENTICACIÓN (Bienvenida / Login / Registro) ============ */
 .auth-pagina {
     flex: 1;
     display: flex;
@@ -1040,7 +1041,6 @@ button {
     font-weight: 500;
 }
 
-/* Botón tipo enlace (usado en auth y otros lugares) */
 .boton-link {
     background: none;
     border: none;
@@ -1058,7 +1058,6 @@ button {
     color: var(--color-negro);
 }
 
-/* Variante de botón a ancho completo (para formularios auth) */
 .boton-bloque {
     width: 100%;
 }
@@ -1084,7 +1083,6 @@ button {
     box-shadow: 0 0 0 3px rgba(200, 168, 78, 0.18);
 }
 
-/* ============ CATÁLOGO — Botón agregar al carrito ============ */
 .tarjeta-producto-info {
     display: flex;
     flex-direction: column;
@@ -1116,7 +1114,6 @@ button {
     cursor: not-allowed;
 }
 
-/* ============ CARRITO DE COMPRAS ============ */
 .carrito-pie {
     padding: 22px 28px;
     border-top: 1px solid var(--color-gris-medio);
@@ -1186,7 +1183,6 @@ button {
     font-size: 14px;
 }
 
-/* ============ CHECKOUT ============ */
 .checkout-grilla {
     display: grid;
     grid-template-columns: 1fr 1.1fr;
@@ -1273,6 +1269,36 @@ button {
     letter-spacing: -0.01em;
 }
 
+.checkout-resultado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px 22px;
+    border: 1px solid transparent;
+    border-radius: var(--radio);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.checkout-resultado p {
+    margin: 0;
+}
+
+.checkout-resultado-exito {
+    background-color: var(--color-exito-fondo);
+    color: var(--color-exito);
+    border-color: rgba(22, 163, 74, 0.25);
+}
+
+.checkout-resultado-error {
+    background-color: var(--color-error-fondo);
+    color: var(--color-error);
+    border-color: rgba(220, 38, 38, 0.25);
+}
+
 .checkout-opciones {
     display: flex;
     flex-direction: column;
@@ -1330,7 +1356,6 @@ button {
     margin-top: 8px;
 }
 
-/* ============ DETALLE PEDIDO (cliente) ============ */
 .boton-fila.boton-fila-cambio {
     padding: 4px 8px;
     font-size: 10px;
@@ -1376,7 +1401,6 @@ button {
     box-shadow: 0 0 0 3px rgba(200, 168, 78, 0.18);
 }
 
-/* ============ FOOTER ============ */
 .footer {
     background-color: var(--color-negro);
     color: var(--color-blanco);
@@ -1417,7 +1441,6 @@ button {
     text-align: center;
 }
 
-/* ============ RESPONSIVE ============ */
 @media (max-width: 1024px) {
     .grilla-catalogo {
         grid-template-columns: repeat(3, 1fr);
@@ -1513,4 +1536,8 @@ button {
     .campo-fila {
         grid-template-columns: 1fr;
     }
+}
+
+.oculto {
+    display: none;
 }

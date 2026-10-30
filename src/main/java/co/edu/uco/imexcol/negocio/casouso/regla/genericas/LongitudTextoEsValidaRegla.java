@@ -1,51 +1,43 @@
 package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
+import co.edu.uco.imexcol.negocio.casouso.regla.UtilRegla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
+import co.edu.uco.imexcol.transversal.UtilNumerico;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class LongitudTextoEsValidaRegla implements Regla {
 
     private static final LongitudTextoEsValidaRegla INSTANCIA = new LongitudTextoEsValidaRegla();
     private static final int CANTIDAD_PARAMETROS_REQUERIDOS = 4;
+    private static final int POSICION_TEXTO = 0;
+    private static final int POSICION_NOMBRE_DATO = 1;
+    private static final int POSICION_LONGITUD_MINIMA = 2;
+    private static final int POSICION_LONGITUD_MAXIMA = 3;
 
     private LongitudTextoEsValidaRegla() {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static LongitudTextoEsValidaRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override
     public void ejecutar(final Object... datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-        if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-
-        final var texto = (String) datos[0];
-        final var nombreDato = (String) datos[1];
-        final var longitudMinima = (Integer) datos[2];
-        final var longitudMaxima = (Integer) datos[3];
+        UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
+        final var texto = UtilTexto.obtenerValorDefecto((String) datos[POSICION_TEXTO]);
+        final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
+        final var longitudMinima = UtilNumerico.obtenerValorDefecto((Integer) datos[POSICION_LONGITUD_MINIMA]);
+        final var longitudMaxima = UtilNumerico.obtenerValorDefecto((Integer) datos[POSICION_LONGITUD_MAXIMA]);
 
         if (!UtilTexto.longitudEsValida(texto, longitudMinima, longitudMaxima)) {
             final var mensajeUsuario = MensajesEnum.ERROR_USUARIO_DATO_TEXTO_LONGITUD_INVALIDA.getContenido()
                     .formatted(nombreDato, String.valueOf(longitudMinima), String.valueOf(longitudMaxima));
             final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_TEXTO_LONGITUD_INVALIDA.getContenido()
                     .formatted(nombreDato, String.valueOf(longitudMinima), String.valueOf(longitudMaxima));
-            throw ImexcolException.crear(mensajeUsuario, mensajeTecnico, Lugar.NEGOCIO);
+            throw ImexcolNegocioException.crear(mensajeUsuario, mensajeTecnico);
         }
     }
 }

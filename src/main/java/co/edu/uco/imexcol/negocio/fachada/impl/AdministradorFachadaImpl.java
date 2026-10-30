@@ -3,16 +3,10 @@ package co.edu.uco.imexcol.negocio.fachada.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
-import co.edu.uco.imexcol.datos.dao.fabrica.FabricaEnum;
 import co.edu.uco.imexcol.dto.AdministradorDTO;
 import co.edu.uco.imexcol.negocio.assembler.dto.impl.AdministradorDTOAssembler;
 import co.edu.uco.imexcol.negocio.casouso.impl.AdministradorNegocioImpl;
 import co.edu.uco.imexcol.negocio.fachada.AdministradorFachada;
-import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
 public final class AdministradorFachadaImpl implements AdministradorFachada {
 
@@ -25,92 +19,30 @@ public final class AdministradorFachadaImpl implements AdministradorFachada {
 
     @Override
     public void registrar(final AdministradorDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
-        try {
-            fabrica.iniciarTransaccion();
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
-            negocio.registrar(dominio);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexion();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica ->
+                new AdministradorNegocioImpl(fabrica).registrar(ensamblador.ensamblarDominio(dto)));
     }
 
     @Override
     public void actualizar(final AdministradorDTO dto) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
-        try {
-            fabrica.iniciarTransaccion();
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new AdministradorDTO());
-            final var dominio = ensamblador.ensamblarDominio(dtoSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
-            negocio.actualizar(dominio);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexion();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica ->
+                new AdministradorNegocioImpl(fabrica).actualizar(ensamblador.ensamblarDominio(dto)));
     }
 
     @Override
     public void eliminar(final UUID id) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
-        try {
-            fabrica.iniciarTransaccion();
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
-            negocio.eliminar(id);
-            fabrica.confirmarTransaccion();
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexion();
-        }
+        EjecutorTransaccionFachada.ejecutar(fabrica -> new AdministradorNegocioImpl(fabrica).eliminar(id));
     }
 
     @Override
     public List<AdministradorDTO> consultar(final AdministradorDTO filtros) {
-        final var fabrica = FabricaDAO.obtenerFabrica(FabricaEnum.SQLSERVER);
-        try {
-            fabrica.iniciarTransaccion();
-            final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDTO());
-            final var dominioFiltro = ensamblador.ensamblarDominio(filtroSeguro);
-            final var negocio = new AdministradorNegocioImpl(fabrica.obtenerAdministradorDAO());
-            final var dominios = negocio.consultar(dominioFiltro);
-            final var resultado = ensamblador.ensamblarDTO(dominios);
-            fabrica.confirmarTransaccion();
-            return resultado;
-        } catch (final ImexcolException excepcion) {
-            fabrica.revertirTransaccion();
-            throw excepcion;
-        } catch (final Exception excepcion) {
-            fabrica.revertirTransaccion();
-            throw envolverErrorInesperado(excepcion);
-        } finally {
-            fabrica.cerrarConexion();
-        }
+        return EjecutorTransaccionFachada.ejecutarConResultado(fabrica -> ensamblador.ensamblarDTO(
+                new AdministradorNegocioImpl(fabrica).consultar(ensamblador.ensamblarDominio(filtros))));
     }
 
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_FACHADA_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_FACHADA_OPERACION_INESPERADA.getContenido(),
-                Lugar.FACHADA);
+    @Override
+    public AdministradorDTO autenticar(final AdministradorDTO credenciales) {
+        return EjecutorTransaccionFachada.ejecutarConResultado(fabrica -> ensamblador.ensamblarDTO(
+                new AdministradorNegocioImpl(fabrica).autenticar(ensamblador.ensamblarDominio(credenciales))));
     }
 }

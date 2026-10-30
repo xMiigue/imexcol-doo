@@ -26,9 +26,8 @@ public final class ImagenProductoDTOAssembler implements DTOAssembler<ImagenProd
         return new ImagenProductoDominio(
                 dtoAEnsamblar.getId(),
                 ProductoDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getProducto()),
-                dtoAEnsamblar.getUrl(),
-                dtoAEnsamblar.getDescripcion(),
-                dtoAEnsamblar.isEsPrincipal());
+                dtoAEnsamblar.getFoto(),
+                dtoAEnsamblar.getOrdenVisualizacion());
     }
 
     @Override
@@ -37,9 +36,8 @@ public final class ImagenProductoDTOAssembler implements DTOAssembler<ImagenProd
         return new ImagenProductoDTO(
                 dominioAEnsamblar.getId(),
                 ProductoDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getProducto()),
-                dominioAEnsamblar.getUrl(),
-                dominioAEnsamblar.getDescripcion(),
-                dominioAEnsamblar.isEsPrincipal());
+                dominioAEnsamblar.getFoto(),
+                dominioAEnsamblar.getOrdenVisualizacion());
     }
 
     @Override

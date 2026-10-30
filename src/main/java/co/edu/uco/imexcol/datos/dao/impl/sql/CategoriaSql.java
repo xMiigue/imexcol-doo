@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class CategoriaSql {
 
-    public static final String ACCEDER = """
+    public static final String CREAR = """
             INSERT INTO imex_categoria (
                 id,
                 nombre,
@@ -34,6 +34,13 @@ public final class CategoriaSql {
             DELETE FROM imex_categoria
             WHERE id = ?
             """;
+
+    public static final String FILTRO_ID = "c.id = ?";
+    public static final String FILTRO_NOMBRE = "c.nombre = ?";
+    public static final String COLUMNA_ID = "categoria_id";
+    public static final String COLUMNA_NOMBRE = "categoria_nombre";
+    public static final String COLUMNA_DESCRIPCION = "categoria_descripcion";
+    public static final String COLUMNA_ESTADO = "categoria_estado";
 
     private CategoriaSql() {
         super();

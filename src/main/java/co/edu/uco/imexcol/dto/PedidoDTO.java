@@ -16,6 +16,7 @@ public final class PedidoDTO {
     private LocalDate fechaPedido;
     private double total;
     private String estado;
+    private DireccionDTO direccion;
 
     public PedidoDTO() {
         setId(UtilUUID.obtenerValorPorDefecto());
@@ -23,6 +24,7 @@ public final class PedidoDTO {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionDTO());
     }
 
     public PedidoDTO(final UUID id) {
@@ -31,15 +33,17 @@ public final class PedidoDTO {
         setFechaPedido(UtilFecha.obtenerFechaPorDefecto());
         setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
         setEstado(UtilTexto.VACIO);
+        setDireccion(new DireccionDTO());
     }
 
     public PedidoDTO(final UUID id, final ClienteDTO cliente, final LocalDate fechaPedido, final double total,
-                     final String estado) {
+                     final String estado, final DireccionDTO direccion) {
         setId(id);
         setCliente(cliente);
         setFechaPedido(fechaPedido);
         setTotal(total);
         setEstado(estado);
+        setDireccion(direccion);
     }
 
     public UUID getId() {
@@ -80,5 +84,13 @@ public final class PedidoDTO {
 
     public void setEstado(final String estado) {
         this.estado = UtilTexto.aplicarTrim(estado);
+    }
+
+    public DireccionDTO getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(final DireccionDTO direccion) {
+        this.direccion = UtilObjeto.obtenerValorDefecto(direccion, new DireccionDTO());
     }
 }

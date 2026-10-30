@@ -1,48 +1,39 @@
 package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
+import co.edu.uco.imexcol.negocio.casouso.regla.UtilRegla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.UtilNumerico;
+import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class NumeroEsPositivoRegla implements Regla {
 
     private static final NumeroEsPositivoRegla INSTANCIA = new NumeroEsPositivoRegla();
     private static final int CANTIDAD_PARAMETROS_REQUERIDOS = 2;
+    private static final int POSICION_VALOR = 0;
+    private static final int POSICION_NOMBRE_DATO = 1;
 
     private NumeroEsPositivoRegla() {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static NumeroEsPositivoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override
     public void ejecutar(final Object... datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-        if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    Lugar.NEGOCIO);
-        }
+        UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
+        final var valor = UtilNumerico.convertirADouble((Number) datos[POSICION_VALOR]);
+        final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
 
-        final var valor = ((Number) datos[0]).doubleValue();
-        final var nombreDato = (String) datos[1];
-
-        if (valor < 0) {
+        if (UtilNumerico.esNegativo(valor)) {
             final var mensajeUsuario = MensajesEnum.ERROR_USUARIO_DATO_NUMERO_NEGATIVO.getContenido()
                     .formatted(nombreDato);
             final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_NUMERO_NEGATIVO.getContenido()
                     .formatted(nombreDato);
-            throw ImexcolException.crear(mensajeUsuario, mensajeTecnico, Lugar.NEGOCIO);
+            throw ImexcolNegocioException.crear(mensajeUsuario, mensajeTecnico);
         }
     }
 }

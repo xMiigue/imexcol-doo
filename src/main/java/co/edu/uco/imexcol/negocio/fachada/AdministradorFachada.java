@@ -14,4 +14,6 @@ public interface AdministradorFachada {
     void eliminar(UUID id);
 
     List<AdministradorDTO> consultar(AdministradorDTO filtros);
+
+    AdministradorDTO autenticar(AdministradorDTO credenciales);
 }

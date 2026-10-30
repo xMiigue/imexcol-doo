@@ -5,8 +5,10 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.ItemCarritoEntidad;
 
 public interface ItemCarritoDAO
-        extends AccederDAO<ItemCarritoEntidad>,
+        extends CrearDAO<ItemCarritoEntidad>,
                 RecuperarDAO<ItemCarritoEntidad, UUID>,
                 ActualizarDAO<ItemCarritoEntidad>,
                 EliminarDAO<UUID> {
+
+    void eliminarPorCarrito(UUID idCarrito);
 }

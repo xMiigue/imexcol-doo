@@ -2,12 +2,14 @@ package co.edu.uco.imexcol.negocio.casouso.validador.carritocompras;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.genericas.EstadoEsValidoRegla;
 import co.edu.uco.imexcol.negocio.casouso.validador.Validador;
+import co.edu.uco.imexcol.negocio.dominio.enums.EstadoCarritoComprasEnum;
+import co.edu.uco.imexcol.transversal.UtilTexto;
 
 public final class ValidarEstadoCarritoComprasEsValido implements Validador {
 
     private static final ValidarEstadoCarritoComprasEsValido INSTANCIA = new ValidarEstadoCarritoComprasEsValido();
-
-    public static final String[] ESTADOS_VALIDOS = { "Activo", "Abandonado", "Convertido" };
+    private static final String NOMBRE_DATO = "estado del carrito de compras";
+    private static final int POSICION_ESTADO = 0;
 
     private ValidarEstadoCarritoComprasEsValido() {
         super();
@@ -19,7 +21,8 @@ public final class ValidarEstadoCarritoComprasEsValido implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        final var estado = (String) datos[0];
-        EstadoEsValidoRegla.ejecutarRegla(estado, "estado del carrito de compras", ESTADOS_VALIDOS);
+        final var estado = UtilTexto.aplicarTrim((String) datos[POSICION_ESTADO]);
+        EstadoEsValidoRegla.obtenerInstancia().ejecutar(estado, NOMBRE_DATO,
+                EstadoCarritoComprasEnum.obtenerValoresPermitidos());
     }
 }

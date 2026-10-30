@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class ProductoSql {
 
-    public static final String ACCEDER = """
+    public static final String CREAR = """
             INSERT INTO imex_producto (
                 id,
                 categoria_id,
@@ -46,6 +46,18 @@ public final class ProductoSql {
             DELETE FROM imex_producto
             WHERE id = ?
             """;
+
+    public static final String FILTRO_ID = "p.id = ?";
+    public static final String FILTRO_CATEGORIA = "p.categoria_id = ?";
+    public static final String FILTRO_NOMBRE = "p.nombre = ?";
+    public static final String COLUMNA_ID = "producto_id";
+    public static final String COLUMNA_CATEGORIA_ID = "producto_categoria_id";
+    public static final String COLUMNA_NOMBRE = "producto_nombre";
+    public static final String COLUMNA_DESCRIPCION = "producto_descripcion";
+    public static final String COLUMNA_PRECIO = "producto_precio";
+    public static final String COLUMNA_STOCK = "producto_stock";
+    public static final String COLUMNA_IMAGEN_URL = "producto_imagen_url";
+    public static final String COLUMNA_ESTADO = "producto_estado";
 
     private ProductoSql() {
         super();

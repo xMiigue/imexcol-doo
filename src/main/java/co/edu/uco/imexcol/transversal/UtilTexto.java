@@ -28,6 +28,10 @@ public final class UtilTexto {
         return VACIO.equals(aplicarTrim(texto));
     }
 
+    public static boolean sonIguales(final String texto, final String otroTexto) {
+        return obtenerValorDefecto(texto).equals(obtenerValorDefecto(otroTexto));
+    }
+
     public static boolean longitudEsValida(final String texto, final int min, final int max) {
         var longitud = aplicarTrim(texto).length();
         return longitud >= min && longitud <= max;

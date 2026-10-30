@@ -9,9 +9,11 @@ public interface ResenaNegocio {
 
     void registrar(ResenaDominio dominio);
 
-    void actualizar(ResenaDominio dominio);
+    void eliminarPorCliente(UUID idResena, UUID idCliente);
 
-    void eliminar(UUID id);
+    void eliminarPorAdministrador(UUID idResena, UUID idAdministrador);
+
+    List<ResenaDominio> consultarPorProducto(UUID idProducto);
 
     List<ResenaDominio> consultar(ResenaDominio filtros);
 }

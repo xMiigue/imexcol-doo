@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class EnvioSql {
 
-    public static final String ACCEDER = """
+    public static final String CREAR = """
             INSERT INTO imex_envio (
                 id,
                 pedido_id,
@@ -43,6 +43,18 @@ public final class EnvioSql {
             DELETE FROM imex_envio
             WHERE id = ?
             """;
+
+    public static final String FILTRO_ID = "e.id = ?";
+    public static final String FILTRO_PEDIDO = "e.pedido_id = ?";
+    public static final String FILTRO_NUMERO_GUIA = "e.numero_guia = ?";
+    public static final String FILTRO_ESTADO = "e.estado = ?";
+    public static final String COLUMNA_ID = "envio_id";
+    public static final String COLUMNA_PEDIDO_ID = "envio_pedido_id";
+    public static final String COLUMNA_FECHA_ENVIO = "envio_fecha_envio";
+    public static final String COLUMNA_FECHA_ENTREGA = "envio_fecha_entrega";
+    public static final String COLUMNA_TRANSPORTADORA = "envio_transportadora";
+    public static final String COLUMNA_NUMERO_GUIA = "envio_numero_guia";
+    public static final String COLUMNA_ESTADO = "envio_estado";
 
     private EnvioSql() {
         super();

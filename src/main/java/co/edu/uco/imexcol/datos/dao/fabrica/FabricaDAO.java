@@ -8,35 +8,37 @@ import co.edu.uco.imexcol.datos.dao.CategoriaDAO;
 import co.edu.uco.imexcol.datos.dao.ClienteDAO;
 import co.edu.uco.imexcol.datos.dao.DireccionDAO;
 import co.edu.uco.imexcol.datos.dao.EnvioDAO;
+import co.edu.uco.imexcol.datos.dao.EventoRastreoDAO;
+import co.edu.uco.imexcol.datos.dao.FacturaDAO;
+import co.edu.uco.imexcol.datos.dao.ImagenProductoDAO;
 import co.edu.uco.imexcol.datos.dao.ItemCarritoDAO;
 import co.edu.uco.imexcol.datos.dao.LineaPedidoDAO;
 import co.edu.uco.imexcol.datos.dao.MetodoPagoDAO;
 import co.edu.uco.imexcol.datos.dao.PagoDAO;
 import co.edu.uco.imexcol.datos.dao.PedidoDAO;
 import co.edu.uco.imexcol.datos.dao.ProductoDAO;
+import co.edu.uco.imexcol.datos.dao.ResenaDAO;
 import co.edu.uco.imexcol.datos.dao.fabrica.sqlserver.SqlServerFabricaDAO;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilConexionSql;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolDatosException;
 
 public abstract class FabricaDAO {
 
     protected Connection conexion;
-    protected static FabricaEnum fabrica = FabricaEnum.SQLSERVER;
+    private static final FabricaEnum FABRICA_POR_DEFECTO = FabricaEnum.SQLSERVER;
 
     public static FabricaDAO obtenerFabrica() {
-        return obtenerFabrica(fabrica);
+        return obtenerFabrica(FABRICA_POR_DEFECTO);
     }
 
     public static FabricaDAO obtenerFabrica(final FabricaEnum tipo) {
         if (FabricaEnum.SQLSERVER.equals(tipo)) {
             return new SqlServerFabricaDAO();
         }
-        throw ImexcolException.crear(
+        throw ImexcolDatosException.crear(
                 MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                Lugar.DATOS);
+                MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
     }
 
     public abstract CategoriaDAO obtenerCategoriaDAO();
@@ -63,6 +65,14 @@ public abstract class FabricaDAO {
 
     public abstract EnvioDAO obtenerEnvioDAO();
 
+    public abstract FacturaDAO obtenerFacturaDAO();
+
+    public abstract ResenaDAO obtenerResenaDAO();
+
+    public abstract ImagenProductoDAO obtenerImagenProductoDAO();
+
+    public abstract EventoRastreoDAO obtenerEventoRastreoDAO();
+
     protected abstract void abrirConexion();
 
     public final void iniciarTransaccion() {
@@ -79,5 +89,13 @@ public abstract class FabricaDAO {
 
     public final void cerrarConexion() {
         UtilConexionSql.cerrarConexion(conexion);
+    }
+
+    public final void revertirTransaccionSinOcultar(final Exception excepcionOriginal) {
+        UtilConexionSql.revertirTransaccionSinOcultar(conexion, excepcionOriginal);
+    }
+
+    public final void cerrarConexionSinOcultar() {
+        UtilConexionSql.cerrarConexionSinOcultar(conexion);
     }
 }

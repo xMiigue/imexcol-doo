@@ -2,7 +2,7 @@ package co.edu.uco.imexcol.datos.dao.impl.sql;
 
 public final class LineaPedidoSql {
 
-    public static final String ACCEDER = """
+    public static final String CREAR = """
             INSERT INTO imex_linea_pedido (
                 id,
                 pedido_id,
@@ -40,6 +40,16 @@ public final class LineaPedidoSql {
             DELETE FROM imex_linea_pedido
             WHERE id = ?
             """;
+
+    public static final String FILTRO_ID = "l.id = ?";
+    public static final String FILTRO_PEDIDO = "l.pedido_id = ?";
+    public static final String FILTRO_PRODUCTO = "l.producto_id = ?";
+    public static final String COLUMNA_ID = "linea_pedido_id";
+    public static final String COLUMNA_PEDIDO_ID = "linea_pedido_pedido_id";
+    public static final String COLUMNA_PRODUCTO_ID = "linea_pedido_producto_id";
+    public static final String COLUMNA_CANTIDAD = "linea_pedido_cantidad";
+    public static final String COLUMNA_PRECIO_UNITARIO = "linea_pedido_precio_unitario";
+    public static final String COLUMNA_SUBTOTAL = "linea_pedido_subtotal";
 
     private LineaPedidoSql() {
         super();

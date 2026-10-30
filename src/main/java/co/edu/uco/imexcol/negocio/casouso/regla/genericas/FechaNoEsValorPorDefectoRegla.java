@@ -3,49 +3,39 @@ package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 import java.time.LocalDate;
 
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
+import co.edu.uco.imexcol.negocio.casouso.regla.UtilRegla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilFecha;
-import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class FechaNoEsValorPorDefectoRegla implements Regla {
 
     private static final FechaNoEsValorPorDefectoRegla INSTANCIA = new FechaNoEsValorPorDefectoRegla();
     private static final int CANTIDAD_PARAMETROS_REQUERIDOS = 2;
+    private static final int POSICION_FECHA = 0;
+    private static final int POSICION_NOMBRE_DATO = 1;
 
     private FechaNoEsValorPorDefectoRegla() {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static FechaNoEsValorPorDefectoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override
     public void ejecutar(final Object... datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-        if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-
-        final var fecha = (LocalDate) datos[0];
-        final var nombreDato = (String) datos[1];
+        UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
+        final var fecha = UtilFecha.obtenerValorDefecto((LocalDate) datos[POSICION_FECHA]);
+        final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
 
         if (UtilFecha.esFechaPorDefecto(fecha)) {
             final var mensajeUsuario = MensajesEnum.ERROR_USUARIO_DATO_FECHA_REQUERIDA.getContenido()
                     .formatted(nombreDato);
             final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_FECHA_REQUERIDA.getContenido()
                     .formatted(nombreDato);
-            throw ImexcolException.crear(mensajeUsuario, mensajeTecnico, Lugar.NEGOCIO);
+            throw ImexcolNegocioException.crear(mensajeUsuario, mensajeTecnico);
         }
     }
 }

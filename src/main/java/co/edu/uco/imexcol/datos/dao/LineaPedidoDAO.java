@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.LineaPedidoEntidad;
 
 public interface LineaPedidoDAO
-        extends AccederDAO<LineaPedidoEntidad>,
+        extends CrearDAO<LineaPedidoEntidad>,
                 RecuperarDAO<LineaPedidoEntidad, UUID>,
                 ActualizarDAO<LineaPedidoEntidad>,
                 EliminarDAO<UUID> {

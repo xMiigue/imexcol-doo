@@ -17,6 +17,6 @@ public final class ValidarNumeroEnRango implements Validador {
 
     @Override
     public void validar(final Object... datos) {
-        NumeroEnRangoRegla.ejecutarRegla(datos);
+        NumeroEnRangoRegla.obtenerInstancia().ejecutar(datos);
     }
 }

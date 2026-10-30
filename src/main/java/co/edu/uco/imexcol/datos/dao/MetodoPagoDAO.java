@@ -5,7 +5,7 @@ import java.util.UUID;
 import co.edu.uco.imexcol.entidad.MetodoPagoEntidad;
 
 public interface MetodoPagoDAO
-        extends AccederDAO<MetodoPagoEntidad>,
+        extends CrearDAO<MetodoPagoEntidad>,
                 RecuperarDAO<MetodoPagoEntidad, UUID>,
                 ActualizarDAO<MetodoPagoEntidad>,
                 EliminarDAO<UUID> {

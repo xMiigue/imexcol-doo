@@ -3,9 +3,14 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.DireccionDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.DireccionEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.DireccionNegocio;
+import co.edu.uco.imexcol.negocio.casouso.validador.cliente.ValidarClienteExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoEstaDuplicadaParaCliente;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoTienePedidosAsociados;
+import co.edu.uco.imexcol.negocio.casouso.validador.direccion.ValidarDireccionNoTienePedidosEnCurso;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
@@ -13,34 +18,39 @@ import co.edu.uco.imexcol.negocio.dominio.DireccionDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.UtilUUID;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
-/**
- * Casos de uso del objeto de dominio Dirección.
- *
- * Políticas de negocio aplicadas (referencia documentación de políticas):
- * <ul>
- *   <li>DIR-POL-01: Validación de datos requeridos (calle, ciudad, departamento, país).</li>
- *   <li>DIR-POL-02: El cliente asociado debe existir.</li>
- *   <li>DIR-POL-03: Un cliente no puede tener dos direcciones con la misma combinación
- *       de calle + ciudad + departamento + país.</li>
- * </ul>
- */
 public final class DireccionNegocioImpl implements DireccionNegocio {
 
-    private final DireccionDAO dao;
+    private static final String DATO_CLIENTE = "cliente asociado a la dirección";
+    private static final String DATO_CALLE = "calle de la dirección";
+    private static final String DATO_CIUDAD = "ciudad de la dirección";
+    private static final String DATO_DEPARTAMENTO = "departamento de la dirección";
+    private static final String DATO_PAIS = "país de la dirección";
+    private static final String DATO_CODIGO_POSTAL = "código postal de la dirección";
+    private static final int LONGITUD_MINIMA_CALLE = 5;
+    private static final int LONGITUD_MAXIMA_CALLE = 200;
+    private static final int LONGITUD_MINIMA_CIUDAD = 2;
+    private static final int LONGITUD_MAXIMA_CIUDAD = 100;
+    private static final int LONGITUD_MINIMA_DEPARTAMENTO = 2;
+    private static final int LONGITUD_MAXIMA_DEPARTAMENTO = 100;
+    private static final int LONGITUD_MINIMA_PAIS = 2;
+    private static final int LONGITUD_MAXIMA_PAIS = 100;
+    private static final int LONGITUD_MINIMA_CODIGO_POSTAL = 3;
+    private static final int LONGITUD_MAXIMA_CODIGO_POSTAL = 10;
+
+    private final FabricaDAO fabrica;
     private final DireccionEntidadAssembler ensamblador;
 
-    public DireccionNegocioImpl(final DireccionDAO dao) {
-        super();
-        if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+    public DireccionNegocioImpl(final FabricaDAO fabrica) {
+        if (UtilObjeto.esNulo(fabrica)) {
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        super();
+        this.fabrica = fabrica;
         this.ensamblador = DireccionEntidadAssembler.obtenerInstancia();
     }
 
@@ -48,77 +58,95 @@ public final class DireccionNegocioImpl implements DireccionNegocio {
     public void registrar(final DireccionDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
         validarDatosComunes(dominioSeguro);
-        validarNoExisteDireccionDuplicada(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarClienteExista(dominioSeguro);
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarDireccionNoEsteDuplicada(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final DireccionDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new DireccionDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "dirección");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarDireccionExista(dominioSeguro.getId());
+        asegurarDireccionNoTengaPedidosEnCurso(dominioSeguro.getId());
+        asegurarClienteExista(dominioSeguro);
+        asegurarDireccionNoEsteDuplicada(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "dirección");
-        dao.eliminar(id);
+        asegurarDireccionExista(id);
+        asegurarDireccionNoTengaPedidos(id);
+        borrar(id);
     }
 
     @Override
     public List<DireccionDominio> consultar(final DireccionDominio filtros) {
         final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new DireccionDominio());
         final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
+        final var entidades = fabrica.obtenerDireccionDAO().consultarPorFiltro(entidadFiltro);
         return ensamblador.ensamblarDominio(entidades);
     }
 
     private void validarDatosComunes(final DireccionDominio dominio) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(),
-                "cliente asociado a la dirección");
+        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominio.getCliente().getId(), DATO_CLIENTE);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCalle(), DATO_CALLE);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCalle(), DATO_CALLE,
+                LONGITUD_MINIMA_CALLE, LONGITUD_MAXIMA_CALLE);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCiudad(), DATO_CIUDAD);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCiudad(), DATO_CIUDAD,
+                LONGITUD_MINIMA_CIUDAD, LONGITUD_MAXIMA_CIUDAD);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getDepartamento(), DATO_DEPARTAMENTO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDepartamento(), DATO_DEPARTAMENTO,
+                LONGITUD_MINIMA_DEPARTAMENTO, LONGITUD_MAXIMA_DEPARTAMENTO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getPais(), DATO_PAIS);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getPais(), DATO_PAIS,
+                LONGITUD_MINIMA_PAIS, LONGITUD_MAXIMA_PAIS);
+        validarCodigoPostalOpcional(dominio.getCodigoPostal());
+    }
 
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCalle(), "calle de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCalle(), "calle de la dirección", 5, 200);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCiudad(), "ciudad de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCiudad(), "ciudad de la dirección", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getDepartamento(),
-                "departamento de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getDepartamento(),
-                "departamento de la dirección", 2, 100);
-
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getPais(), "país de la dirección");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getPais(), "país de la dirección", 2, 100);
-
-        if (!UtilTexto.estaVacia(dominio.getCodigoPostal())) {
-            ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCodigoPostal(),
-                    "código postal de la dirección", 3, 10);
+    private void validarCodigoPostalOpcional(final String codigoPostal) {
+        if (!UtilTexto.estaVacia(codigoPostal)) {
+            ValidarLongitudTextoEsValida.ejecutarValidacion(codigoPostal, DATO_CODIGO_POSTAL,
+                    LONGITUD_MINIMA_CODIGO_POSTAL, LONGITUD_MAXIMA_CODIGO_POSTAL);
         }
     }
 
-    /**
-     * Verifica que no exista ya una dirección registrada con la misma combinación
-     * de cliente + calle + ciudad + departamento + país. Aplica la política DIR-POL-03.
-     */
-    private void validarNoExisteDireccionDuplicada(final DireccionDominio dominio) {
-        final var filtro = ensamblador.ensamblarEntidad(new DireccionDominio());
-        filtro.getCliente().setId(dominio.getCliente().getId());
-        filtro.setCalle(dominio.getCalle());
-        filtro.setCiudad(dominio.getCiudad());
-        filtro.setDepartamento(dominio.getDepartamento());
-        filtro.setPais(dominio.getPais());
+    private void asegurarClienteExista(final DireccionDominio dominio) {
+        ValidarClienteExistePorId.ejecutarValidacion(dominio.getCliente().getId(), fabrica);
+    }
 
-        final var existentes = dao.consultarPorFiltro(filtro);
-        if (!UtilObjeto.esNulo(existentes) && !existentes.isEmpty()) {
-            throw ImexcolException.crear(
-                    "Ya existe una dirección registrada con la misma calle, ciudad, departamento y país para este cliente.",
-                    "Intento de inserción de dirección duplicada para cliente=%s (calle=%s, ciudad=%s, departamento=%s, pais=%s)."
-                            .formatted(dominio.getCliente().getId(), dominio.getCalle(),
-                                    dominio.getCiudad(), dominio.getDepartamento(), dominio.getPais()),
-                    Lugar.NEGOCIO);
-        }
+    private void asignarNuevoIdentificador(final DireccionDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void asegurarDireccionNoEsteDuplicada(final DireccionDominio dominio) {
+        ValidarDireccionNoEstaDuplicadaParaCliente.ejecutarValidacion(dominio, fabrica);
+    }
+
+    private void asegurarDireccionExista(final UUID id) {
+        ValidarDireccionExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void guardar(final DireccionDominio dominio) {
+        fabrica.obtenerDireccionDAO().crear(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final DireccionDominio dominio) {
+        fabrica.obtenerDireccionDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void asegurarDireccionNoTengaPedidosEnCurso(final UUID id) {
+        ValidarDireccionNoTienePedidosEnCurso.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarDireccionNoTengaPedidos(final UUID id) {
+        ValidarDireccionNoTienePedidosAsociados.ejecutarValidacion(id, fabrica);
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerDireccionDAO().eliminar(id);
     }
 }

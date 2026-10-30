@@ -1,6 +1,6 @@
 package co.edu.uco.imexcol.entidad;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.transversal.UtilFecha;
@@ -12,37 +12,33 @@ public final class EventoRastreoEntidad {
 
     private UUID id;
     private EnvioEntidad envio;
-    private LocalDate fecha;
-    private String ubicacion;
-    private String descripcion;
-    private String estado;
+    private String estadoLogistico;
+    private LocalDateTime fechaHora;
+    private String observacion;
 
     public EventoRastreoEntidad() {
         setId(UtilUUID.obtenerValorPorDefecto());
         setEnvio(new EnvioEntidad());
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
-        setUbicacion(UtilTexto.VACIO);
-        setDescripcion(UtilTexto.VACIO);
-        setEstado(UtilTexto.VACIO);
+        setEstadoLogistico(UtilTexto.VACIO);
+        setFechaHora(UtilFecha.obtenerFechaHoraPorDefecto());
+        setObservacion(UtilTexto.VACIO);
     }
 
     public EventoRastreoEntidad(final UUID id) {
         setId(id);
         setEnvio(new EnvioEntidad());
-        setFecha(UtilFecha.obtenerFechaPorDefecto());
-        setUbicacion(UtilTexto.VACIO);
-        setDescripcion(UtilTexto.VACIO);
-        setEstado(UtilTexto.VACIO);
+        setEstadoLogistico(UtilTexto.VACIO);
+        setFechaHora(UtilFecha.obtenerFechaHoraPorDefecto());
+        setObservacion(UtilTexto.VACIO);
     }
 
-    public EventoRastreoEntidad(final UUID id, final EnvioEntidad envio, final LocalDate fecha,
-                                final String ubicacion, final String descripcion, final String estado) {
+    public EventoRastreoEntidad(final UUID id, final EnvioEntidad envio, final String estadoLogistico,
+                                final LocalDateTime fechaHora, final String observacion) {
         setId(id);
         setEnvio(envio);
-        setFecha(fecha);
-        setUbicacion(ubicacion);
-        setDescripcion(descripcion);
-        setEstado(estado);
+        setEstadoLogistico(estadoLogistico);
+        setFechaHora(fechaHora);
+        setObservacion(observacion);
     }
 
     public UUID getId() {
@@ -61,35 +57,27 @@ public final class EventoRastreoEntidad {
         this.envio = UtilObjeto.obtenerValorDefecto(envio, new EnvioEntidad());
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public String getEstadoLogistico() {
+        return estadoLogistico;
     }
 
-    public void setFecha(final LocalDate fecha) {
-        this.fecha = UtilFecha.obtenerValorDefecto(fecha);
+    public void setEstadoLogistico(final String estadoLogistico) {
+        this.estadoLogistico = UtilTexto.aplicarTrim(estadoLogistico);
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public LocalDateTime getFechaHora() {
+        return fechaHora;
     }
 
-    public void setUbicacion(final String ubicacion) {
-        this.ubicacion = UtilTexto.aplicarTrim(ubicacion);
+    public void setFechaHora(final LocalDateTime fechaHora) {
+        this.fechaHora = UtilFecha.obtenerValorDefecto(fechaHora);
     }
 
-    public String getDescripcion() {
-        return descripcion;
+    public String getObservacion() {
+        return observacion;
     }
 
-    public void setDescripcion(final String descripcion) {
-        this.descripcion = UtilTexto.aplicarTrim(descripcion);
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(final String estado) {
-        this.estado = UtilTexto.aplicarTrim(estado);
+    public void setObservacion(final String observacion) {
+        this.observacion = UtilTexto.aplicarTrim(observacion);
     }
 }

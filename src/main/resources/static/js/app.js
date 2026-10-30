@@ -1,9 +1,3 @@
-/* ============================================================
-   Imexcol Comercializadora — Frontend e-commerce
-   API: /api/v1/{categorias,productos,auth}
-   Respuesta backend: { mensajes: string[], datos: T[], exitosa: bool }
-   ============================================================ */
-
 const API = {
     categorias: '/api/v1/categorias',
     productos: '/api/v1/productos',
@@ -15,6 +9,9 @@ const API = {
     pagos: '/api/v1/pagos',
     metodosPago: '/api/v1/metodos-pago',
     direcciones: '/api/v1/direcciones',
+    carritosCompras: '/api/v1/carritos-compras',
+    itemsCarrito: '/api/v1/items-carrito',
+    compras: '/api/v1/compras',
     clientes: '/api/v1/clientes',
     envios: '/api/v1/envios'
 };
@@ -22,11 +19,13 @@ const API = {
 const ESTADOS_PEDIDO = ['PENDIENTE', 'CONFIRMADO', 'PREPARANDO', 'ENVIADO', 'ENTREGADO', 'CANCELADO'];
 const ESTADOS_PAGO = ['PENDIENTE', 'EN_PROCESO', 'APROBADO', 'RECHAZADO', 'REEMBOLSADO'];
 const ESTADOS_ENVIO = ['PREPARANDO', 'EN_TRANSITO', 'ENTREGADO', 'DEVUELTO', 'EXTRAVIADO'];
+const COPIAS_PISTA_CARRUSEL_CONTINUA = 4;
+const ESTADO_CARRITO_ACTIVO = 'Activo';
+const FECHA_POR_DEFECTO = '0001-01-01';
 
-// Estado global en memoria (no se persiste)
 const estado = {
-    usuario: null,        // { tipo: 'cliente' | 'administrador', datos: {...} }
-    carrito: [],          // [ { producto, cantidad } ]
+    usuario: null,
+    carrito: [],
     catEditandoId: null,
     proEditandoId: null,
     dirEditandoId: null,
@@ -38,8 +37,6 @@ const estado = {
     pedidosCliente: []
 };
 
-// ============ Utilidades ============
-
 function mostrarNotificacion(mensaje, tipo) {
     const nodo = document.getElementById('notificacion');
     nodo.textContent = mensaje;
@@ -48,6 +45,10 @@ function mostrarNotificacion(mensaje, tipo) {
     mostrarNotificacion._timer = setTimeout(() => {
         nodo.classList.add('oculto');
     }, 4500);
+}
+
+function notificarErrorInesperado(error) {
+    mostrarNotificacion(error.message || 'Ocurrió un error inesperado.', 'error');
 }
 
 function extraerMensaje(respuesta, predeterminado) {
@@ -66,7 +67,7 @@ function fechaHoyIso() {
 }
 
 function formatoFecha(valor) {
-    if (!valor) return '—';
+    if (!valor || String(valor).startsWith(FECHA_POR_DEFECTO)) return '—';
     const partes = String(valor).split('-');
     if (partes.length < 3) return valor;
     return `${partes[2]}/${partes[1]}/${partes[0]}`;
@@ -117,12 +118,10 @@ async function peticionApi(url, opciones) {
     return datos;
 }
 
-// ============ Carrusel hero ============
-
 function iniciarCarruselHero() {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length < 2) return;
-    if (iniciarCarruselHero._timer) return; // ya está corriendo
+    if (iniciarCarruselHero._timer) return;
     let indice = 0;
     iniciarCarruselHero._timer = setInterval(() => {
         slides[indice].classList.remove('activa');
@@ -130,8 +129,6 @@ function iniciarCarruselHero() {
         slides[indice].classList.add('activa');
     }, 8000);
 }
-
-// ============ Navegación entre vistas ============
 
 function cambiarVista(vista) {
     document.querySelectorAll('.nav-enlace').forEach(b => {
@@ -142,19 +139,18 @@ function cambiarVista(vista) {
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Carga bajo demanda al entrar a ciertas vistas
     if (vista === 'mis-pedidos') {
-        cargarMisPedidos();
+        cargarMisPedidos().catch(notificarErrorInesperado);
     } else if (vista === 'mis-direcciones') {
-        cargarMisDirecciones();
+        cargarMisDirecciones().catch(notificarErrorInesperado);
     } else if (vista === 'admin-pedidos') {
-        cargarPedidosAdmin();
+        cargarPedidosAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-clientes') {
-        cargarClientesAdmin();
+        cargarClientesAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-pagos') {
-        cargarPagosAdmin();
+        cargarPagosAdmin().catch(notificarErrorInesperado);
     } else if (vista === 'admin-envios') {
-        cargarEnviosAdmin();
+        cargarEnviosAdmin().catch(notificarErrorInesperado);
     }
 }
 
@@ -166,7 +162,6 @@ function configurarNavegacion() {
         });
     });
 
-    // Botones que navegan entre vistas auth (data-ir)
     document.querySelectorAll('[data-ir]').forEach(btn => {
         btn.addEventListener('click', evento => {
             evento.preventDefault();
@@ -174,7 +169,6 @@ function configurarNavegacion() {
         });
     });
 
-    // Botones que hacen scroll a anclas dentro de una misma vista
     document.querySelectorAll('[data-ir-ancla]').forEach(btn => {
         btn.addEventListener('click', () => {
             const ancla = document.getElementById(btn.dataset.irAncla);
@@ -182,7 +176,6 @@ function configurarNavegacion() {
         });
     });
 
-    // Selección de rol en pantalla de bienvenida
     document.querySelectorAll('[data-rol]').forEach(btn => {
         btn.addEventListener('click', () => {
             const rol = btn.dataset.rol;
@@ -191,8 +184,6 @@ function configurarNavegacion() {
         });
     });
 }
-
-// ============ Sesión / Header ============
 
 function nombreUsuarioActivo() {
     if (!estado.usuario) return '';
@@ -236,12 +227,10 @@ function cerrarSesion() {
     estado.direccionesCliente = [];
     estado.adminInicializado = false;
     estado.clienteInicializado = false;
-    // Salir de modos edición que pudieran quedar abiertos
     if (estado.dirEditandoId && document.getElementById('form-mi-direccion')) {
         salirModoEdicionDireccion();
     }
     actualizarHeader();
-    // Reset de formularios auth
     const formLoginCli = document.getElementById('form-login-cliente');
     const formLoginAdm = document.getElementById('form-login-administrador');
     const formRegistro = document.getElementById('form-registro-cliente');
@@ -250,8 +239,6 @@ function cerrarSesion() {
     if (formRegistro) formRegistro.reset();
     cambiarVista('bienvenida');
 }
-
-// ============ Login Cliente ============
 
 async function loginCliente(evento) {
     evento.preventDefault();
@@ -283,8 +270,6 @@ async function loginCliente(evento) {
         mostrarNotificacion(error.message || 'Credenciales inválidas.', 'error');
     }
 }
-
-// ============ Login Administrador ============
 
 async function loginAdministrador(evento) {
     evento.preventDefault();
@@ -318,8 +303,6 @@ async function loginAdministrador(evento) {
     }
 }
 
-// ============ Registro Cliente ============
-
 async function registrarCliente(evento) {
     evento.preventDefault();
     const form = evento.target;
@@ -342,7 +325,6 @@ async function registrarCliente(evento) {
             'exito'
         );
         form.reset();
-        // Prerellenar login con el correo registrado
         const correoLogin = document.getElementById('login-cliente-correo');
         if (correoLogin) correoLogin.value = cuerpo.correoElectronico;
         cambiarVista('login-cliente');
@@ -358,8 +340,6 @@ async function registrarCliente(evento) {
         }
     }
 }
-
-// ============ Carrito ============
 
 function actualizarBadgeCarrito() {
     const badge = document.getElementById('badge-carrito');
@@ -428,7 +408,7 @@ function irACheckout() {
         return;
     }
     cambiarVista('checkout');
-    prepararCheckout();
+    prepararCheckout().catch(notificarErrorInesperado);
 }
 
 function calcularTotalCarrito() {
@@ -464,6 +444,7 @@ function renderizarResumenCheckout() {
 }
 
 async function prepararCheckout() {
+    ocultarResultadoCompra();
     renderizarResumenCheckout();
     estado.direccionSeleccionada = null;
     document.getElementById('form-nueva-direccion').classList.add('oculto');
@@ -535,159 +516,223 @@ async function cargarMetodosPago() {
 }
 
 async function confirmarCompra() {
-    if (estado.carrito.length === 0) {
-        mostrarNotificacion('Tu carrito está vacío.', 'error');
-        return;
-    }
-    if (!estado.usuario || estado.usuario.tipo !== 'cliente') {
-        mostrarNotificacion('Debes iniciar sesión como cliente.', 'error');
-        return;
-    }
-
     const idMetodoPago = document.getElementById('checkout-metodo-pago').value;
-    if (!idMetodoPago) {
-        mostrarNotificacion('Selecciona un método de pago.', 'error');
-        return;
-    }
-
-    const formNueva = document.getElementById('form-nueva-direccion');
-    const nuevaCalle = document.getElementById('dir-calle').value.trim();
-    const usaNueva = !formNueva.classList.contains('oculto') && nuevaCalle.length > 0;
-
-    if (!usaNueva && !estado.direccionSeleccionada) {
-        mostrarNotificacion('Selecciona o agrega una dirección de envío.', 'error');
+    const usaNueva = usaDireccionNueva();
+    const errorIntegridad = validarIntegridadCompra(idMetodoPago, usaNueva);
+    if (errorIntegridad) {
+        mostrarResultadoCompra(errorIntegridad, 'error');
+        mostrarNotificacion(errorIntegridad, 'error');
         return;
     }
 
     const boton = document.getElementById('btn-confirmar-compra');
     boton.disabled = true;
     boton.textContent = 'Procesando…';
+    ocultarResultadoCompra();
 
     try {
-        if (usaNueva) {
-            await crearDireccionNueva();
-        }
-
-        const total = calcularTotalCarrito();
-        const clienteId = estado.usuario.datos.id;
-        const fecha = fechaHoyIso();
-
-        // Identificar pedido nuevo: capturar IDs existentes antes
-        const antes = await peticionApi(`${API.pedidos}?idCliente=${clienteId}`);
-        const idsAntes = new Set((antes.datos || []).map(p => p.id));
-
-        await peticionApi(API.pedidos, {
+        const idDireccion = usaNueva ? await crearDireccionNueva() : estado.direccionSeleccionada;
+        const idCarrito = await guardarCarritoEnServidor();
+        const respuesta = await peticionApi(API.compras, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                cliente: { id: clienteId },
-                fechaPedido: fecha,
-                total: total,
-                estado: 'PENDIENTE'
+                idCliente: estado.usuario.datos.id,
+                idCarrito: idCarrito,
+                idDireccion: idDireccion,
+                idMetodoPago: idMetodoPago
             })
         });
-
-        const despues = await peticionApi(`${API.pedidos}?idCliente=${clienteId}`);
-        const pedidoNuevo = (despues.datos || []).find(p => !idsAntes.has(p.id));
-        if (!pedidoNuevo) {
-            throw new Error('No fue posible identificar el pedido creado.');
-        }
-
-        // Crear líneas de pedido
-        for (const item of estado.carrito) {
-            const cantidad = item.cantidad;
-            const precio = item.producto.precio;
-            const subtotal = +(cantidad * precio).toFixed(2);
-            await peticionApi(API.lineasPedido, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    pedido: { id: pedidoNuevo.id },
-                    producto: { id: item.producto.id },
-                    cantidad: cantidad,
-                    precioUnitario: precio,
-                    subtotal: subtotal
-                })
-            });
-        }
-
-        // Crear pago
-        await peticionApi(API.pagos, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                pedido: { id: pedidoNuevo.id },
-                metodoPago: { id: idMetodoPago },
-                monto: total,
-                fechaPago: fecha,
-                estado: 'PENDIENTE'
-            })
-        });
-
-        mostrarNotificacion(`Compra confirmada por ${formatoMoneda(total)}.`, 'exito');
-        estado.carrito = [];
-        actualizarBadgeCarrito();
-        renderizarCarrito();
-        formNueva.classList.add('oculto');
-        document.getElementById('form-nueva-direccion').querySelectorAll('input').forEach(i => {
-            if (i.type === 'checkbox') i.checked = false;
-            else if (i.id === 'dir-pais') i.value = 'Colombia';
-            else i.value = '';
-        });
-        cambiarVista('mis-pedidos');
-        await cargarMisPedidos();
+        finalizarCompraExitosa(respuesta.datos[0]);
     } catch (error) {
-        mostrarNotificacion(error.message || 'No fue posible procesar la compra.', 'error');
+        const mensaje = `No se pudo realizar la compra: ${error.message || 'ocurrió un problema inesperado.'}`;
+        mostrarResultadoCompra(mensaje, 'error');
+        mostrarNotificacion(mensaje, 'error');
     } finally {
         boton.disabled = false;
         boton.textContent = 'Confirmar compra';
     }
 }
 
-async function crearDireccionNueva() {
-    const calle = document.getElementById('dir-calle').value.trim();
-    const ciudad = document.getElementById('dir-ciudad').value.trim();
-    const departamento = document.getElementById('dir-departamento').value.trim();
-    const pais = document.getElementById('dir-pais').value.trim();
-    const codigoPostal = document.getElementById('dir-codigo-postal').value.trim();
-    const esPrincipal = document.getElementById('dir-es-principal').checked;
+function usaDireccionNueva() {
+    const formNueva = document.getElementById('form-nueva-direccion');
+    return !formNueva.classList.contains('oculto') && leerDireccionNueva().calle.length > 0;
+}
 
-    if (!calle || !ciudad || !departamento || !pais) {
-        throw new Error('Completa calle, ciudad, departamento y país de la dirección.');
+function validarIntegridadCompra(idMetodoPago, usaNueva) {
+    if (estado.carrito.length === 0) {
+        return 'Tu carrito está vacío.';
     }
+    if (!estado.usuario || estado.usuario.tipo !== 'cliente') {
+        return 'Debes iniciar sesión como cliente.';
+    }
+    if (usaNueva && !direccionNuevaEstaCompleta(leerDireccionNueva())) {
+        return 'Completa calle, ciudad, departamento y país de la nueva dirección.';
+    }
+    if (!usaNueva && !estado.direccionSeleccionada) {
+        return 'Selecciona o agrega una dirección de envío.';
+    }
+    if (!idMetodoPago) {
+        return 'Selecciona un método de pago.';
+    }
+    return '';
+}
 
+function leerDireccionNueva() {
+    return {
+        calle: document.getElementById('dir-calle').value.trim(),
+        ciudad: document.getElementById('dir-ciudad').value.trim(),
+        departamento: document.getElementById('dir-departamento').value.trim(),
+        pais: document.getElementById('dir-pais').value.trim(),
+        codigoPostal: document.getElementById('dir-codigo-postal').value.trim(),
+        esPrincipal: document.getElementById('dir-es-principal').checked
+    };
+}
+
+function direccionNuevaEstaCompleta(direccion) {
+    return Boolean(direccion.calle && direccion.ciudad && direccion.departamento && direccion.pais);
+}
+
+function esMismaDireccion(registrada, buscada) {
+    const normalizar = texto => String(texto || '').trim().toLowerCase();
+    return normalizar(registrada.calle) === normalizar(buscada.calle)
+        && normalizar(registrada.ciudad) === normalizar(buscada.ciudad)
+        && normalizar(registrada.departamento) === normalizar(buscada.departamento);
+}
+
+async function crearDireccionNueva() {
+    const direccion = leerDireccionNueva();
     await peticionApi(API.direcciones, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             cliente: { id: estado.usuario.datos.id },
-            calle, ciudad, departamento, pais, codigoPostal,
-            esPrincipal
+            ...direccion
         })
+    });
+    await cargarDireccionesCliente();
+    const creada = estado.direccionesCliente.find(d => esMismaDireccion(d, direccion));
+    if (!creada) {
+        throw new Error('No fue posible identificar la dirección registrada.');
+    }
+    limpiarFormularioDireccionNueva();
+    seleccionarDireccionCheckout(creada.id);
+    return creada.id;
+}
+
+function limpiarFormularioDireccionNueva() {
+    const formNueva = document.getElementById('form-nueva-direccion');
+    formNueva.classList.add('oculto');
+    formNueva.querySelectorAll('input').forEach(i => {
+        if (i.type === 'checkbox') i.checked = false;
+        else if (i.id === 'dir-pais') i.value = 'Colombia';
+        else i.value = '';
     });
 }
 
-// ============ MIS PEDIDOS (cliente) ============
+function seleccionarDireccionCheckout(idDireccion) {
+    estado.direccionSeleccionada = idDireccion;
+    document.querySelectorAll('input[name="direccion-envio"]').forEach(radio => {
+        radio.checked = radio.value === idDireccion;
+    });
+}
+
+async function guardarCarritoEnServidor() {
+    const idCarrito = await obtenerCarritoActivoServidor();
+    await reemplazarItemsCarritoServidor(idCarrito);
+    return idCarrito;
+}
+
+async function consultarCarritoActivoServidor() {
+    const idCliente = estado.usuario.datos.id;
+    const respuesta = await peticionApi(
+        `${API.carritosCompras}?idCliente=${idCliente}&estado=${encodeURIComponent(ESTADO_CARRITO_ACTIVO)}`
+    );
+    return (respuesta.datos || [])[0];
+}
+
+async function obtenerCarritoActivoServidor() {
+    const existente = await consultarCarritoActivoServidor();
+    if (existente) {
+        return existente.id;
+    }
+    await peticionApi(API.carritosCompras, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            cliente: { id: estado.usuario.datos.id },
+            fechaCreacion: fechaHoyIso(),
+            estado: ESTADO_CARRITO_ACTIVO
+        })
+    });
+    const creado = await consultarCarritoActivoServidor();
+    if (!creado) {
+        throw new Error('No fue posible preparar el carrito de compras.');
+    }
+    return creado.id;
+}
+
+async function reemplazarItemsCarritoServidor(idCarrito) {
+    const respuesta = await peticionApi(`${API.itemsCarrito}?idCarrito=${idCarrito}`);
+    await Promise.all((respuesta.datos || []).map(itemGuardado =>
+        peticionApi(`${API.itemsCarrito}/${itemGuardado.id}`, { method: 'DELETE' })));
+    await Promise.all(estado.carrito.map(item => peticionApi(API.itemsCarrito, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            carrito: { id: idCarrito },
+            producto: { id: item.producto.id },
+            cantidad: item.cantidad,
+            precioUnitario: item.producto.precio
+        })
+    })));
+}
+
+function finalizarCompraExitosa(resultado) {
+    const mensaje = `Compra realizada: pedido ${idCortoPedido(resultado.idPedido)}, `
+        + `factura ${resultado.numeroFactura}, total ${formatoMoneda(resultado.total)}.`;
+    mostrarResultadoCompra(mensaje, 'exito');
+    mostrarNotificacion(mensaje, 'exito');
+    estado.carrito = [];
+    actualizarBadgeCarrito();
+    renderizarCarrito();
+    renderizarResumenCheckout();
+}
+
+function mostrarResultadoCompra(mensaje, tipo) {
+    const caja = document.getElementById('checkout-resultado');
+    document.getElementById('checkout-resultado-mensaje').textContent = mensaje;
+    caja.className = `checkout-resultado checkout-resultado-${tipo}`;
+    document.getElementById('btn-ver-mis-pedidos').classList.toggle('oculto', tipo !== 'exito');
+}
+
+function ocultarResultadoCompra() {
+    document.getElementById('checkout-resultado').classList.add('oculto');
+}
 
 async function cargarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (!tbody || !estado.usuario) return;
-    tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Cargando…</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Cargando…</td></tr>';
     try {
-        const datos = await peticionApi(`${API.pedidos}?idCliente=${estado.usuario.datos.id}`);
+        const idCliente = estado.usuario.datos.id;
+        const [datos, direcciones] = await Promise.all([
+            peticionApi(`${API.pedidos}?idCliente=${idCliente}`),
+            peticionApi(`${API.direcciones}?idCliente=${idCliente}`).catch(() => ({ datos: [] }))
+        ]);
         estado.pedidosCliente = datos.datos || [];
+        estado.direccionesCliente = direcciones.datos || [];
         renderizarMisPedidos();
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="5" class="celda-vacia">${escapar(error.message)}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="celda-vacia">${escapar(error.message)}</td></tr>`;
     }
-    // ocultar detalle previo
     document.getElementById('panel-detalle-pedido').classList.add('oculto');
 }
 
 function renderizarMisPedidos() {
     const tbody = document.getElementById('tabla-mis-pedidos-body');
     if (estado.pedidosCliente.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="celda-vacia">Aún no has realizado pedidos.</td></tr>';
         return;
     }
     const ordenados = estado.pedidosCliente.slice().sort((a, b) =>
@@ -697,6 +742,7 @@ function renderizarMisPedidos() {
         <tr>
             <td>${escapar(idCortoPedido(p.id))}</td>
             <td>${escapar(formatoFecha(p.fechaPedido))}</td>
+            <td>${escapar(textoDireccionPedido(p))}</td>
             <td class="celda-num">${formatoMoneda(p.total)}</td>
             <td>${etiquetaPedidoEstado(p.estado)}</td>
             <td class="celda-acciones">
@@ -706,6 +752,12 @@ function renderizarMisPedidos() {
             </td>
         </tr>
     `).join('');
+}
+
+function textoDireccionPedido(pedido) {
+    const idDireccion = pedido.direccion?.id;
+    const direccion = estado.direccionesCliente.find(d => String(d.id) === String(idDireccion));
+    return direccion ? `${direccion.calle}, ${direccion.ciudad}` : '—';
 }
 
 function etiquetaPedidoEstado(estadoTexto) {
@@ -781,11 +833,9 @@ function manejarAccionPedido(evento) {
     const boton = evento.target.closest('[data-accion-pedido]');
     if (!boton) return;
     if (boton.dataset.accionPedido === 'ver-detalle') {
-        verDetallePedido(boton.dataset.id, boton.dataset.fecha);
+        verDetallePedido(boton.dataset.id, boton.dataset.fecha).catch(notificarErrorInesperado);
     }
 }
-
-// ============ MIS DIRECCIONES (cliente) ============
 
 async function cargarMisDirecciones() {
     const tbody = document.getElementById('tabla-mis-direcciones-body');
@@ -915,8 +965,6 @@ async function eliminarDireccionPropia(id, etiqueta) {
     }
 }
 
-// ============ ADMIN: PEDIDOS ============
-
 async function cargarMapaClientes() {
     const datos = await peticionApi(API.clientes);
     const mapa = new Map();
@@ -981,7 +1029,7 @@ function renderizarPedidosAdmin(pedidos, mapaClientes) {
                 <td class="celda-acciones">
                     <button class="boton-fila" data-accion-admin-pedido="ver-lineas"
                             data-id="${escapar(p.id)}"
-                            data-fecha="${escapar(p.fechaPedido)}">Ver líneas</button>
+                            data-fecha="${escapar(p.fechaPedido)}">Ver detalle</button>
                 </td>
             </tr>
         `;
@@ -1019,12 +1067,12 @@ async function cambiarEstadoPedido(selector) {
 function manejarAccionAdminPedido(evento) {
     const selector = evento.target.closest('select[data-accion-admin-pedido="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoPedido(selector);
+        cambiarEstadoPedido(selector).catch(notificarErrorInesperado);
         return;
     }
     const boton = evento.target.closest('button[data-accion-admin-pedido="ver-lineas"]');
     if (boton && evento.type === 'click') {
-        verLineasPedidoAdmin(boton.dataset.id, boton.dataset.fecha);
+        verLineasPedidoAdmin(boton.dataset.id, boton.dataset.fecha).catch(notificarErrorInesperado);
     }
 }
 
@@ -1047,8 +1095,6 @@ async function verLineasPedidoAdmin(idPedido, fecha) {
         mostrarNotificacion(error.message, 'error');
     }
 }
-
-// ============ ADMIN: CLIENTES ============
 
 async function cargarClientesAdmin() {
     const tbody = document.getElementById('tabla-admin-clientes-body');
@@ -1134,8 +1180,6 @@ function manejarAccionCarrito(evento) {
     else if (accion === 'eliminar') eliminarDelCarrito(id);
 }
 
-// ============ Catálogo (vista tienda) ============
-
 async function cargarMapaCategorias() {
     const datos = await peticionApi(API.categorias);
     const mapa = new Map();
@@ -1201,8 +1245,6 @@ function aplicarFiltrosCatalogo() {
     renderizarCatalogo(lista, estado.mapaCategorias);
 }
 
-// ============ Carrusel "slot machine" de productos destacados ============
-
 function renderizarCarruselDestacados(productos, mapaCategorias) {
     const pista = document.getElementById('carrusel-pista');
     if (!pista) return;
@@ -1231,14 +1273,20 @@ function renderizarCarruselDestacados(productos, mapaCategorias) {
         `;
     };
 
-    // Duplicamos 4× para que la animación de 0% → -50% sea continua e indistinguible.
     const segmento = activos.map(tarjeta).join('');
-    pista.innerHTML = segmento + segmento + segmento + segmento;
+    pista.innerHTML = segmento.repeat(COPIAS_PISTA_CARRUSEL_CONTINUA);
 
-    // Re-disparar la animación
-    pista.classList.remove('animando');
-    void pista.offsetWidth; // force reflow
-    pista.classList.add('animando');
+    reiniciarAnimacion(pista, 'animando');
+}
+
+function reiniciarAnimacion(elemento, claseAnimacion) {
+    elemento.classList.remove(claseAnimacion);
+    forzarRecalculoDeEstilos(elemento);
+    elemento.classList.add(claseAnimacion);
+}
+
+function forzarRecalculoDeEstilos(elemento) {
+    return elemento.offsetWidth;
 }
 
 function manejarClickCarrusel(evento) {
@@ -1302,8 +1350,6 @@ function manejarAccionCatalogo(evento) {
         agregarAlCarrito(boton.dataset.id);
     }
 }
-
-// ============ CATEGORÍAS ============
 
 async function cargarCategorias() {
     const tbody = document.getElementById('tabla-categorias-body');
@@ -1415,8 +1461,6 @@ async function eliminarCategoria(id, nombre) {
         mostrarNotificacion(error.message, 'error');
     }
 }
-
-// ============ PRODUCTOS ============
 
 async function cargarOpcionesCategoria() {
     const select = document.getElementById('pro-categoria');
@@ -1564,8 +1608,6 @@ async function eliminarProducto(id, nombre) {
     }
 }
 
-// ============ ADMIN: PAGOS ============
-
 function esFechaPorDefecto(valor) {
     if (!valor) return true;
     const v = String(valor);
@@ -1607,7 +1649,6 @@ function renderizarPagosAdmin(pagos, mapaMetodos, mapaPedidos) {
         String(b.fechaPago).localeCompare(String(a.fechaPago))
     );
     tbody.innerHTML = ordenados.map(p => {
-        // Método de pago: SIEMPRE buscar primero en el mapa por id
         let metodo = '';
         const metodoId = p.metodoPago && p.metodoPago.id;
         if (metodoId && mapaMetodos && mapaMetodos.has(String(metodoId))) {
@@ -1615,7 +1656,6 @@ function renderizarPagosAdmin(pagos, mapaMetodos, mapaPedidos) {
         }
         if (!metodo) metodo = '—';
 
-        // Pedido: mostrar siempre el ID corto del pedido (primeros 8 chars del UUID)
         const pedidoId = p.pedido && p.pedido.id;
         const pedidoFecha = pedidoId
             ? '#' + String(pedidoId).substring(0, 8).toUpperCase()
@@ -1676,11 +1716,9 @@ async function cambiarEstadoPago(selector) {
 function manejarAccionAdminPago(evento) {
     const selector = evento.target.closest('select[data-accion-admin-pago="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoPago(selector);
+        cambiarEstadoPago(selector).catch(notificarErrorInesperado);
     }
 }
-
-// ============ ADMIN: ENVÍOS ============
 
 async function cargarEnviosAdmin() {
     const tbody = document.getElementById('tabla-admin-envios-body');
@@ -1745,9 +1783,8 @@ async function cambiarEstadoEnvio(selector) {
         numeroGuia: selector.dataset.numeroGuia,
         estado: nuevoEstado
     };
-    // Si el nuevo estado es ENTREGADO y no hay fecha entrega válida, fijarla a hoy
     if (nuevoEstado === 'ENTREGADO' &&
-        (!cuerpo.fechaEntrega || cuerpo.fechaEntrega === '0001-01-01' || cuerpo.fechaEntrega === 'null')) {
+        (!cuerpo.fechaEntrega || cuerpo.fechaEntrega === FECHA_POR_DEFECTO || cuerpo.fechaEntrega === 'null')) {
         cuerpo.fechaEntrega = fechaHoyIso();
     }
     selector.disabled = true;
@@ -1773,7 +1810,7 @@ async function cambiarEstadoEnvio(selector) {
 function manejarAccionAdminEnvio(evento) {
     const selector = evento.target.closest('select[data-accion-admin-envio="cambiar-estado"]');
     if (selector && evento.type === 'change') {
-        cambiarEstadoEnvio(selector);
+        cambiarEstadoEnvio(selector).catch(notificarErrorInesperado);
     }
 }
 
@@ -1781,12 +1818,10 @@ async function mostrarFormCrearEnvio() {
     const panel = document.getElementById('panel-form-envio');
     panel.classList.remove('oculto');
 
-    // Set fecha por defecto = hoy
     document.getElementById('env-fecha-envio').value = fechaHoyIso();
     document.getElementById('env-transportadora').value = '';
     document.getElementById('env-numero-guia').value = '';
 
-    // Cargar pedidos y clientes en paralelo para el selector
     const select = document.getElementById('env-pedido');
     select.innerHTML = '<option value="">Cargando pedidos…</option>';
     try {
@@ -1862,8 +1897,6 @@ async function crearEnvio(evento) {
     }
 }
 
-// ============ Manejador delegado de acciones en filas admin ============
-
 function manejarAccionFila(evento) {
     const boton = evento.target.closest('[data-accion]');
     if (!boton) return;
@@ -1877,7 +1910,7 @@ function manejarAccionFila(evento) {
             estado: boton.dataset.estado
         });
     } else if (accion === 'eliminar-categoria') {
-        eliminarCategoria(boton.dataset.id, boton.dataset.nombre);
+        eliminarCategoria(boton.dataset.id, boton.dataset.nombre).catch(notificarErrorInesperado);
     } else if (accion === 'editar-producto') {
         entrarModoEdicionProducto({
             id: boton.dataset.id,
@@ -1890,7 +1923,7 @@ function manejarAccionFila(evento) {
             estado: boton.dataset.estado
         });
     } else if (accion === 'eliminar-producto') {
-        eliminarProducto(boton.dataset.id, boton.dataset.nombre);
+        eliminarProducto(boton.dataset.id, boton.dataset.nombre).catch(notificarErrorInesperado);
     } else if (accion === 'editar-direccion') {
         entrarModoEdicionDireccion({
             id: boton.dataset.id,
@@ -1902,95 +1935,79 @@ function manejarAccionFila(evento) {
             esPrincipal: boton.dataset.esPrincipal
         });
     } else if (accion === 'eliminar-direccion') {
-        eliminarDireccionPropia(boton.dataset.id, boton.dataset.etiqueta);
+        eliminarDireccionPropia(boton.dataset.id, boton.dataset.etiqueta).catch(notificarErrorInesperado);
     }
 }
-
-// ============ Inicialización ============
 
 document.addEventListener('DOMContentLoaded', () => {
     configurarNavegacion();
 
-    // Autenticación
     document.getElementById('form-login-cliente').addEventListener('submit', loginCliente);
     document.getElementById('form-login-administrador').addEventListener('submit', loginAdministrador);
     document.getElementById('form-registro-cliente').addEventListener('submit', registrarCliente);
     document.getElementById('btn-cerrar-sesion').addEventListener('click', cerrarSesion);
 
-    // Categorías
     document.getElementById('form-categoria').addEventListener('submit', guardarCategoria);
     document.getElementById('cat-boton-cancelar').addEventListener('click', salirModoEdicionCategoria);
     document.getElementById('btn-recargar-categorias').addEventListener('click', cargarCategorias);
     document.getElementById('tabla-categorias-body').addEventListener('click', manejarAccionFila);
 
-    // Productos
     document.getElementById('form-producto').addEventListener('submit', guardarProducto);
     document.getElementById('pro-boton-cancelar').addEventListener('click', salirModoEdicionProducto);
     document.getElementById('btn-recargar-productos').addEventListener('click', () => {
-        cargarProductos();
-        cargarOpcionesCategoria();
+        cargarProductos().catch(notificarErrorInesperado);
+        cargarOpcionesCategoria().catch(notificarErrorInesperado);
     });
     document.getElementById('tabla-productos-body').addEventListener('click', manejarAccionFila);
 
-    // Filtros del catálogo
     const inputBuscar = document.getElementById('catalogo-buscar');
     if (inputBuscar) inputBuscar.addEventListener('input', aplicarFiltrosCatalogo);
     const selectFiltroCat = document.getElementById('catalogo-filtro-categoria');
     if (selectFiltroCat) selectFiltroCat.addEventListener('change', aplicarFiltrosCatalogo);
 
-    // Carrusel destacados → scroll a producto del catálogo
     const carrusel = document.getElementById('carrusel-destacados');
     if (carrusel) carrusel.addEventListener('click', manejarClickCarrusel);
 
-    // Catálogo y carrito
     document.getElementById('grilla-catalogo').addEventListener('click', manejarAccionCatalogo);
     document.getElementById('tabla-carrito-body').addEventListener('click', manejarAccionCarrito);
     document.getElementById('btn-vaciar-carrito').addEventListener('click', vaciarCarrito);
     document.getElementById('btn-ir-checkout').addEventListener('click', irACheckout);
 
-    // Checkout
     document.getElementById('btn-nueva-direccion').addEventListener('click', () => {
         document.getElementById('form-nueva-direccion').classList.toggle('oculto');
     });
     document.getElementById('btn-cancelar-checkout').addEventListener('click', () => cambiarVista('carrito'));
     document.getElementById('btn-confirmar-compra').addEventListener('click', confirmarCompra);
+    document.getElementById('btn-ver-mis-pedidos').addEventListener('click', () => cambiarVista('mis-pedidos'));
 
-    // Mis pedidos
     document.getElementById('tabla-mis-pedidos-body').addEventListener('click', manejarAccionPedido);
     document.getElementById('btn-recargar-mis-pedidos').addEventListener('click', cargarMisPedidos);
     document.getElementById('btn-cerrar-detalle').addEventListener('click', () => {
         document.getElementById('panel-detalle-pedido').classList.add('oculto');
     });
 
-    // Mis direcciones
     document.getElementById('form-mi-direccion').addEventListener('submit', guardarDireccion);
     document.getElementById('midir-boton-cancelar').addEventListener('click', salirModoEdicionDireccion);
     document.getElementById('btn-recargar-mis-direcciones').addEventListener('click', cargarMisDirecciones);
     document.getElementById('tabla-mis-direcciones-body').addEventListener('click', manejarAccionFila);
 
-    // Admin: pedidos
     document.getElementById('tabla-admin-pedidos-body').addEventListener('change', manejarAccionAdminPedido);
     document.getElementById('tabla-admin-pedidos-body').addEventListener('click', manejarAccionAdminPedido);
     document.getElementById('btn-recargar-admin-pedidos').addEventListener('click', cargarPedidosAdmin);
 
-    // Admin: clientes
     document.getElementById('btn-recargar-admin-clientes').addEventListener('click', cargarClientesAdmin);
 
-    // Admin: pagos
     document.getElementById('tabla-admin-pagos-body').addEventListener('change', manejarAccionAdminPago);
     document.getElementById('btn-recargar-admin-pagos').addEventListener('click', cargarPagosAdmin);
 
-    // Admin: envíos
     document.getElementById('tabla-admin-envios-body').addEventListener('change', manejarAccionAdminEnvio);
     document.getElementById('btn-recargar-admin-envios').addEventListener('click', cargarEnviosAdmin);
     document.getElementById('btn-nuevo-envio').addEventListener('click', mostrarFormCrearEnvio);
     document.getElementById('btn-cancelar-envio').addEventListener('click', ocultarFormCrearEnvio);
     document.getElementById('form-envio').addEventListener('submit', crearEnvio);
 
-    // Carrusel del hero (cliente)
     iniciarCarruselHero();
 
-    // Estado inicial: vista bienvenida, sin sesión
     actualizarHeader();
     cambiarVista('bienvenida');
 });

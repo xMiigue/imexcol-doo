@@ -11,7 +11,7 @@ public interface ImagenProductoFachada {
 
     void actualizar(ImagenProductoDTO dto);
 
-    void eliminar(UUID id);
+    void eliminar(UUID idProducto, UUID idImagen);
 
-    List<ImagenProductoDTO> consultar(ImagenProductoDTO filtros);
+    List<ImagenProductoDTO> consultarPorProducto(UUID idProducto);
 }

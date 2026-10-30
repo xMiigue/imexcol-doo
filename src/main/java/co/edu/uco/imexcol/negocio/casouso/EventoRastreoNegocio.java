@@ -9,9 +9,7 @@ public interface EventoRastreoNegocio {
 
     void registrar(EventoRastreoDominio dominio);
 
-    void actualizar(EventoRastreoDominio dominio);
+    List<EventoRastreoDominio> consultarHistorialPorEnvio(UUID idEnvio);
 
-    void eliminar(UUID id);
-
-    List<EventoRastreoDominio> consultar(EventoRastreoDominio filtros);
+    List<EventoRastreoDominio> consultarHistorialDelCliente(UUID idEnvio, UUID idCliente);
 }

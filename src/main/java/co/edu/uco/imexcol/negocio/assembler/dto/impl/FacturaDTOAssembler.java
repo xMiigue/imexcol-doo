@@ -25,10 +25,12 @@ public final class FacturaDTOAssembler implements DTOAssembler<FacturaDominio, F
         var dtoAEnsamblar = UtilObjeto.obtenerValorDefecto(dto, new FacturaDTO());
         return new FacturaDominio(
                 dtoAEnsamblar.getId(),
-                PedidoDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getPedido()),
+                PagoDTOAssembler.obtenerInstancia().ensamblarDominio(dtoAEnsamblar.getPago()),
                 dtoAEnsamblar.getNumeroFactura(),
                 dtoAEnsamblar.getFechaEmision(),
-                dtoAEnsamblar.getTotal());
+                dtoAEnsamblar.getSubtotal(),
+                dtoAEnsamblar.getTotalImpuestos(),
+                dtoAEnsamblar.getTotalFacturado());
     }
 
     @Override
@@ -36,10 +38,12 @@ public final class FacturaDTOAssembler implements DTOAssembler<FacturaDominio, F
         var dominioAEnsamblar = UtilObjeto.obtenerValorDefecto(dominio, new FacturaDominio());
         return new FacturaDTO(
                 dominioAEnsamblar.getId(),
-                PedidoDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getPedido()),
+                PagoDTOAssembler.obtenerInstancia().ensamblarDTO(dominioAEnsamblar.getPago()),
                 dominioAEnsamblar.getNumeroFactura(),
                 dominioAEnsamblar.getFechaEmision(),
-                dominioAEnsamblar.getTotal());
+                dominioAEnsamblar.getSubtotal(),
+                dominioAEnsamblar.getTotalImpuestos(),
+                dominioAEnsamblar.getTotalFacturado());
     }
 
     @Override

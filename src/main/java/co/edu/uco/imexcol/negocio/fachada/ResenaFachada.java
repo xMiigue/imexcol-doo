@@ -9,9 +9,11 @@ public interface ResenaFachada {
 
     void registrar(ResenaDTO dto);
 
-    void actualizar(ResenaDTO dto);
+    void eliminarPorCliente(UUID idResena, UUID idCliente);
 
-    void eliminar(UUID id);
+    void eliminarPorAdministrador(UUID idResena, UUID idAdministrador);
+
+    List<ResenaDTO> consultarPorProducto(UUID idProducto);
 
     List<ResenaDTO> consultar(ResenaDTO filtros);
 }

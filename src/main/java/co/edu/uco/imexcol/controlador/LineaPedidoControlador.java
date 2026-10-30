@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,10 +24,7 @@ import co.edu.uco.imexcol.negocio.fachada.impl.LineaPedidoFachadaImpl;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilUUID;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
 
-@CrossOrigin
 @RestController
 @RequestMapping("/api/v1/lineas-pedido")
 public final class LineaPedidoControlador {
@@ -47,127 +42,62 @@ public final class LineaPedidoControlador {
             @RequestParam(required = false) final UUID idPedido,
             @RequestParam(required = false) final UUID idProducto) {
 
-        var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var filtros = new LineaPedidoDTO();
-            filtros.setId(UtilUUID.obtenerValorDefecto(id));
+        final var filtros = new LineaPedidoDTO();
+        filtros.setId(UtilUUID.obtenerValorDefecto(id));
 
-            final var pedidoFiltro = new PedidoDTO();
-            pedidoFiltro.setId(UtilUUID.obtenerValorDefecto(idPedido));
-            filtros.setPedido(pedidoFiltro);
+        final var pedidoFiltro = new PedidoDTO();
+        pedidoFiltro.setId(UtilUUID.obtenerValorDefecto(idPedido));
+        filtros.setPedido(pedidoFiltro);
 
-            final var productoFiltro = new ProductoDTO();
-            productoFiltro.setId(UtilUUID.obtenerValorDefecto(idProducto));
-            filtros.setProducto(productoFiltro);
+        final var productoFiltro = new ProductoDTO();
+        productoFiltro.setId(UtilUUID.obtenerValorDefecto(idProducto));
+        filtros.setProducto(productoFiltro);
 
-            respuesta.setDatos(fachada.consultar(filtros));
-            respuesta.agregarMensaje("Líneas de pedido consultadas satisfactoriamente.");
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        final var respuesta = Respuesta.crearExitosa(fachada.consultar(filtros));
+        respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_CONSULTA.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Respuesta<LineaPedidoDTO>> consultarPorId(@PathVariable final UUID id) {
-        var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var filtros = new LineaPedidoDTO();
-            filtros.setId(UtilUUID.obtenerValorDefecto(id));
+        final var filtros = new LineaPedidoDTO();
+        filtros.setId(UtilUUID.obtenerValorDefecto(id));
 
-            final var resultados = fachada.consultar(filtros);
-            if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
-                respuesta = Respuesta.crearFallida();
-                respuesta.agregarMensaje("No se encontró la línea de pedido con el identificador solicitado.");
-                estado = HttpStatus.NOT_FOUND;
-            } else {
-                respuesta.setDatos(List.of(resultados.get(0)));
-                respuesta.agregarMensaje("Línea de pedido consultada satisfactoriamente.");
-            }
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
+        final var resultados = fachada.consultar(filtros);
+        if (UtilObjeto.esNulo(resultados) || resultados.isEmpty()) {
+            final var respuestaNoEncontrado = Respuesta.<LineaPedidoDTO>crearFallida();
+            respuestaNoEncontrado.agregarMensaje(MensajesEnum.ERROR_USUARIO_LINEA_PEDIDO_NO_ENCONTRADO.getContenido());
+            return new ResponseEntity<>(respuestaNoEncontrado, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(respuesta, estado);
+        final var respuesta = Respuesta.crearExitosa(List.of(resultados.get(0)));
+        respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_CONSULTA_POR_ID.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<Respuesta<LineaPedidoDTO>> registrar(@RequestBody final LineaPedidoDTO dto) {
-        var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.CREATED;
-        try {
-            fachada.registrar(dto);
-            respuesta.agregarMensaje("Línea de pedido registrada satisfactoriamente.");
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        fachada.registrar(dto);
+        final var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_REGISTRO.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Respuesta<LineaPedidoDTO>> actualizar(@PathVariable final UUID id,
             @RequestBody final LineaPedidoDTO dto) {
-        var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new LineaPedidoDTO());
-            dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
-            fachada.actualizar(dtoSeguro);
-            respuesta.agregarMensaje("Línea de pedido actualizada satisfactoriamente.");
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
+        final var dtoSeguro = UtilObjeto.obtenerValorDefecto(dto, new LineaPedidoDTO());
+        dtoSeguro.setId(UtilUUID.obtenerValorDefecto(id));
+        fachada.actualizar(dtoSeguro);
+        final var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_ACTUALIZACION.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Respuesta<LineaPedidoDTO>> eliminar(@PathVariable final UUID id) {
-        var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
-        HttpStatusCode estado = HttpStatus.OK;
-        try {
-            fachada.eliminar(id);
-            respuesta.agregarMensaje("Línea de pedido eliminada satisfactoriamente.");
-        } catch (final ImexcolException excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(excepcion.getMensajeUsuario());
-            estado = HttpStatus.BAD_REQUEST;
-        } catch (final Exception excepcion) {
-            respuesta = Respuesta.crearFallida();
-            respuesta.agregarMensaje(envolverErrorInesperado(excepcion).getMensajeUsuario());
-            estado = HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        return new ResponseEntity<>(respuesta, estado);
-    }
-
-    private static ImexcolException envolverErrorInesperado(final Exception excepcion) {
-        return ImexcolException.crear(excepcion,
-                MensajesEnum.ERROR_USUARIO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
-                MensajesEnum.ERROR_TECNICO_CONTROLADOR_OPERACION_INESPERADA.getContenido(),
-                Lugar.CONTROLADOR);
+        fachada.eliminar(id);
+        final var respuesta = Respuesta.<LineaPedidoDTO>crearExitosa();
+        respuesta.agregarMensaje(MensajesEnum.EXITO_LINEA_PEDIDO_ELIMINACION.getContenido());
+        return new ResponseEntity<>(respuesta, HttpStatus.OK);
     }
 }

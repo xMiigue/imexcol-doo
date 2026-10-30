@@ -9,9 +9,7 @@ public interface EventoRastreoFachada {
 
     void registrar(EventoRastreoDTO dto);
 
-    void actualizar(EventoRastreoDTO dto);
+    List<EventoRastreoDTO> consultarHistorialPorEnvio(UUID idEnvio);
 
-    void eliminar(UUID id);
-
-    List<EventoRastreoDTO> consultar(EventoRastreoDTO filtros);
+    List<EventoRastreoDTO> consultarHistorialDelCliente(UUID idEnvio, UUID idCliente);
 }

@@ -26,9 +26,8 @@ public final class ImagenProductoEntidadAssembler implements EntidadAssembler<Im
         return new ImagenProductoEntidad(
                 dominioAEnsamblar.getId(),
                 ProductoEntidadAssembler.obtenerInstancia().ensamblarEntidad(dominioAEnsamblar.getProducto()),
-                dominioAEnsamblar.getUrl(),
-                dominioAEnsamblar.getDescripcion(),
-                dominioAEnsamblar.isEsPrincipal());
+                dominioAEnsamblar.getFoto(),
+                dominioAEnsamblar.getOrdenVisualizacion());
     }
 
     @Override
@@ -37,9 +36,8 @@ public final class ImagenProductoEntidadAssembler implements EntidadAssembler<Im
         return new ImagenProductoDominio(
                 entidadAEnsamblar.getId(),
                 ProductoEntidadAssembler.obtenerInstancia().ensamblarDominio(entidadAEnsamblar.getProducto()),
-                entidadAEnsamblar.getUrl(),
-                entidadAEnsamblar.getDescripcion(),
-                entidadAEnsamblar.isEsPrincipal());
+                entidadAEnsamblar.getFoto(),
+                entidadAEnsamblar.getOrdenVisualizacion());
     }
 
     @Override

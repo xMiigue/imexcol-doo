@@ -1,6 +1,6 @@
 package co.edu.uco.imexcol.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import co.edu.uco.imexcol.transversal.UtilFecha;
@@ -12,34 +12,43 @@ import co.edu.uco.imexcol.transversal.UtilUUID;
 public final class FacturaDTO {
 
     private UUID id;
-    private PedidoDTO pedido;
+    private PagoDTO pago;
     private String numeroFactura;
-    private LocalDate fechaEmision;
-    private double total;
+    private LocalDateTime fechaEmision;
+    private double subtotal;
+    private double totalImpuestos;
+    private double totalFacturado;
 
     public FacturaDTO() {
         setId(UtilUUID.obtenerValorPorDefecto());
-        setPedido(new PedidoDTO());
+        setPago(new PagoDTO());
         setNumeroFactura(UtilTexto.VACIO);
-        setFechaEmision(UtilFecha.obtenerFechaPorDefecto());
-        setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
+        setFechaEmision(UtilFecha.obtenerFechaHoraPorDefecto());
+        setSubtotal(UtilNumerico.obtenerValorPorDefectoDouble());
+        setTotalImpuestos(UtilNumerico.obtenerValorPorDefectoDouble());
+        setTotalFacturado(UtilNumerico.obtenerValorPorDefectoDouble());
     }
 
     public FacturaDTO(final UUID id) {
         setId(id);
-        setPedido(new PedidoDTO());
+        setPago(new PagoDTO());
         setNumeroFactura(UtilTexto.VACIO);
-        setFechaEmision(UtilFecha.obtenerFechaPorDefecto());
-        setTotal(UtilNumerico.obtenerValorPorDefectoDouble());
+        setFechaEmision(UtilFecha.obtenerFechaHoraPorDefecto());
+        setSubtotal(UtilNumerico.obtenerValorPorDefectoDouble());
+        setTotalImpuestos(UtilNumerico.obtenerValorPorDefectoDouble());
+        setTotalFacturado(UtilNumerico.obtenerValorPorDefectoDouble());
     }
 
-    public FacturaDTO(final UUID id, final PedidoDTO pedido, final String numeroFactura,
-                      final LocalDate fechaEmision, final double total) {
+    public FacturaDTO(final UUID id, final PagoDTO pago, final String numeroFactura,
+                      final LocalDateTime fechaEmision, final double subtotal, final double totalImpuestos,
+                      final double totalFacturado) {
         setId(id);
-        setPedido(pedido);
+        setPago(pago);
         setNumeroFactura(numeroFactura);
         setFechaEmision(fechaEmision);
-        setTotal(total);
+        setSubtotal(subtotal);
+        setTotalImpuestos(totalImpuestos);
+        setTotalFacturado(totalFacturado);
     }
 
     public UUID getId() {
@@ -50,12 +59,12 @@ public final class FacturaDTO {
         this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
-    public PedidoDTO getPedido() {
-        return pedido;
+    public PagoDTO getPago() {
+        return pago;
     }
 
-    public void setPedido(final PedidoDTO pedido) {
-        this.pedido = UtilObjeto.obtenerValorDefecto(pedido, new PedidoDTO());
+    public void setPago(final PagoDTO pago) {
+        this.pago = UtilObjeto.obtenerValorDefecto(pago, new PagoDTO());
     }
 
     public String getNumeroFactura() {
@@ -66,19 +75,35 @@ public final class FacturaDTO {
         this.numeroFactura = UtilTexto.aplicarTrim(numeroFactura);
     }
 
-    public LocalDate getFechaEmision() {
+    public LocalDateTime getFechaEmision() {
         return fechaEmision;
     }
 
-    public void setFechaEmision(final LocalDate fechaEmision) {
+    public void setFechaEmision(final LocalDateTime fechaEmision) {
         this.fechaEmision = UtilFecha.obtenerValorDefecto(fechaEmision);
     }
 
-    public double getTotal() {
-        return total;
+    public double getSubtotal() {
+        return subtotal;
     }
 
-    public void setTotal(final double total) {
-        this.total = total;
+    public void setSubtotal(final double subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public double getTotalImpuestos() {
+        return totalImpuestos;
+    }
+
+    public void setTotalImpuestos(final double totalImpuestos) {
+        this.totalImpuestos = totalImpuestos;
+    }
+
+    public double getTotalFacturado() {
+        return totalFacturado;
+    }
+
+    public void setTotalFacturado(final double totalFacturado) {
+        this.totalFacturado = totalFacturado;
     }
 }

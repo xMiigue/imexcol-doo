@@ -1,55 +1,51 @@
 package co.edu.uco.imexcol.negocio.casouso.regla.genericas;
 
+import java.util.Arrays;
+
 import co.edu.uco.imexcol.negocio.casouso.regla.Regla;
+import co.edu.uco.imexcol.negocio.casouso.regla.UtilRegla;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
 import co.edu.uco.imexcol.transversal.UtilTexto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
 public final class EstadoEsValidoRegla implements Regla {
 
     private static final EstadoEsValidoRegla INSTANCIA = new EstadoEsValidoRegla();
     private static final int CANTIDAD_PARAMETROS_REQUERIDOS = 3;
+    private static final int POSICION_ESTADO = 0;
+    private static final int POSICION_NOMBRE_DATO = 1;
+    private static final int POSICION_ESTADOS_PERMITIDOS = 2;
+    private static final String SEPARADOR_ESTADOS = ", ";
 
     private EstadoEsValidoRegla() {
         super();
     }
 
-    public static void ejecutarRegla(final Object... datos) {
-        INSTANCIA.ejecutar(datos);
+    public static EstadoEsValidoRegla obtenerInstancia() {
+        return INSTANCIA;
     }
 
     @Override
     public void ejecutar(final Object... datos) {
-        if (UtilObjeto.esNulo(datos)) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_DATOS_NULOS.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_DATOS_NULOS.getContenido(),
-                    Lugar.NEGOCIO);
-        }
-        if (datos.length < CANTIDAD_PARAMETROS_REQUERIDOS) {
-            throw ImexcolException.crear(
-                    MensajesEnum.ERROR_USUARIO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_REGLA_PARAMETROS_INSUFICIENTES.getContenido(),
-                    Lugar.NEGOCIO);
-        }
+        UtilRegla.asegurarParametrosSuficientes(datos, CANTIDAD_PARAMETROS_REQUERIDOS);
+        final var estado = UtilTexto.aplicarTrim((String) datos[POSICION_ESTADO]);
+        final var nombreDato = UtilTexto.aplicarTrim((String) datos[POSICION_NOMBRE_DATO]);
+        final var estadosPermitidos = UtilObjeto.obtenerValorDefecto((String[]) datos[POSICION_ESTADOS_PERMITIDOS],
+                new String[0]);
 
-        final var estado = UtilTexto.aplicarTrim((String) datos[0]);
-        final var nombreDato = (String) datos[1];
-        final var estadosPermitidos = (String[]) datos[2];
-
-        for (final var permitido : estadosPermitidos) {
-            if (estado.equalsIgnoreCase(UtilTexto.aplicarTrim(permitido))) {
-                return;
-            }
+        if (!esEstadoPermitido(estado, estadosPermitidos)) {
+            final var listaPermitidos = String.join(SEPARADOR_ESTADOS, estadosPermitidos);
+            throw ImexcolNegocioException.crear(
+                    MensajesEnum.ERROR_USUARIO_DATO_ESTADO_INVALIDO.getContenido()
+                            .formatted(estado, nombreDato, listaPermitidos),
+                    MensajesEnum.ERROR_TECNICO_DATO_ESTADO_INVALIDO.getContenido()
+                            .formatted(estado, nombreDato, listaPermitidos));
         }
+    }
 
-        final var listaPermitidos = String.join(", ", estadosPermitidos);
-        final var mensajeUsuario = MensajesEnum.ERROR_USUARIO_DATO_ESTADO_INVALIDO.getContenido()
-                .formatted(estado, nombreDato, listaPermitidos);
-        final var mensajeTecnico = MensajesEnum.ERROR_TECNICO_DATO_ESTADO_INVALIDO.getContenido()
-                .formatted(estado, nombreDato, listaPermitidos);
-        throw ImexcolException.crear(mensajeUsuario, mensajeTecnico, Lugar.NEGOCIO);
+    private static boolean esEstadoPermitido(final String estado, final String[] estadosPermitidos) {
+        return Arrays.stream(estadosPermitidos)
+                .anyMatch(permitido -> estado.equalsIgnoreCase(UtilTexto.aplicarTrim(permitido)));
     }
 }

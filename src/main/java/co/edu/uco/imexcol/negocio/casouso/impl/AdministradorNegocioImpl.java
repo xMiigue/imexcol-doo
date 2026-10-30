@@ -3,41 +3,48 @@ package co.edu.uco.imexcol.negocio.casouso.impl;
 import java.util.List;
 import java.util.UUID;
 
-import co.edu.uco.imexcol.datos.dao.AdministradorDAO;
+import co.edu.uco.imexcol.datos.dao.fabrica.FabricaDAO;
 import co.edu.uco.imexcol.negocio.assembler.entidad.impl.AdministradorEntidadAssembler;
 import co.edu.uco.imexcol.negocio.casouso.AdministradorNegocio;
-import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarIdNoEsValorPorDefecto;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorEstaActivo;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorId;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorExistePorNombreUsuario;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarAdministradorNoEsElUnico;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarContrasenaAdministradorCoincide;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarCredencialesAdministradorSonObligatorias;
+import co.edu.uco.imexcol.negocio.casouso.validador.administrador.ValidarNombreUsuarioAdministradorNoExiste;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarLongitudTextoEsValida;
 import co.edu.uco.imexcol.negocio.casouso.validador.genericas.ValidarTextoEsObligatorio;
 import co.edu.uco.imexcol.negocio.dominio.AdministradorDominio;
 import co.edu.uco.imexcol.transversal.MensajesEnum;
 import co.edu.uco.imexcol.transversal.UtilObjeto;
-import co.edu.uco.imexcol.transversal.excepcion.ImexcolException;
-import co.edu.uco.imexcol.transversal.excepcion.enums.Lugar;
+import co.edu.uco.imexcol.transversal.UtilTexto;
+import co.edu.uco.imexcol.transversal.UtilUUID;
+import co.edu.uco.imexcol.transversal.excepcion.ImexcolNegocioException;
 
-/**
- * Casos de uso del objeto de dominio Administrador.
- *
- * Políticas de negocio aplicadas (referencia documentación de políticas):
- * <ul>
- *   <li>ADM-POL-01: Validación de datos requeridos.</li>
- *   <li>ADM-POL-02: El nombre de usuario no debe existir previamente.</li>
- * </ul>
- */
 public final class AdministradorNegocioImpl implements AdministradorNegocio {
 
-    private final AdministradorDAO dao;
+    private static final String DATO_NOMBRE_USUARIO = "nombre de usuario del administrador";
+    private static final String DATO_CORREO = "correo electrónico del administrador";
+    private static final String DATO_CONTRASENA = "contraseña del administrador";
+    private static final int LONGITUD_MINIMA_NOMBRE_USUARIO = 4;
+    private static final int LONGITUD_MAXIMA_NOMBRE_USUARIO = 50;
+    private static final int LONGITUD_MINIMA_CORREO = 6;
+    private static final int LONGITUD_MAXIMA_CORREO = 150;
+    private static final int LONGITUD_MINIMA_CONTRASENA = 8;
+    private static final int LONGITUD_MAXIMA_CONTRASENA = 255;
+
+    private final FabricaDAO fabrica;
     private final AdministradorEntidadAssembler ensamblador;
 
-    public AdministradorNegocioImpl(final AdministradorDAO dao) {
-        super();
-        if (UtilObjeto.esNulo(dao)) {
-            throw ImexcolException.crear(
+    public AdministradorNegocioImpl(final FabricaDAO fabrica) {
+        if (UtilObjeto.esNulo(fabrica)) {
+            throw ImexcolNegocioException.crear(
                     MensajesEnum.ERROR_USUARIO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido(),
-                    Lugar.NEGOCIO);
+                    MensajesEnum.ERROR_TECNICO_FACTORY_NO_INICIALIZADA.getContenido());
         }
-        this.dao = dao;
+        super();
+        this.fabrica = fabrica;
         this.ensamblador = AdministradorEntidadAssembler.obtenerInstancia();
     }
 
@@ -45,46 +52,120 @@ public final class AdministradorNegocioImpl implements AdministradorNegocio {
     public void registrar(final AdministradorDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new AdministradorDominio());
         validarDatosComunes(dominioSeguro);
-        dominioSeguro.setId(UUID.randomUUID());
-        dao.acceder(ensamblador.ensamblarEntidad(dominioSeguro));
+        asignarNuevoIdentificador(dominioSeguro);
+        asegurarNombreUsuarioNoExista(dominioSeguro);
+        guardar(dominioSeguro);
     }
 
     @Override
     public void actualizar(final AdministradorDominio dominio) {
         final var dominioSeguro = UtilObjeto.obtenerValorDefecto(dominio, new AdministradorDominio());
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(dominioSeguro.getId(), "administrador");
         validarDatosComunes(dominioSeguro);
-        dao.actualizar(ensamblador.ensamblarEntidad(dominioSeguro));
+        asegurarAdministradorExista(dominioSeguro.getId());
+        asegurarNombreUsuarioNoExista(dominioSeguro);
+        modificar(dominioSeguro);
     }
 
     @Override
     public void eliminar(final UUID id) {
-        ValidarIdNoEsValorPorDefecto.ejecutarValidacion(id, "administrador");
-        dao.eliminar(id);
+        asegurarAdministradorExista(id);
+        asegurarAdministradorNoSeaElUnico(id);
+        borrar(id);
     }
 
     @Override
     public List<AdministradorDominio> consultar(final AdministradorDominio filtros) {
-        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDominio());
-        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
-        final var entidades = dao.consultarPorFiltro(entidadFiltro);
-        return ensamblador.ensamblarDominio(entidades);
+        final var registros = consultarConContrasena(filtros);
+        registros.forEach(this::ocultarContrasena);
+        return registros;
+    }
+
+    @Override
+    public AdministradorDominio autenticar(final AdministradorDominio credenciales) {
+        final var credencialesSeguras = UtilObjeto.obtenerValorDefecto(credenciales, new AdministradorDominio());
+        asegurarCredencialesCompletas(credencialesSeguras);
+        asegurarAdministradorRegistrado(credencialesSeguras.getNombreUsuario());
+        final var administrador = consultarPorNombreUsuario(credencialesSeguras.getNombreUsuario());
+        asegurarContrasenaCoincida(credencialesSeguras.getContrasena(), administrador);
+        asegurarAdministradorActivo(administrador);
+        ocultarContrasena(administrador);
+        return administrador;
     }
 
     private void validarDatosComunes(final AdministradorDominio dominio) {
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombreUsuario(),
-                "nombre de usuario del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombreUsuario(),
-                "nombre de usuario del administrador", 4, 50);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getNombreUsuario(), DATO_NOMBRE_USUARIO,
+                LONGITUD_MINIMA_NOMBRE_USUARIO, LONGITUD_MAXIMA_NOMBRE_USUARIO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(), DATO_CORREO,
+                LONGITUD_MINIMA_CORREO, LONGITUD_MAXIMA_CORREO);
+        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA);
+        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(), DATO_CONTRASENA,
+                LONGITUD_MINIMA_CONTRASENA, LONGITUD_MAXIMA_CONTRASENA);
+    }
 
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getCorreoElectronico(),
-                "correo electrónico del administrador", 6, 150);
+    private void asegurarNombreUsuarioNoExista(final AdministradorDominio dominio) {
+        ValidarNombreUsuarioAdministradorNoExiste.ejecutarValidacion(dominio.getNombreUsuario(), dominio.getId(),
+                fabrica);
+    }
 
-        ValidarTextoEsObligatorio.ejecutarValidacion(dominio.getContrasena(),
-                "contraseña del administrador");
-        ValidarLongitudTextoEsValida.ejecutarValidacion(dominio.getContrasena(),
-                "contraseña del administrador", 8, 255);
+    private void asegurarAdministradorExista(final UUID id) {
+        ValidarAdministradorExistePorId.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asegurarAdministradorNoSeaElUnico(final UUID id) {
+        ValidarAdministradorNoEsElUnico.ejecutarValidacion(id, fabrica);
+    }
+
+    private void asignarNuevoIdentificador(final AdministradorDominio dominio) {
+        dominio.setId(UtilUUID.generarNuevoUUID());
+    }
+
+    private void asegurarCredencialesCompletas(final AdministradorDominio credenciales) {
+        ValidarCredencialesAdministradorSonObligatorias.ejecutarValidacion(credenciales.getNombreUsuario(),
+                credenciales.getContrasena());
+    }
+
+    private void asegurarAdministradorRegistrado(final String nombreUsuario) {
+        ValidarAdministradorExistePorNombreUsuario.ejecutarValidacion(nombreUsuario, fabrica);
+    }
+
+    private AdministradorDominio consultarPorNombreUsuario(final String nombreUsuario) {
+        final var filtro = new AdministradorDominio();
+        filtro.setNombreUsuario(nombreUsuario);
+        return consultarConContrasena(filtro).stream().findFirst().orElse(new AdministradorDominio());
+    }
+
+    private void asegurarContrasenaCoincida(final String contrasenaIngresada,
+            final AdministradorDominio administrador) {
+        ValidarContrasenaAdministradorCoincide.ejecutarValidacion(contrasenaIngresada,
+                administrador.getContrasena(), administrador.getNombreUsuario());
+    }
+
+    private List<AdministradorDominio> consultarConContrasena(final AdministradorDominio filtros) {
+        final var filtroSeguro = UtilObjeto.obtenerValorDefecto(filtros, new AdministradorDominio());
+        final var entidadFiltro = ensamblador.ensamblarEntidad(filtroSeguro);
+        final var entidades = fabrica.obtenerAdministradorDAO().consultarPorFiltro(entidadFiltro);
+        return ensamblador.ensamblarDominio(entidades);
+    }
+
+    private void asegurarAdministradorActivo(final AdministradorDominio administrador) {
+        ValidarAdministradorEstaActivo.ejecutarValidacion(administrador.isEstado(), administrador.getNombreUsuario());
+    }
+
+    private void ocultarContrasena(final AdministradorDominio administrador) {
+        administrador.setContrasena(UtilTexto.VACIO);
+    }
+
+    private void guardar(final AdministradorDominio dominio) {
+        fabrica.obtenerAdministradorDAO().crear(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void modificar(final AdministradorDominio dominio) {
+        fabrica.obtenerAdministradorDAO().actualizar(ensamblador.ensamblarEntidad(dominio));
+    }
+
+    private void borrar(final UUID id) {
+        fabrica.obtenerAdministradorDAO().eliminar(id);
     }
 }
